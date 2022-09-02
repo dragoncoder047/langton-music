@@ -5,7 +5,7 @@ class Breeder {
     empty() {
         this.breeds = {};
     }
-    _checkNode(node, name, inside) {
+    _checknode(node, name, inside) {
         // returns true if it should be skipped.
         // returns false if it is ok to go.
         // throws if it is bad.
@@ -18,15 +18,15 @@ class Breeder {
         if (breedName in this.breeds) throw `Breed ${breedName} is already defined.`;
         var fixedCommands = {};
         for (var cs of commands.childNodes) {
-            if (this._checkNode(cs, 'case', 'breed')) continue;
+            if (this._checknode(cs, 'case', 'breed')) continue;
             var state = checkint(cs, 'state', 'case', 1);
             var cell = checkint(cs, 'cell', 'case');
             var fixedTicks = [];
             for (var tick of cs.childNodes) {
-                if (this._checkNode(tick, 'action', 'case')) continue;
+                if (this._checknode(tick, 'action', 'case')) continue;
                 var fixedSubticks = [];
                 for (var subtick of tick.childNodes) {
-                    if (this._checkNode(tick, 'command', 'action')) continue;
+                    if (this._checknode(tick, 'command', 'action')) continue;
                     var commandName = checkattr(subtick, 'name', 'command');
                     var argument = subtick.textContent;
                     if (typeof klass.prototype[`do_${commandName}`] !== 'function') throw `Ant breed ${breedName}: Unknown command '${commandName}' to species ${klass.name}`;

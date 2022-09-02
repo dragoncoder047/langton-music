@@ -204,13 +204,14 @@ fit();
 
 function dump() {
     try {
+        throw 'todo';
         stop();
         var h = Object.getOwnPropertyNames(header).map(n => `${n}: ${header[n]}`).join(';\n');
         var b = breeder.dumpBreeds();
         var r = world.dump(ants);
         textbox.value = `${h}\n${b}\n${r}`;
     } catch (e) {
-        showStatus(e, 'red');
+        showStatus('Error: ' + e.toString(), 'red');
         throw e;
     }
 }
