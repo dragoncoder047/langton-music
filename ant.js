@@ -37,17 +37,17 @@ class Breeder {
     dumpBreeds() {
         return Object.getOwnPropertyNames(this.breeds).map(breed => `\t<breed species="${this.breeds[breed][0].name}" name="${breed}">\n\t\t${Object.getOwnPropertyNames(this.breeds[breed][1]).map(p => [p, this.breeds[breed][1][p].map(sc => sc.map(cd => `\t\t\t\t<command name="${cd[0]}">${cd[1]}</command>`).join('\n')).join('</action>\n\t\t\t<action>')]).map(c => `\t\t<case state="${c[0].split(':')[0]} cell="${c[0].split(':')[1]}"> =>\n\t\t\t<action>${c[1]}\n\t\t\t</action>\n\t\t</case>`).join('\n')}\n\t</breed>`).join('\n');
     }
-    createAnt(breed, world, x, y, dir, state, antsList) {
+    createAnt(breed, world, x, y, dir, state, antsList, id) {
         if (!(breed in this.breeds)) throw `Unknown ant breed ${breed}`;
         var klass = this.breeds[breed][0];
         var commands = this.breeds[breed][1];
-        return new klass(this, antsList, breed, world, commands, state, x, y, dir);
+        return new klass(this, antsList, breed, world, commands, state, x, y, dir, id);
     }
 }
 
 
 class Ant {
-    constructor(breeder, antList, breed, world, commands, initialState, x, y, dir) {
+    constructor(breeder, antList, breed, world, commands, initialState, x, y, dir, id = null) {
         this.breeder = breeder;
         this.antList = antList;
         this.breed = breed;
@@ -61,6 +61,7 @@ class Ant {
         this.queue = [];
         this.halted = false;
         this.dead = false;
+        this.id = id || `${this.breed}-${randuuid()}`;
     }
     processInserts(arg) {
         var vars = ['dir', 'state'];
@@ -132,11 +133,11 @@ class Ant {
     numarg(arg, methodname, default_ = 1) {
         arg = arg || default_;
         var argNum = parseInt(arg);
-        if (isNaN(argNum)) throw `${methodname}(): ${arg} is not a number`;
+        if (isNaN(argNum)) throw `${methodname}: ${arg} is not a number`;
         return argNum;
     }
     do_state(arg) {
-        if (!arg) throw 'state(): which state?';
+        if (!arg) throw 'state: which state?';
         var argNum = this.numarg(arg, 'state');
         this.state = argNum;
     }
@@ -167,7 +168,7 @@ class Ant {
     }
     do_dir(arg) {
         var argNum = this.numarg(arg, 'dir');
-        if (argNum > 3 || argNum < 0) throw `dir(): dir out of range`;
+        if (argNum > 3 || argNum < 0) throw `dir: out of range: ${argNum}`;
         this.dir = argNum;
     }
     do_bk(arg) {
@@ -182,24 +183,28 @@ class Ant {
     }
     do_spawn(arg) {
         var [breed, dir, state] = arg.split(':');
-        if (!breed) throw `spawn(): what breed?`;
-        if (!dir) throw `spawn(): what direction?`;
-        if (!/^[0-3]$/.test(dir)) throw `spawn(): invalid direction: ${dir}`;
-        if (state && !/^\d+$/.test(state)) throw `spawn(): invalid state: ${state}`;
+        if (!breed) throw `spawn: what breed?`;
+        if (!dir) throw `spawn: what direction?`;
+        if (!/^[0-3]$/.test(dir)) throw `spawn: invalid direction: ${dir}`;
+        if (state && !/^\d+$/.test(state)) throw `spawn: invalid state: ${state}`;
         dir = parseInt(dir);
         state = parseInt(state ?? 1);
         this.antList.push(this.breeder.createAnt(breed, this.world, this.x, this.y, (dir + this.dir) % 4, state, this.antList));
     }
     do_die(arg) {
-        if (arg) throw `die() takes no argument`;
+        if (arg) throw `die takes no argument`;
         this.dead = true;
     }
     do_alert(arg) {
         alert(arg);
     }
     do_status(arg) {
-        if (!window.showStatus) throw 'status(): not available';
+        if (!window.showStatus) throw 'status not available';
         var [s, color] = arg.split(',');
         showStatus(s.trim(), color ? color.trim() : undefined);
     }
+}
+
+function randuuid() {
+    return new Array(4).fill().map(() => Math.floor(Math.random() * (2 ** 32)).toString(16)).join('-');
 }

@@ -13,6 +13,28 @@ const fitBtn = $('#fit');
 const autoFit = $('#autofit');
 const followSelector = $('#follow');
 
+textbox.value = `<langton>
+\t<breed species="Beetle" name="langton">
+\t\t<case cell="0">
+\t\t\t<action>
+\t\t\t\t<command name="put">1</command>
+\t\t\t\t<command name="rt"></command>
+\t\t\t\t<command name="fd"></command>
+\t\t\t\t<command name="play">C2</command>
+\t\t\t</action>
+\t\t</case>
+\t\t<case cell="1">
+\t\t\t<action>
+\t\t\t\t<command name="put">0</command>
+\t\t\t\t<command name="lt"></command>
+\t\t\t\t<command name="fd"></command>
+\t\t\t\t<command name="play">G2</command>
+\t\t\t</action>
+\t\t</case>
+\t</breed>
+\t<ant id="langton1" breed="langton" x="0" y="0" dir="1">
+</langton>`;
+
 var dragController = new CanvasMove(playfield, false);
 var ctx = dragController.ctx;
 var world = new World(ctx);

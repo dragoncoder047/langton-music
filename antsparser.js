@@ -35,7 +35,7 @@ function loadWorld(text, antSpecies, world, breeder) {
         var state = checkint(a, 'state', 'ant', 1);
         var x = checkint(a, 'x', 'ant');
         var y = checkint(a, 'y', 'ant');
-        ants.push(breeder.createAnt(breed, world, x, y, dir, state, ants));
+        ants.push(breeder.createAnt(breed, world, x, y, dir, state, ants, name));
     }
     if (ants.length === 0) throw 'No ants.';
     throw 'todo: rle';
