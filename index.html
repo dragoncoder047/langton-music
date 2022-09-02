@@ -18,13 +18,7 @@
         <canvas id="playfield"></canvas>
         <p>Input text</p>
         <p><button id="loadbtn">Load</button><button id="dumpbtn">Dump</button> <span style="opacity: 50%">&larr;CAUTION: this will WIPE OUT your comments!</span></p>
-        <textarea id="textbox" style="width: 90%" rows="20" spellcheck="false">bpm: 120
-[Beetle langton
-  {1:0 => put(1) rt fd play(C2)}
-  {1:1 => put(0) lt fd play(G2)}
-]
-.[langton:1:1]
-</textarea>
+        <textarea id="textbox" style="width: 90%" rows="20" spellcheck="false"></textarea>
         <p><a href="https://github.com/dragoncoder047/langton-music/blob/main/format.md">Formatting/syntax guide</a></p>
         <script src="interpol.js"></script>
         <script src="ant.js"></script>
@@ -32,6 +26,6 @@
         <script src="antsparser.js"></script>
         <script src="canvasmove.js"></script>
         <script src="world.js"></script>
-        <script src="langton.js"></script>
+        <script src="main.js"></script>
     </body>
 </html>

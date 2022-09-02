@@ -11,6 +11,7 @@ const dumpBtn = $('#dumpbtn');
 const statusBar = $('#statusbar');
 const fitBtn = $('#fit');
 const autoFit = $('#autofit');
+const followSelector = $('#follow');
 
 var dragController = new CanvasMove(playfield, false);
 var ctx = dragController.ctx;
@@ -45,6 +46,17 @@ function runEnable(canRun) {
     } else {
         startStopBtn.setAttribute('disabled', true);
         stepBtn.setAttribute('disabled', true);
+    }
+}
+
+function fitEnable(canFit) {
+    if (canFit) {
+        fitBtn.removeAttribute('disabled');
+        autoFit.removeAttribute('disabled');
+    } else {
+        fitBtn.setAttribute('disabled', true);
+        autoFit.setAttribute('disabled', true);
+        autoFit.removeAttribute('checked');
     }
 }
 
