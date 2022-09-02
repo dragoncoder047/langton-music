@@ -2,90 +2,85 @@
 
 ## Overview
 
-The format is based on 3 sections:
+The format is based on XML.
 
-* A header, of key-value pairs
-* A bunch of ant "breeds"
-* Some RLE data to specify the cells on the grid and the placement of the ants
+The entire document is enclosed in `<langton>` tags.
 
-Addidtionally, you can put sigle line comments anywhere in the text by preceding the coment with `%%`.
+Then there can be 4 things inside that:
 
-## Header
+* `<config>` tags: for header configuration values
+* `<breed>` tags: Defining the ant breeds
+* `<ant>` tags: instantiating (using) the ant
+* `<rle>` tags: RLE data to specify the cells on the grid.
 
-This is pretty simple. They syntax is simply `key: value;` repeated as many times as necessary, with whitespace completely ignored, and the last semicolon optional.
+Addidtionally, because it's XML, you can put comments anywhere you like by using `<!-- -->`.
 
-There is one rule: `key` must be all letters (no numbers, symbols, or whitespace), whereas `value` can be anything that isn't a semicolon (which would trip up the parser).
+## Header - `<config>` tags
+
+This is pretty simple. Each tag is formatted like this: `<config name="KEY">VALUE</config>`
 
 ### Supported Header Options
 
-| Option | Function |
-|:------:|:---------|
-| `bpm` | COntrold maximum beats per minute of playback. |
+| Option (`name` attribute) | Function (content) |
+|:-------------------------:|:-------------------|
+| `bpm` | Controls maximum beats per minute of playback. |
 | `stepCount` | Doesn't really do anything, it just changes the initial step number from the default zero when you press LOAD. Useful for restoring from a dump. |
 | `#blah` | An arbitrary interpolation value (see below). |
 
-## Ant Breeds
+## Ant Breeds - `<breed>` tag
 
-This is significantly more complicated than the header, and uses a double loop in the parser.
+This is a little complicated. Let's start with an example, classic Langton's Ant:
 
-Each "breed" of ant is enclosed in square brackets. Within the brackets lie 3 pieces of data, separated by spaces:
-
-1. The species of the ant
-2. The name of the ant breed
-3. The rules for moving around, changing the world, etc.
-
-**Ant Species**: This determines what "type" of ant it is; namely; what features are available to it.
-
-**Ant Name**: This is arbitrary, all it is for is to be able to reference it in the pattern.
-
-**Rules**: There can be any number of these, separated by spaces. The rules define what the ant does when it gets onto a specific square color, is in a particular state, etc.
-
-They are formatted like this: `{thisState:cellState => actions}` (with the space around the => optional).
-
-`thisState` is the *internal* state that the ant is in, and `cellState` is the *external* state of the cell the ant is sitting on. Both must be numbers.
-
-If there is no rule for an antState:cellState pair, the ant will halt and do nothing until another ant comes and changes the cell. (Multiple ants can occupy the same cell, and must if an ant is to be re-started in this manner, but if two "active" ants run into each other, the behavior is not defined.)
-
-The actions are a comma-or-space-separated list of individual commands the ant takes. The string is first split by commas, and each comma-separated section is queued. The ant only looks up in the rules table when the queue is empty, and executes only one comma-separated section at a time, so commas means that the ant will not always look at the cell it is on every tick.
-
-Afterwards, it is split by spaces, and each sub-command between commas runs all at once, in one tick. Each sub-command is simply a string of letters, optionally followed by an argument enclosed in parenthesis.
-
-As an example, here is classic Langton's Ant:
-
-```txt
-[Ant langton
-  {1:0 => put(1) rt fd}
-  {1:1 => put(0) lt fd}
-]
+```xml
+<breed species="Ant" name="langton">
+    <case cell="0">
+        <action>
+            <command name="put">1</command>
+            <command name="lt"></command>
+            <command name="fd"></command>
+        </action>
+    </case>
+    <case cell="1">
+        <action>
+            <command name="put">0</command>
+            <command name="rt"></command>
+            <command name="fd"></command>
+        </action>
+    </case>
+</breed>
 ```
+
+Each "breed" of ant is enclosed in `<breed>` tags. The `species` attribute determines what commands are available, and the `name` attribute gives the ant breed a name so it can be referred to later on.
+
+Inside the `<breed>`, there are one or more `<case>`s. The `<case>`s each have a `cell` attribute and a `state` attribute that determines when the case is applied - `state` is the *internal* state that the ant is in, and `cell` is the *external* state of the cell the ant is sitting on. Both must be numbers; and if `state` is omitted it defaults to 1.
+
+If there is no case for a state:cell pair, the ant will halt and do nothing until another ant comes and changes the cell. (Multiple ants can occupy the same cell, and must if an ant is to be re-started in this manner, but if two "active" ants run into each other, the behavior is not defined.)
+
+Within the `<case>`s there are `<action>`s that define groups of commands. Each action is queued, and only one action executes per tick. Case lookup only occurs when the queue is exhausted. Within the action group, all commands execute at once.
+
+Each `<command>` has a `name` attribute that is the command. In some cases the command needs an argument; this goes inside the tag.
 
 Scroll to the bottom for the list of supported commands and species of ants.
 
-## RLE World Data
+### Interpolations
 
-This is almost like Golly's RLE format, but it has some differeces. First, there is no `x = N, y = N, rule = N` header line. Second, after a run of non-"$" cells, there can be one or more ants.
-
-An ant looks like `[breed:dir:state]` where `breed` is a breed from the ant breeds section, `dir` is 0, 1, 2, or 3 corresponding to N, E, S, or W, and `state` (which is optional) is the initial state the ant is in. It deaults to 1 if both the state and colon are left out. If the colon is not left out that is an error.
-
-Otherwise this is just the same as Golly RLE format:
-
-> For rules with more than two states, a "." represents a zero state; states 1..24 are represented by "A".."X", states 25..48 by "pA".."pX", states 49..72 by "qA".."qX", and on up to states 241..255 represented by "yA".."yO".
-
-## Interpolations
-
-Inside each sub-command, the parameter can also include interpolations.
+Inside each `<command>`, the parameter can also include interpolations.
 
 There are two types of interpolations: fixed and expressions.
 
-**Fixed interpolations** look like `#xxx`, where `xxx` is a name. Some names are provided by the ant, which take precedence; the rest are put in the header.
+#### Fixed Interpolations
+
+These look like `#xxx`, where `xxx` is a name. Some names are provided by the ant, which take precedence; the rest are user-defined via `<config>`s.
 
 | Fixed Interpolation Name | Value |
 |:------------------------:|:------|
 | `dir` | 0, 1, 2, or 3 depending on the ant's direction. |
 | `state` | Whatever state the ant is in. |
-| `blah` | Whatever value `#blah` is set to in the header. (`blah` can be anything.) |
+| `blah` | Whatever value `#blah` is set to in a `<config>`. (`blah` can be anything.) |
 
-**Expression interpolations** are similar: They look like `#xxx;` - the only difference is a semicolon at the end and the `xxx`'s are an expression. Expressions are processed after fixed interpolations; so the former can include the latter.
+#### Expression Interpolations
+
+These are similar to fixed interpolations: They look like `#xxx;` - the only difference is a semicolon at the end and the `xxx`'s are an expression. Expressions are processed after fixed interpolations; so the former can include the latter.
 
 The expression language is a crude stack-based (postfix) language that is somewhat like Befunge; it's not Turing-complete, but it should suffice. The "returned value" is the top of the stack after the expression is executed.
 
@@ -103,7 +98,7 @@ The expression language is a crude stack-based (postfix) language that is somewh
 | `/` | Pushes second number divided by top number. |
 | `+` | Pushes second number plus top number. |
 | `-` | Pushes second number minus top number. |
-| `~` | Pushes negation of top number. Shortcut for `,0-`. |
+| `~` | Pushes negation of top number. Shortcut for `,0\-`. |
 | `\|` | Pushes second number bitwise or top number. |
 | `&` | Pushes second number bitwise and top number. |
 | `^` | Pushes second number bitwise xor top number. |
@@ -113,6 +108,26 @@ The expression language is a crude stack-based (postfix) language that is somewh
 | `@` | Pushes the third number if the first is true, otherwise the second. |
 
 An (incomplete) test suite is available at <https://dragoncoder047.github.io/langton-music/interpoltest.html>.
+
+## Actual Ants - `<ant>` tag
+
+Ants are simpler and do not have any contents.
+
+A full `<ant>` looks like this: `<ant breed="langton" id="ant1" state="1" dir="1" x="0" y="0"></ant>`.
+
+* `breed` is the breed of ant, which references a `<breed>` elsewhere.
+* `id` is the "name" of the ant as it appears in the "Track Ant" pulldown menu. If this is not supplied. a random one will be generated automatically.
+* `state` is the initial state of the ant; if omitted it defults to 1.
+* `dir` is the direction of the ant; it is 0, 1, 2, or 3.
+* `x` and `y` are the position of the ant.
+
+## Cell Data - `<rle>` tag
+
+This is almost like Golly's RLE format, but it has some differeces. First, there is no `x = N, y = N, rule = N` header line per se. The metadata (x- and y-offset) is stored in the `offsetx` and `offsety` attributes of the `<rle>` tag, and default to 0 if omitted.
+
+Otherwise this is just the same as Golly RLE format:
+
+> For rules with more than two states, a "." represents a zero state; states 1..24 are represented by "A".."X", states 25..48 by "pA".."pX", states 49..72 by "qA".."qX", and on up to states 241..255 represented by "yA".."yO".
 
 ## Supported Ant Species and Commands
 
