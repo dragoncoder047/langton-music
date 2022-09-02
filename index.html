@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Langton's Ant Music v2</title>
+        <style>
+            canvas { border: 1px solid black; }
+        </style>
+        <script src="https://cdn.jsdelivr.net/npm/tone@14.7.77/build/Tone.min.js"></script>
+    </head>
+    <body>
+        <h1>Langton's Ant Music</h1>
+        <p><button id="startstop">Start</button> <button id="step">Step</button> <output id="statusbar"></output></p>
+        <p>Step: <output id="stepnum"></output></p>
+        <p>Number of ants: <output id="antscount"></output></p>
+        <p>Follow an ant: <select id="follow">
+            <option value="">NONE</option>
+            <option disabled>TODO</option>
+        </select></p>
+        <p><button id="fit">Fit to Window</button><label><input type="checkbox" checked id="autofit">Autofit</label></p>
+        <canvas id="playfield"></canvas>
+        <p>Input text</p>
+        <p><button id="loadbtn">Load</button><button id="dumpbtn">Dump</button> <span style="opacity: 50%">&larr;CAUTION: this will WIPE OUT your comments!</span></p>
+        <textarea id="textbox" style="width: 90%" rows="20" spellcheck="false">bpm: 120
+[Beetle langton
+  {1:0 => put(1) rt fd play(C2)}
+  {1:1 => put(0) lt fd play(G2)}
+]
+.[langton:1:1]
+</textarea>
+        <p><a href="https://github.com/dragoncoder047/langton-music/blob/master/format.md">Formatting/syntax guide</a></p>
+        <script src="interpol.js"></script>
+        <script src="ant.js"></script>
+        <script src="notes.js"></script>
+        <script src="antsparser.js"></script>
+        <script src="canvasmove.js"></script>
+        <script src="world.js"></script>
+        <script src="langton.js"></script>
+    </body>
+</html>

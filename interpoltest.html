@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Interpolator test</title>
+        <style>
+            body { font-family: monospace; tab-size: 8 }
+            table, th, td { border: 1px solid black; border-collapse: collapse; padding: 10px }
+        </style>
+    </head>
+    <body>
+        <h1>Interpolator Test</h1>
+        <p><input id="input"></input> <button id="run">Test it</button></p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Input</th>
+                    <th>Output</th>
+                </tr>
+            </thead>
+            <tbody id="out"></tbody
+        </table>
+        <script src="interpol.js"></script>
+        <script>
+            const box = document.getElementById('input');
+            const btn = document.getElementById('run');
+            const out = document.getElementById('out');
+            function appendResult(input, output, isError) {
+                var row = document.createElement('tr');
+                var inD = document.createElement('td');
+                var ouD = document.createElement('td');
+                inD.textContent = input;
+                if (isError) {
+                    ouD.textContent = 'Error: ' + output;
+                    ouD.setAttribute('style', 'color:red');
+                } else {
+                    ouD.textContent = output;
+                }
+                row.appendChild(inD);
+                row.appendChild(ouD);
+                out.appendChild(row);
+            }
+            function runTest(x) {
+                var input, output;
+                if (x) {
+                    input = x;
+                }
+                else {
+                    input = box.value;
+                    box.value = '';
+                }
+                if (!input) return;
+                try {
+                    appendResult(input, processExpressions(input), false);
+                } catch(e) {
+                    appendResult(input, e.toString(), true);
+                }
+            }
+            btn.addEventListener('click', () => runTest());
+            
+            [
+                'nothing here',
+                '#should #not #change',
+                'expect an error #foobar;',
+                'no #123; change outside of expression',
+                'multiple #123; interspersed #456; interpolations',
+                'top item is 789: #123\'456\'789;',
+                'resultant string is foobar: #`foobar`;',
+                'top string is barbaz: #`foobar``barbaz`;',
+                'noooooop test: #123\'\'\'\'\'\'\'\';',
+                'random #123?;',
+                'ternary true test:\t\t#`❌``✅`1@;',
+                'ternary false test:\t\t#`✅``❌`0@;',
+                'swap:\t\t#123\'456\\\t\t123=`❌`\\`✅`\\@;',
+                'modulo:\t\t#123\'2%\t\t1=`❌`\\`✅`\\@;',
+                'add:\t\t#123\'2+\t\t125=`❌`\\`✅`\\@;',
+                'add strings:\t\t#`foo``bar`+\t\t`foobar`=`❌`\\`✅`\\@;',
+                'subtract:\t\t#123\'2-\t\t121=`❌`\\`✅`\\@;',
+                'drop:\t\t#123\'123\'2$+\t\t246=`❌`\\`✅`\\@;',
+            ].forEach(runTest);
+        </script>
+    </body>
+</html>
