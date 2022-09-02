@@ -5,31 +5,37 @@ class Breeder {
     empty() {
         this.breeds = {};
     }
+    _checkNode(node, name, inside) {
+        var gotName = node.nodeName.toLowerCase();
+        if (!node instanceof Element) throw `No strings allowed inside <${inside}>`;
+        if (gotName !== name) throw `Invalid inside <${inside}>: <${gotName}>`;
+    }
     addBreed(breedName, klass, commands) {
         if (breedName in this.breeds) throw `Breed ${breedName} is already defined.`;
         var fixedCommands = {};
-        for (var cs in commands) {
-            var commandStr = commands[cs];
-            console.log('breeder fixing', commandStr);
-            var fixedTicks = [], ticks = commandStr.split(',').map(c => c.trim());
-            for (var tick of ticks) {
-                var fixedSubticks = [], subticks = tick.split(/\s+/);
-                for (var subtick of subticks) {
-                    var match = /([a-z]+)(?:\(([^\)]*)\))?/.exec(subtick);
-                    if (!match) throw `Malformed sub-command in state ${cs}: ${subtick}`;
-                    var commandName = match[1], argument = match[2];
-                    if (typeof klass.prototype[`do_${commandName}`] !== 'function') throw `Ant breed ${breedName}: Unknown command '${commandName}' to species ${klass.name} in state ${cs}`;
+        for (var cs of commands.childNodes) {
+            this._checkNode(cs, 'case', 'breed');
+            var state = checkint(cs, 'state', 'case', 1);
+            var cell = checkint(cs, 'cell', 'case');
+            var fixedTicks = [];
+            for (var tick of cs.childNodes) {
+                this._checkNode(tick, 'action', 'case');
+                var fixedSubticks = [];
+                for (var subtick of tick.childNodes) {
+                    this._checkNode(tick, 'command', 'action');
+                    var commandName = checkattr(subtick, 'name', 'command');
+                    var argument = subtick.textContent;
+                    if (typeof klass.prototype[`do_${commandName}`] !== 'function') throw `Ant breed ${breedName}: Unknown command '${commandName}' to species ${klass.name}`;
                     fixedSubticks.push([commandName, argument]);
                 }
                 fixedTicks.push(fixedSubticks);
             }
-            fixedCommands[cs] = fixedTicks;
-            console.log('fixed', fixedTicks);
+            fixedCommands[`${state}:${cell}`] = fixedTicks;
         }
         this.breeds[breedName] = [klass, fixedCommands];
     }
     dumpBreeds() {
-        return Object.getOwnPropertyNames(this.breeds).map(breed => `[${this.breeds[breed][0].name} ${breed}\n${Object.getOwnPropertyNames(this.breeds[breed][1]).map(p => [p, this.breeds[breed][1][p].map(sc => sc.map(cd => cd[1] ? `${cd[0]}(${cd[1]})` : cd[0]).join(' ')).join(',\n    ')]).map(c => `  {${c[0]} =>\n    ${c[1]}\n  }`).join('\n')}\n]`).join('\n');
+        return Object.getOwnPropertyNames(this.breeds).map(breed => `\t<breed species="${this.breeds[breed][0].name}" name="${breed}">\n\t\t${Object.getOwnPropertyNames(this.breeds[breed][1]).map(p => [p, this.breeds[breed][1][p].map(sc => sc.map(cd => `\t\t\t\t<command name="${cd[0]}">${cd[1]}</command>`).join('\n')).join('</action>\n\t\t\t<action>')]).map(c => `\t\t<case state="${c[0].split(':')[0]} cell="${c[0].split(':')[1]}"> =>\n\t\t\t<action>${c[1]}\n\t\t\t</action>\n\t\t</case>`).join('\n')}\n\t</breed>`).join('\n');
     }
     createAnt(breed, world, x, y, dir, state, antsList) {
         if (!(breed in this.breeds)) throw `Unknown ant breed ${breed}`;

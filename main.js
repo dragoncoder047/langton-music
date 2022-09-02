@@ -109,7 +109,7 @@ function tick() {
     } catch (e) {
         stop();
         runEnable(false);
-        showStatus(e, 'red');
+        showStatus('Error: ' + e.toString(), 'red');
         throw e;
     }
     if (ants.length > 64) {
@@ -151,19 +151,14 @@ function load() {
     } catch (e) {
         stop();
         runEnable(false);
-        showStatus(e, 'red');
+        showStatus('Error: ' + e.toString(), 'red');
         throw e;
     }
     startStopBtn.textContent = 'Start';
-    if (!ants.length) {
-        stop();
-        runEnable(false);
-        showStatus('No ants.', 'red');
-    } else {
-        showStatus('Press START.');
-        runEnable(true);
-        fit();
-    }
+    showStatus('Press START.');
+    runEnable(true);
+    fit();
+
 }
 loadBtn.addEventListener('click', () => Tone.start(), { once: true });
 loadBtn.addEventListener('click', load);
