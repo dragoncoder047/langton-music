@@ -6,23 +6,27 @@ class Breeder {
         this.breeds = {};
     }
     _checkNode(node, name, inside) {
+        // returns true if it should be skipped.
+        // returns false if it is ok to go.
+        // throws if it is bad.
         var gotName = node.nodeName.toLowerCase();
-        if (!node instanceof Element) throw `No strings allowed inside <${inside}>`;
+        if (gotName === '#text') return true;
         if (gotName !== name) throw `Invalid inside <${inside}>: <${gotName}>`;
+        return false;
     }
     addBreed(breedName, klass, commands) {
         if (breedName in this.breeds) throw `Breed ${breedName} is already defined.`;
         var fixedCommands = {};
         for (var cs of commands.childNodes) {
-            this._checkNode(cs, 'case', 'breed');
+            if (this._checkNode(cs, 'case', 'breed')) continue;
             var state = checkint(cs, 'state', 'case', 1);
             var cell = checkint(cs, 'cell', 'case');
             var fixedTicks = [];
             for (var tick of cs.childNodes) {
-                this._checkNode(tick, 'action', 'case');
+                if (this._checkNode(tick, 'action', 'case')) continue;
                 var fixedSubticks = [];
                 for (var subtick of tick.childNodes) {
-                    this._checkNode(tick, 'command', 'action');
+                    if (this._checkNode(tick, 'command', 'action')) continue;
                     var commandName = checkattr(subtick, 'name', 'command');
                     var argument = subtick.textContent;
                     if (typeof klass.prototype[`do_${commandName}`] !== 'function') throw `Ant breed ${breedName}: Unknown command '${commandName}' to species ${klass.name}`;
