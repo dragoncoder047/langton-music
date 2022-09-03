@@ -5,7 +5,6 @@ const startStopBtn = $('#startstop');
 const stepBtn = $('#step');
 const stepCounter = $('#stepnum');
 const antsCounter = $('#antscount');
-const textbox = $('#textbox');
 const loadBtn = $('#loadbtn');
 const dumpBtn = $('#dumpbtn');
 const statusBar = $('#statusbar');
@@ -13,7 +12,9 @@ const fitBtn = $('#fit');
 const autoFit = $('#autofit');
 const followSelector = $('#follow');
 
-textbox.value = `<langton>
+ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.10.0/src-noconflict/');
+const textbox = ace.edit('textbox', { mode: 'ace/mode/xml' });
+textbox.setValue(`<langton>
 \t<breed species="Beetle" name="langton">
 \t\t<case cell="0">
 \t\t\t<action>
@@ -32,8 +33,9 @@ textbox.value = `<langton>
 \t\t\t</action>
 \t\t</case>
 \t</breed>
-\t<ant id="langton1" breed="langton" x="0" y="0" dir="1">
-</langton>`;
+\t<ant id="langton1" breed="langton" x="0" y="0" dir="1"></ant>
+</langton>`);
+textbox.setTheme('ace/theme/chrome');
 
 var dragController = new CanvasMove(playfield, false);
 var ctx = dragController.ctx;
@@ -162,7 +164,7 @@ function load() {
     header.stepCount = 0;
     showStatus('Loading...');
     try {
-        ({ ants, header } = loadWorld(textbox.value, { Ant, Beetle, Cricket }, world, breeder));
+        ({ ants, header } = loadWorld(textbox.getValue(), { Ant, Beetle, Cricket }, world, breeder));
         interpolations = [];
         for (var prop of Object.getOwnPropertyNames(header)) {
             if (prop.startsWith('#')) interpolations.push([prop.slice(1), header[prop]]);
@@ -204,12 +206,12 @@ fit();
 
 function dump() {
     try {
-        throw 'todo';
         stop();
-        var h = Object.getOwnPropertyNames(header).map(n => `${n}: ${header[n]}`).join(';\n');
+        var h = Object.getOwnPropertyNames(header).map(n => `\t<config name="${n}">${header[n]}</config>`).join('\n');
         var b = breeder.dumpBreeds();
+        var a = ants.map(ant => `\t<ant id="${ant.id}" x="${ant.x}" y="${ant.y}" breed="${ant.breed}" state="${ant.state}" dir="${ant.dir}"></ant>`).join('\n');
         var r = world.dump(ants);
-        textbox.value = `${h}\n${b}\n${r}`;
+        textbox.setValue(`<langton>\n${h}\n${b}\n${a}\n\t${r}\n</langton>`);
     } catch (e) {
         showStatus('Error: ' + e.toString(), 'red');
         throw e;

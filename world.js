@@ -53,8 +53,8 @@ class World {
         return { tl: [minX, minY], br: [maxX, maxY] };
     }
 
-    dump(ants) {
-        var { tl: [minX, minY], br: [maxX, maxY] } = this.bbox(ants);
+    dump() {
+        var { tl: [minX, minY], br: [maxX, maxY] } = this.bbox([]);
         var line = '', out = '';
         var x = minX, y = minY;
         var state, count = 0;
@@ -68,16 +68,6 @@ class World {
                 } else {
                     count++;
                 }
-                for (var a of ants.filter(a => a.x == x && a.y == y)) {
-                    line += `${count > 1 ? count : ''}${stateNumToLetters(state)}`;
-                    count = 0;
-                    state = undefined;
-                    line += `[${a.breed}:${a.dir}:${a.state}]`;
-                    if (line.length > 70) {
-                        out += line;
-                        line = '';
-                    }
-                }
                 x++;
             }
             x = minX;
@@ -89,6 +79,6 @@ class World {
             line += '$';
             y++;
         }
-        return out + line;
+        return `<rle x="${minX}" y="${minY}">${out}${line}</rle>`;
     }
 }

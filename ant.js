@@ -1,3 +1,13 @@
+function checknode(node, name, inside) {
+    // returns true if it should be skipped.
+    // returns false if it is ok to go.
+    // throws if it is bad.
+    var gotName = node.nodeName.toLowerCase();
+    if (gotName === '#text') return true;
+    if (gotName !== name) throw `Invalid inside <${inside}>: <${gotName}>`;
+    return false;
+}
+
 class Breeder {
     constructor() {
         this.breeds = {};
@@ -5,41 +15,32 @@ class Breeder {
     empty() {
         this.breeds = {};
     }
-    _checknode(node, name, inside) {
-        // returns true if it should be skipped.
-        // returns false if it is ok to go.
-        // throws if it is bad.
-        var gotName = node.nodeName.toLowerCase();
-        if (gotName === '#text') return true;
-        if (gotName !== name) throw `Invalid inside <${inside}>: <${gotName}>`;
-        return false;
-    }
-    addBreed(breedName, klass, commands) {
+    addBreed(breedName, klass, cases) {
         if (breedName in this.breeds) throw `Breed ${breedName} is already defined.`;
-        var fixedCommands = {};
-        for (var cs of commands.childNodes) {
-            if (this._checknode(cs, 'case', 'breed')) continue;
-            var state = checkint(cs, 'state', 'case', 1);
-            var cell = checkint(cs, 'cell', 'case');
-            var fixedTicks = [];
-            for (var tick of cs.childNodes) {
-                if (this._checknode(tick, 'action', 'case')) continue;
-                var fixedSubticks = [];
-                for (var subtick of tick.childNodes) {
-                    if (this._checknode(tick, 'command', 'action')) continue;
-                    var commandName = checkattr(subtick, 'name', 'command');
-                    var argument = subtick.textContent;
+        var allCases = {};
+        for (var case_ of cases.childNodes) {
+            if (checknode(case_, 'case', 'breed')) continue;
+            var state = checkint(case_, 'state', 'case', 1);
+            var cell = checkint(case_, 'cell', 'case');
+            var fixedCase = [];
+            for (var action of case_.childNodes) {
+                if (checknode(action, 'action', 'case')) continue;
+                var fixedAction = [];
+                for (var command of action.childNodes) {
+                    if (checknode(command, 'command', 'action')) continue;
+                    var commandName = checkattr(command, 'name', 'command');
+                    var argument = command.textContent;
                     if (typeof klass.prototype[`do_${commandName}`] !== 'function') throw `Ant breed ${breedName}: Unknown command '${commandName}' to species ${klass.name}`;
-                    fixedSubticks.push([commandName, argument]);
+                    fixedAction.push([commandName, argument]);
                 }
-                fixedTicks.push(fixedSubticks);
+                fixedCase.push(fixedAction);
             }
-            fixedCommands[`${state}:${cell}`] = fixedTicks;
+            allCases[`${state}:${cell}`] = fixedCase;
         }
-        this.breeds[breedName] = [klass, fixedCommands];
+        this.breeds[breedName] = [klass, allCases];
     }
     dumpBreeds() {
-        return Object.getOwnPropertyNames(this.breeds).map(breed => `\t<breed species="${this.breeds[breed][0].name}" name="${breed}">\n\t\t${Object.getOwnPropertyNames(this.breeds[breed][1]).map(p => [p, this.breeds[breed][1][p].map(sc => sc.map(cd => `\t\t\t\t<command name="${cd[0]}">${cd[1]}</command>`).join('\n')).join('</action>\n\t\t\t<action>')]).map(c => `\t\t<case state="${c[0].split(':')[0]} cell="${c[0].split(':')[1]}"> =>\n\t\t\t<action>${c[1]}\n\t\t\t</action>\n\t\t</case>`).join('\n')}\n\t</breed>`).join('\n');
+        return Object.getOwnPropertyNames(this.breeds).map(breed => `\t<breed species="${this.breeds[breed][0].name}" name="${breed}">\n${Object.getOwnPropertyNames(this.breeds[breed][1]).map(p => [p, this.breeds[breed][1][p].map(sc => sc.map(cd => `\t\t\t\t<command name="${cd[0]}">${cd[1]}</command>`).join('\n')).join('</action>\n\t\t\t<action>')]).map(c => `\t\t<case state="${c[0].split(':')[0]}" cell="${c[0].split(':')[1]}">\n\t\t\t<action>\n${c[1]}\n\t\t\t</action>\n\t\t</case>`).join('\n')}\n\t</breed>`).join('\n');
     }
     createAnt(breed, world, x, y, dir, state, antsList, id) {
         if (!(breed in this.breeds)) throw `Unknown ant breed ${breed}`;

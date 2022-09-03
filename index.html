@@ -2,10 +2,18 @@
 <html>
     <head>
         <title>Langton's Ant Music v2</title>
-        <style>
-            canvas { border: 1px solid black; }
+        <style type="text/css" media="screen">
+            #textbox { 
+                display: block;
+                width: 100%;
+                height: 32em;
+            }
+            canvas {
+                border: 1px solid black;
+            }
         </style>
         <script src="https://cdn.jsdelivr.net/npm/tone@14.7.77/build/Tone.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.10.0/src-noconflict/ace.min.js"></script>
     </head>
     <body>
         <h1>Langton's Ant Music version 2</h1>
@@ -18,7 +26,7 @@
         <canvas id="playfield"></canvas>
         <p>Input text</p>
         <p><button id="loadbtn">Load</button><button id="dumpbtn">Dump</button> <span style="opacity: 50%">&larr;CAUTION: this will WIPE OUT your comments!</span></p>
-        <textarea id="textbox" style="width: 90%" rows="20" spellcheck="false"></textarea>
+        <div id="textbox"></div>
         <p><a href="https://github.com/dragoncoder047/langton-music/blob/main/format.md">Formatting/syntax guide</a></p>
         <script src="interpol.js"></script>
         <script src="ant.js"></script>
