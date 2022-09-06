@@ -14,27 +14,7 @@ const followSelector = $('#follow');
 
 ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.10.0/src-noconflict/');
 const textbox = ace.edit('textbox', { mode: 'ace/mode/xml' });
-textbox.setValue(`<langton>
-    <breed species="Beetle" name="langton">
-        <case cell="0">
-            <action>
-                <command name="put">1</command>
-                <command name="rt"></command>
-                <command name="fd"></command>
-                <command name="play">C2</command>
-            </action>
-        </case>
-        <case cell="1">
-            <action>
-                <command name="put">0</command>
-                <command name="lt"></command>
-                <command name="fd"></command>
-                <command name="play">G2</command>
-            </action>
-        </case>
-    </breed>
-    <ant id="langton1" breed="langton" x="0" y="0" dir="1"></ant>
-</langton>`);
+textbox.setValue('<langton><breed species="Beetle" name="langton"><case cell="0"><action><command name="put">1</command><command name="rt"></command><command name="fd"></command><command name="play">C2</command></action></case><case cell="1"><action><command name="put">0</command><command name="lt"></command><command name="fd"></command><command name="play">G2</command></action></case></breed><ant id="langton1" breed="langton" x="0" y="0" dir="1"></ant></langton>');
 textbox.setTheme('ace/theme/chrome');
 textbox.clearSelection();
 
@@ -143,6 +123,7 @@ function tick() {
         return;
     }
     if (autoFit.checked && running) fit();
+    followAnt(followSelector.value);
     if (running) setTimeout(tick, 60000 / (header.bpm ?? 240));
 }
 
@@ -159,6 +140,11 @@ function load() {
         header.stepCount = header.stepCount ?? 0;
         Tone.Transport.bpm.setValueAtTime(2 * (parseInt(header.bpm) || 240), Tone.now());
         Tone.Transport.start();
+        var s = '<option selected value="">NONE</option>';
+        for (var ant of ants) {
+            s += `<option>${ant.id}</option>`;
+        }
+        followSelector.innerHTML = s;
     } catch (e) {
         stop();
         runEnable(false);
@@ -175,6 +161,11 @@ loadBtn.addEventListener('click', () => Tone.start(), { once: true });
 loadBtn.addEventListener('click', load);
 load();
 
+function center(cellX, cellY) {
+    dragController.x = -cellX * world.cellSize * dragController.zoom + playfield.width / 2;
+    dragController.y = -cellY * world.cellSize * dragController.zoom + playfield.height / 2;
+}
+
 function fit() {
     var bbox = world.bbox(ants);
     var middle = [(bbox.tl[0] + bbox.br[0]) / 2, (bbox.tl[1] + bbox.br[1]) / 2];
@@ -182,12 +173,21 @@ function fit() {
     var leftRightZoom = playfield.width / dimensions[0] / world.cellSize;
     var upDownZoom = playfield.height / dimensions[1] / world.cellSize;
     dragController.zoom = Math.min(upDownZoom, leftRightZoom);
-    dragController.x = -middle[0] * world.cellSize * dragController.zoom + playfield.width / 2;
-    dragController.y = -middle[1] * world.cellSize * dragController.zoom + playfield.height / 2;
-    dragController.zoom *= 5 / 6;
+    center(middle[0], middle[1]);
 }
 fitBtn.addEventListener('click', fit);
 fit();
+
+function followAnt(antID) {
+    if (!antID) {
+        fitEnable(true);
+        return;
+    } else {
+        fitEnable(false);
+        var ant = ants.filter(ant => ant.id === antID)[0];
+        center(ant.x, ant.y);
+    }
+}
 
 function dump() {
     try {
