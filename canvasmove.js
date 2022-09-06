@@ -63,6 +63,8 @@ class CanvasMove {
         this.ctx.imageSmoothingEnabled = false;
         window.addEventListener('resize', () => {
             var rect = canvas.parentElement.getBoundingClientRect();
+            this.x += (rect.width - canvas.width) / 2;
+            this.y += (rect.height - canvas.height) / 2;
             canvas.width = rect.width * ratio;
             canvas.height = rect.height * ratio;
             playfield.style.width = `${rect.width - 10}px`;
