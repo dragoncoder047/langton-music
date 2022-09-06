@@ -67,7 +67,6 @@ class CanvasMove {
             canvas.height = rect.height * ratio;
             playfield.style.width = `${rect.width}px`;
             playfield.style.height = `${rect.height}px`;
-            this.ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
         });
     }
     enter() {

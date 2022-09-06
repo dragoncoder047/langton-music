@@ -1,6 +1,6 @@
 try {
     const $ = s => document.querySelector(s);
-    
+
     const playfield = $('#playfield');
     const startStopBtn = $('#startstop');
     const stepBtn = $('#step');
@@ -12,7 +12,7 @@ try {
     const fitBtn = $('#fit');
     const autoFit = $('#autofit');
     const followSelector = $('#follow');
-    
+
     ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.10.0/src-noconflict/');
     const textbox = ace.edit('textbox', { mode: 'ace/mode/xml' });
     textbox.setValue(`<langton>
@@ -38,8 +38,12 @@ try {
     </langton>`);
     textbox.setTheme('ace/theme/chrome');
     textbox.clearSelection();
-    window.addEventListener('hashchange', () => textbox.resize(true));
-    
+    window.addEventListener('hashchange', () => {
+        var rect = $('#textbox').parentElement.getBoundingClientRect();
+        $('#textbox').setAttribute('style', `width:${rect.width}px;height:${rect.height}px`);
+        textbox.resize(true);
+    });
+
     var dragController = new CanvasMove(playfield, false);
     var ctx = dragController.ctx;
     var world = new World(ctx);
@@ -47,12 +51,12 @@ try {
     var interpolations = [];
     var ants = [];
     var breeder = new Breeder();
-    
+
     function showStatus(text, color = 'black') {
         statusBar.value = text;
         statusBar.style.color = color;
     }
-    
+
     function runEnable(canRun) {
         if (canRun) {
             startStopBtn.removeAttribute('disabled');
@@ -62,7 +66,7 @@ try {
             stepBtn.setAttribute('disabled', true);
         }
     }
-    
+
     function fitEnable(canFit) {
         if (canFit) {
             fitBtn.removeAttribute('disabled');
@@ -73,7 +77,7 @@ try {
             autoFit.removeAttribute('checked');
         }
     }
-    
+
     function render() {
         dragController.enter();
         dragController.clear();
@@ -85,9 +89,9 @@ try {
         setTimeout(render, 50); // 20 fps
     }
     render();
-    
+
     var running = false;
-    
+
     function start() {
         if (!running) {
             running = true;
@@ -96,26 +100,26 @@ try {
         startStopBtn.textContent = 'Pause';
         showStatus('Running...');
     }
-    
+
     function stop() {
         running = false;
         startStopBtn.textContent = 'Resume';
         showStatus('Paused.');
     }
-    
+
     function step() {
         stop();
         tick();
     }
-    
+
     function togglePlayPause() {
         if (running) stop();
         else start();
     }
-    
+
     startStopBtn.addEventListener('click', togglePlayPause);
     stepBtn.addEventListener('click', step);
-    
+
     function tick() {
         try {
             ants.slice().forEach(ant => ant.tick());
@@ -148,7 +152,7 @@ try {
         if (autoFit.checked && running) fit();
         if (running) setTimeout(tick, 60000 / (header.bpm ?? 240));
     }
-    
+
     function load() {
         stop();
         header.stepCount = 0;
@@ -172,12 +176,12 @@ try {
         showStatus('Press START.');
         runEnable(true);
         fit();
-    
+
     }
     loadBtn.addEventListener('click', () => Tone.start(), { once: true });
     loadBtn.addEventListener('click', load);
     load();
-    
+
     function fit() {
         var bbox = world.bbox(ants);
         var middle = [(bbox.tl[0] + bbox.br[0]) / 2, (bbox.tl[1] + bbox.br[1]) / 2];
@@ -193,7 +197,7 @@ try {
     }
     fitBtn.addEventListener('click', fit);
     fit();
-    
+
     function dump() {
         try {
             stop();
