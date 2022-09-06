@@ -57,8 +57,6 @@ class CanvasMove {
             else this.y -= e.deltaY;
             this.x += e.deltaX;
         });
-
-
         var dpr = window.devicePixelRatio || 1;
         var bsr = this.ctx.webkitBackingStorePixelRatio || this.ctx.mozBackingStorePixelRatio || this.ctx.msBackingStorePixelRatio || this.ctx.oBackingStorePixelRatio || this.ctx.backingStorePixelRatio || 1;
         var ratio = dpr / bsr;

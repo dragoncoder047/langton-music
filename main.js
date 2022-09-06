@@ -38,6 +38,7 @@ try {
     </langton>`);
     textbox.setTheme('ace/theme/chrome');
     textbox.clearSelection();
+    window.addEventListener('hashchange', () => textbox.resize(true));
     
     var dragController = new CanvasMove(playfield, false);
     var ctx = dragController.ctx;
