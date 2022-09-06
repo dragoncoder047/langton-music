@@ -53,9 +53,8 @@ output {
     align-items: stretch;
 }
 
-.pad-sides {
-    padding-left: 1em;
-    padding-right: 1em;
+.padding {
+    padding: 1em;
 }
 
 main {
