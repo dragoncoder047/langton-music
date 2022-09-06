@@ -1,9 +1,3 @@
-const PIX_RATIO = (function () {
-    var dpr = window.devicePixelRatio || 1;
-    var bsr = ctx.webkitBackingStorePixelRatio || ctx.mozBackingStorePixelRatio || ctx.msBackingStorePixelRatio || ctx.oBackingStorePixelRatio || ctx.backingStorePixelRatio || 1;
-    return dpr / bsr;
-})();
-
 class CanvasMove {
     constructor(canvas, scrollUpDown = true) {
         this.canvas = canvas;
@@ -63,17 +57,19 @@ class CanvasMove {
             else this.y -= e.deltaY;
             this.x += e.deltaX;
         });
-        
-        
-        
+
+
+        var dpr = window.devicePixelRatio || 1;
+        var bsr = this.ctx.webkitBackingStorePixelRatio || this.ctx.mozBackingStorePixelRatio || this.ctx.msBackingStorePixelRatio || this.ctx.oBackingStorePixelRatio || this.ctx.backingStorePixelRatio || 1;
+        var ratio = dpr / bsr;
         this.ctx.imageSmoothingEnabled = false;
         window.addEventListener('resize', () => {
             var rect = canvas.parentElement.getBoundingClientRect();
-            canvas.width = rect.width * PIX_RATIO;
-            canvas.height = rect.height * PIX_RATIO;
+            canvas.width = rect.width * ratio;
+            canvas.height = rect.height * ratio;
             playfield.style.width = `${rect.width}px`;
             playfield.style.height = `${rect.height}px`;
-            this.ctx.setTransform(PIX_RATIO, 0, 0, PIX_RATIO, 0, 0);
+            this.ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
         });
     }
     enter() {
