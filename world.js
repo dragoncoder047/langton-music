@@ -56,7 +56,7 @@ class World {
     dump() {
         var { tl: [minX, minY], br: [maxX, maxY] } = this.bbox([]);
         var uncompressed = '';
-        for (var y = minY; y <= maxY; y++) {
+        for (var y = minY + 1; y <= maxY; y++) {
             var line = '';
             for (var x = minX; x <= maxX; x++) {
                 line += stateNumToLetters(this.getCell(x, y));
@@ -82,19 +82,19 @@ class World {
 }
 
 function rleCompress(text) {
-    var r1 = text.replaceAll(/(([p-x]?[A-X]|[$.])+)\1+/g, function (all, one) {
+    return text.replaceAll(/(([p-x]?[A-X]|[$.])+)\1+/g, function (all, one) {
         return (all.length / one.length) + '(' + one + ')';
-    });
-    return r1.replaceAll(/([p-x]?[A-X]|\.|\$)\1+/g, function (all, one) {
+    }).replaceAll(/([p-x]?[A-X]|\.|\$)\1+/g, function (all, one) {
         return (all.length / one.length) + one;
+    }).replaceAll(/(\d)+(?:\(([p-x]?[A-X]|[$.])\))/g, function (all, num, t){
+        return num + t;
     });
 }
 
 function rleUncompress(text) {
-    var u1 = text.replaceAll(/(\d+)\(([^\)]+)\)/g, function (_, times, what) {
+    return text.replaceAll(/(\d+)\(([^\)]+)\)/g, function (_, times, what) {
         return what.repeat(parseInt(times));
-    });
-    return u1.replaceAll(/(\d+)([p-x]?[A-X]|\.|\$)/g, function (_, times, what) {
+    }).replaceAll(/(\d+)([p-x]?[A-X]|\.|\$)/g, function (_, times, what) {
         return what.repeat(parseInt(times));
     });
 }
