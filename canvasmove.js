@@ -1,3 +1,9 @@
+const PIX_RATIO = (function () {
+    var dpr = window.devicePixelRatio || 1;
+    var bsr = ctx.webkitBackingStorePixelRatio || ctx.mozBackingStorePixelRatio || ctx.msBackingStorePixelRatio || ctx.oBackingStorePixelRatio || ctx.backingStorePixelRatio || 1;
+    return dpr / bsr;
+})();
+
 class CanvasMove {
     constructor(canvas, scrollUpDown = true) {
         this.canvas = canvas;
@@ -56,6 +62,18 @@ class CanvasMove {
             }
             else this.y -= e.deltaY;
             this.x += e.deltaX;
+        });
+        
+        
+        
+        this.ctx.imageSmoothingEnabled = false;
+        window.addEventListener('resize', () => {
+            var rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width * PIX_RATIO;
+            canvas.height = rect.height * PIX_RATIO;
+            playfield.style.width = `${rect.width}px`;
+            playfield.style.height = `${rect.height}px`;
+            this.ctx.setTransform(PIX_RATIO, 0, 0, PIX_RATIO, 0, 0);
         });
     }
     enter() {

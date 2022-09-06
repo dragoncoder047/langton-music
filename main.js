@@ -47,19 +47,6 @@ try {
     var ants = [];
     var breeder = new Breeder();
     
-    var ratio = (function () {
-        var dpr = window.devicePixelRatio || 1;
-        var bsr = ctx.webkitBackingStorePixelRatio || ctx.mozBackingStorePixelRatio || ctx.msBackingStorePixelRatio || ctx.oBackingStorePixelRatio || ctx.backingStorePixelRatio || 1;
-        return dpr / bsr;
-    })();
-    
-    playfield.width = 1280 * ratio;
-    playfield.height = 640 * ratio;
-    playfield.style.width = "1280px";
-    playfield.style.height = "640px";
-    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-    ctx.imageSmoothingEnabled = false;
-    
     function showStatus(text, color = 'black') {
         statusBar.value = text;
         statusBar.style.color = color;
