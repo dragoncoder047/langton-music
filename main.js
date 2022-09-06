@@ -197,6 +197,11 @@ window.addEventListener('hashchange', () => {
     var rect = $('#textbox').parentElement.getBoundingClientRect();
     $('#textbox').setAttribute('style', `width:${rect.width}px;height:${rect.height}px`);
     textbox.resize(true);
-    if (location.hash === '#dump') dump();
+    var where = 'main>div.flex-row.padding'
+    if (location.hash === '#dump') {
+        dump();
+        where = '#dump>div';
+    }
+    $(where).insertBefore(statusBar, $(where).firstChild);
 });
 if (location.hash === '#dump') window.dispatchEvent(new Event('hashchange'));
