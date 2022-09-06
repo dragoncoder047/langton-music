@@ -36,6 +36,7 @@ textbox.setValue(`<langton>
 \t<ant id="langton1" breed="langton" x="0" y="0" dir="1"></ant>
 </langton>`);
 textbox.setTheme('ace/theme/chrome');
+textbox.clearSelection();
 
 var dragController = new CanvasMove(playfield, false);
 var ctx = dragController.ctx;
@@ -212,6 +213,7 @@ function dump() {
         var a = ants.map(ant => `\t<ant id="${ant.id}" x="${ant.x}" y="${ant.y}" breed="${ant.breed}" state="${ant.state}" dir="${ant.dir}"></ant>`).join('\n');
         var r = world.dump(ants);
         textbox.setValue(`<langton>\n${h}\n${b}\n${a}\n\t${r}\n</langton>`);
+        textbox.clearSelection();
     } catch (e) {
         showStatus('Error: ' + e.toString(), 'red');
         throw e;
