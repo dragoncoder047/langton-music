@@ -193,17 +193,25 @@ function dump() {
 }
 dumpBtn.addEventListener('click', dump);
 
+function fitace() {
+    setTimeout(() => {
+        var rect = $('#textbox').parentElement.getBoundingClientRect();
+        $('#textbox').setAttribute('style', `width:${rect.width}px;height:${rect.height}px`);
+        textbox.resize(true);
+    }, 0);
+}
+
+window.addEventListener('resize', () => {
+    if (location.hash === '#dump') fitace();
+});
+
 window.addEventListener('hashchange', () => {
     var where = '#statuswrapper'
     if (location.hash === '#dump') {
         dump();
         where = '#dumpstatuswrapper';
     }
-    $(where).insertBefore(statusBar, $(where).firstChild);
-    setTimeout(() => {
-        var rect = $('#textbox').parentElement.getBoundingClientRect();
-        $('#textbox').setAttribute('style', `width:${rect.width}px;height:${rect.height}px`);
-        textbox.resize(true);
-    }, 0);
+    $(where).append(statusBar);
+    fitace();
 });
 if (location.hash === '#dump') window.dispatchEvent(new Event('hashchange'));
