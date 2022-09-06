@@ -37,15 +37,9 @@ textbox.setValue(`<langton>
 </langton>`);
 textbox.setTheme('ace/theme/chrome');
 textbox.clearSelection();
-window.addEventListener('hashchange', () => {
-    var rect = $('#textbox').parentElement.getBoundingClientRect();
-    $('#textbox').setAttribute('style', `width:${rect.width}px;height:${rect.height}px`);
-    textbox.resize(true);
-});
 
 var dragController = new CanvasMove(playfield, false);
-var ctx = dragController.ctx;
-var world = new World(ctx);
+var world = new World(dragController.ctx);
 var header = { stepCount: 0 };
 var interpolations = [];
 var ants = [];
@@ -210,3 +204,10 @@ function dump() {
     }
 }
 dumpBtn.addEventListener('click', dump);
+
+window.addEventListener('hashchange', () => {
+    var rect = $('#textbox').parentElement.getBoundingClientRect();
+    $('#textbox').setAttribute('style', `width:${rect.width}px;height:${rect.height}px`);
+    textbox.resize(true);
+    if (location.hash === '#dump') dump();
+});

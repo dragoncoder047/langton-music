@@ -21,10 +21,6 @@
             <div class="flex-row wrapping padding">
                 <label>Step: <output id="stepnum"></output></label>
                 <label>Number of ants: <output id="antscount"></output></label>
-                <label>Follow an ant: <select id="follow">
-                        <option value="">NONE</option>
-                        <option disabled>TODO</option>
-                    </select></label>
             </div>
             <div class="flex-row wrapping padding">
                 <button id="startstop">Start</button>
@@ -33,6 +29,21 @@
             <div class="flex-row wrapping padding">
                 <button id="fit">Fit to Window</button>
                 <label><input type="checkbox" checked id="autofit">Autofit</label>
+                <span> -or- </span>
+                <label>Follow an ant: <select id="follow">
+                    <option value="">NONE</option>
+                    <option disabled>TODO</option>
+                </select></label>
+            </div>
+            <div class="flex-row wrapping padding">
+                <label>Tool: <select id="toolselect">
+                    <option value="">Move</option>
+                    <option disabled>TODO</option>
+                </select></label>
+                <select id="tooloption">
+                    <option value="">Move</option>
+                    <option disabled>TODO</option>
+                </select>
             </div>
             <div class="flex-row expanding padding">
                 <canvas id="playfield"></canvas>
