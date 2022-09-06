@@ -40,7 +40,7 @@ class Breeder {
         this.breeds[breedName] = [klass, allCases];
     }
     dumpBreeds() {
-        return Object.getOwnPropertyNames(this.breeds).map(breed => `\t<breed species="${this.breeds[breed][0].name}" name="${breed}">\n${Object.getOwnPropertyNames(this.breeds[breed][1]).map(p => [p, this.breeds[breed][1][p].map(sc => sc.map(cd => `\t\t\t\t<command name="${cd[0]}">${cd[1]}</command>`).join('\n')).join('</action>\n\t\t\t<action>')]).map(c => `\t\t<case state="${c[0].split(':')[0]}" cell="${c[0].split(':')[1]}">\n\t\t\t<action>\n${c[1]}\n\t\t\t</action>\n\t\t</case>`).join('\n')}\n\t</breed>`).join('\n');
+        return Object.getOwnPropertyNames(this.breeds).map(breed => `    <breed species="${this.breeds[breed][0].name}" name="${breed}">\n${Object.getOwnPropertyNames(this.breeds[breed][1]).map(p => [p, this.breeds[breed][1][p].map(sc => sc.map(cd => `                <command name="${cd[0]}">${cd[1]}</command>`).join('\n')).join('</action>\n            <action>')]).map(c => `        <case state="${c[0].split(':')[0]}" cell="${c[0].split(':')[1]}">\n            <action>\n${c[1]}\n            </action>\n        </case>`).join('\n')}\n    </breed>`).join('\n');
     }
     createAnt(breed, world, x, y, dir, state, antsList, id) {
         if (!(breed in this.breeds)) throw `Unknown ant breed ${breed}`;
