@@ -15,26 +15,26 @@ const followSelector = $('#follow');
 ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.10.0/src-noconflict/');
 const textbox = ace.edit('textbox', { mode: 'ace/mode/xml' });
 textbox.setValue(`<langton>
-        <breed species="Beetle" name="langton">
-            <case cell="0">
-                <action>
-                    <command name="put">1</command>
-                    <command name="rt"></command>
-                    <command name="fd"></command>
-                    <command name="play">C2</command>
-                </action>
-            </case>
-            <case cell="1">
-                <action>
-                    <command name="put">0</command>
-                    <command name="lt"></command>
-                    <command name="fd"></command>
-                    <command name="play">G2</command>
-                </action>
-            </case>
-        </breed>
-        <ant id="langton1" breed="langton" x="0" y="0" dir="1"></ant>
-    </langton>`);
+    <breed species="Beetle" name="langton">
+        <case cell="0">
+            <action>
+                <command name="put">1</command>
+                <command name="rt"></command>
+                <command name="fd"></command>
+                <command name="play">C2</command>
+            </action>
+        </case>
+        <case cell="1">
+            <action>
+                <command name="put">0</command>
+                <command name="lt"></command>
+                <command name="fd"></command>
+                <command name="play">G2</command>
+            </action>
+        </case>
+    </breed>
+    <ant id="langton1" breed="langton" x="0" y="0" dir="1"></ant>
+</langton>`);
 textbox.setTheme('ace/theme/chrome');
 textbox.clearSelection();
 window.addEventListener('hashchange', () => {
