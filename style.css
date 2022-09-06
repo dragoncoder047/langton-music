@@ -5,13 +5,21 @@
 }
 
 label {
-    padding-right: 1em;
-    padding-left: 1em;
+    padding-right: 0.5em;
+}
+
+output {
+    padding-left: 0.5em;
 }
 
 #dump {
-    display: none;
     background: rgba(0, 0, 0, 50%);
+    z-index: 999999;
+    position: absolute;
+    top: 150vh;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 
 #dump>div {
@@ -25,13 +33,7 @@ label {
 }
 
 #dump:target {
-    display: block;
-    z-index: 999999;
-    position: absolute;
     top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
 }
 
 .flex-column {
@@ -52,7 +54,7 @@ main {
     position: absolute;
     top: 0;
     left: 0;
-    padding: 0;
+    padding: 1em;
     margin: 0;
 }
 
