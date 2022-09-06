@@ -188,6 +188,7 @@ function followAnt(antID) {
         center(ant.x, ant.y);
     }
 }
+followSelector.addEventListener('change', () => followAnt(followSelector.value));
 
 function dump() {
     try {
