@@ -65,8 +65,8 @@ class CanvasMove {
             var rect = canvas.parentElement.getBoundingClientRect();
             canvas.width = rect.width * ratio;
             canvas.height = rect.height * ratio;
-            playfield.style.width = `${rect.width}px`;
-            playfield.style.height = `${rect.height}px`;
+            playfield.style.width = `${rect.width - 10}px`;
+            playfield.style.height = `${rect.height - 10}px`;
         });
         window.dispatchEvent(new Event('resize'));
     }
