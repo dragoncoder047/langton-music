@@ -3,8 +3,8 @@
     <head>
         <title>Interpolator test</title>
         <style>
-            body { font-family: monospace; tab-size: 8; white-space: pre; }
-            table, th, td { border: 1px solid black; border-collapse: collapse; padding: 10px }
+            body { font-family: monospace; }
+            table, th, td { border: 1px solid black; border-collapse: collapse; padding: 10px; white-space: pre; }
         </style>
     </head>
     <body>
@@ -63,19 +63,20 @@
                 'expect an error #foobar;',
                 'no #123; change outside of expression',
                 'multiple #123; interspersed #456; interpolations',
-                'top item is 789: #123\'456\'789;',
-                'resultant string is foobar: #`foobar`;',
-                'top string is barbaz: #`foobar``barbaz`;',
-                'noooooop test: #123\'\'\'\'\'\'\'\';',
-                'random #123?;',
-                'ternary true test:\t\t#`❌``✅`1@;',
-                'ternary false test:\t\t#`✅``❌`0@;',
-                'swap:\t\t#123\'456\\\t\t123=`❌`\\`✅`\\@;',
-                'modulo:\t\t#123\'2%\t\t1=`❌`\\`✅`\\@;',
-                'add:\t\t#123\'2+\t\t125=`❌`\\`✅`\\@;',
-                'add strings:\t\t#`foo``bar`+\t\t`foobar`=`❌`\\`✅`\\@;',
-                'subtract:\t\t#123\'2-\t\t121=`❌`\\`✅`\\@;',
-                'drop:\t\t#123\'123\'2$+\t\t246=`❌`\\`✅`\\@;',
+                '#`-`:+:+:+:+::++;',
+                'top item is 789:           #123\'456\'789;',
+                'result string is foobar:   #`foobar`;',
+                'top string is barbaz:      #`foobar``barbaz`;',
+                'noooooop test:             #123\'\'\'\'\'\'\'\';',
+                'random:                    #123?;',
+                'ternary true test:         #`❌``✅`1@;',
+                'ternary false test:        #`✅``❌`0@;',
+                'swap:                      #123\'456\\        123=`❌`\\`✅`\\@;',
+                'modulo:                    #123\'2%             1=`❌`\\`✅`\\@;',
+                'add:                       #123\'2+           125=`❌`\\`✅`\\@;',
+                'add strings:               #`foo``bar`+  `foobar`=`❌`\\`✅`\\@;',
+                'subtract:                  #123\'2-           121=`❌`\\`✅`\\@;',
+                'drop:                      #123\'123\'2$+     246=`❌`\\`✅`\\@;',
             ].forEach(runTest);
         </script>
     </body>
