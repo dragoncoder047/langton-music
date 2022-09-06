@@ -200,8 +200,10 @@ window.addEventListener('hashchange', () => {
         where = '#dumpstatuswrapper';
     }
     $(where).insertBefore(statusBar, $(where).firstChild);
-    var rect = $('#textbox').parentElement.getBoundingClientRect();
-    $('#textbox').setAttribute('style', `width:${rect.width}px;height:${rect.height}px`);
-    textbox.resize(true);
+    setTimeout(() => {
+        var rect = $('#textbox').parentElement.getBoundingClientRect();
+        $('#textbox').setAttribute('style', `width:${rect.width}px;height:${rect.height}px`);
+        textbox.resize(true);
+    }, 0);
 });
 if (location.hash === '#dump') window.dispatchEvent(new Event('hashchange'));
