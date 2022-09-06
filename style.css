@@ -33,6 +33,8 @@ output {
     background: white;
     width: 80%;
     height: 80%;
+    border: 2px solid black;
+    padding: 1em;
 }
 
 #dump:target {
@@ -51,14 +53,22 @@ output {
     align-items: stretch;
 }
 
+.pad-sides {
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
 main {
     width: 100%;
     height: 100%;
     position: absolute;
     top: 0;
     left: 0;
-    overflow: hidden;
     margin: 0;
+}
+
+body {
+    overflow: hidden;
 }
 
 .wrapping {

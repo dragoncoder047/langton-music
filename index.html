@@ -14,11 +14,11 @@
     <body>
         <main class="flex-column">
             <div class="heading">Langton's Ant Music version 2</div>
-            <div class="flex-row">
+            <div class="flex-row pad-sides">
                 <div class="expanding"><output id="statusbar"></output></div>
                 <a href="#dump">Edit</a>
             </div>
-            <div class="flex-row wrapping">
+            <div class="flex-row wrapping pad-sides">
                 <label>Step: <output id="stepnum"></output></label>
                 <label>Number of ants: <output id="antscount"></output></label>
                 <label>Follow an ant: <select id="follow">
@@ -26,15 +26,15 @@
                         <option disabled>TODO</option>
                     </select></label>
             </div>
-            <div class="flex-row wrapping">
+            <div class="flex-row wrapping pad-sides">
                 <button id="startstop">Start</button>
                 <button id="step">Step</button>
             </div>
-            <div class="flex-row wrapping">
+            <div class="flex-row wrapping pad-sides">
                 <button id="fit">Fit to Window</button>
                 <label><input type="checkbox" checked id="autofit">Autofit</label>
             </div>
-            <div class="flex-row wrapping expanding">
+            <div class="flex-row expanding">
                 <canvas id="playfield"></canvas>
             </div>
         </main>
@@ -46,7 +46,7 @@
                     <div><a href="#">X</a></div>
                 </div>
                 <div class="expanding">
-                    <div class="textbox"></div>
+                    <div id="textbox"></div>
                 </div>
                 <div><a href="https://github.com/dragoncoder047/langton-music/blob/main/format.md">Formatting/syntax
                         guide</a></div>
