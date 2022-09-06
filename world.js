@@ -55,30 +55,63 @@ class World {
 
     dump() {
         var { tl: [minX, minY], br: [maxX, maxY] } = this.bbox([]);
-        var line = '', out = '';
-        var x = minX, y = minY;
-        var state, count = 0;
-        while (y <= maxY) {
-            while (x <= maxX) {
-                var cState = this.getCell(x, y);
-                if (cState != state) {
-                    if (state !== undefined) line += `${count > 1 ? count : ''}${stateNumToLetters(state)}`;
-                    count = 0;
-                    state = cState;
-                } else {
-                    count++;
-                }
+        var uncompressed = '';
+        for (var y = minY; y <= maxY; y++) {
+            var line = '';
+            for (var x = minX; x <= maxX; x++) {
+                line += stateNumToLetters(this.getCell(x, y));
+            }
+            uncompressed += '$';
+            uncompressed += line.replace(/\.*$/, '');
+        }
+        return `<rle x="${minX}" y="${minY}">${rleCompress(uncompressed)}</rle>`;
+    }
+    paste(rle, x, y) {
+        var origX = x;
+        for (var [c] of rleUncompress(rle).matchAll(/[p-x]?[A-X]|[$.]/g)) {
+            if (c === '$') {
+                y++;
+                x = origX;
+            }
+            else {
+                this.setCell(x, y, lettersToStateNum(c));
                 x++;
             }
-            x = minX;
-            if (state != 0 && count > 0) {
-                if (state !== undefined) line += `${count > 1 ? count : ''}${stateNumToLetters(state)}`;
-                count = 0;
-                state = undefined;
-            }
-            line += '$';
-            y++;
         }
-        return `<rle x="${minX}" y="${minY}">${out}${line}</rle>`;
     }
+}
+
+function rleCompress(text) {
+    var r1 = text.replaceAll(/(([p-x]?[A-X]|[$.])+)\1+/g, function (all, one) {
+        return (all.length / one.length) + '(' + one + ')';
+    });
+    return r1.replaceAll(/([p-x]?[A-X]|\.|\$)\1+/g, function (all, one) {
+        return (all.length / one.length) + one;
+    });
+}
+
+function rleUncompress(text) {
+    var u1 = text.replaceAll(/(\d+)\(([^\)]+)\)/g, function (_, times, what) {
+        return what.repeat(parseInt(times));
+    });
+    return u1.replaceAll(/(\d+)([p-x]?[A-X]|\.|\$)/g, function (_, times, what) {
+        return what.repeat(parseInt(times));
+    });
+}
+
+function lettersToStateNum(letters) {
+    if (letters.length == 1) return '.ABCDEFGHIJKLMNOPQRSTUVWX'.indexOf(letters);
+    return lettersToStateNum(letters.slice(1)) + (24 * ('pqrstuvwx'.indexOf(letters[0]) + 1));
+}
+
+function stateNumToLetters(state) {
+    if (state === undefined) return '';
+    if (state == 0) return '.';
+    var out = '';
+    if (state > 24) {
+        var hi = (state - 25) / 24;
+        out += 'pqrstuvwxy'[hi];
+        state -= (hi + 1) * 24;
+    }
+    return 'ABCDEFGHIJKLMNOPQRSTUVWX'[state - 1] + out;
 }

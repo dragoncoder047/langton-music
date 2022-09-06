@@ -50,40 +50,7 @@ function loadWorld(text, antSpecies, world, breeder) {
         var r = rle.textContent;
         var cx = checkint(rle, 'x', 'rle', 0);
         var cy = checkint(rle, 'y', 'rle', 0);
-        var left = cx;
-        while (true) {
-            r = r.trim();
-            match = /^(\d*)([p-y]?[A-X]|[$.])/.exec(r);
-            if (!match) break;
-            r = r.slice(match[0].length);
-            console.log('RLE node: ', match[0]);
-            var count = parseInt(match[1] || 1), cellState = match[2];
-            if (cellState === '$') {
-                cx = left;
-                cy += count;
-            } else {
-                cellState = lettersToStateNum(cellState);
-                console.log('lettersToStateNum() returned', cellState);
-                for (i = 0; i < count; i++, cx++) world.setCell(cx, cy, cellState);
-            }
-        }
+        world.paste(r, cx, cy);
     }
     return { header, ants };
-}
-
-function lettersToStateNum(letters) {
-    if (letters.length == 1) return '.ABCDEFGHIJKLMNOPQRSTUVWX'.indexOf(letters);
-    return lettersToStateNum(letters.slice(1)) + (24 * ('pqrstuvwx'.indexOf(letters[0]) + 1));
-}
-
-function stateNumToLetters(state) {
-    if (state === undefined) return '';
-    if (state == 0) return '.';
-    var out = '';
-    if (state > 24) {
-        var hi = (state - 25) / 24;
-        out += 'pqrstuvwxy'[hi];
-        state -= (hi + 1) * 24;
-    }
-    return 'ABCDEFGHIJKLMNOPQRSTUVWX'[state - 1] + out;
 }
