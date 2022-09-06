@@ -4,6 +4,11 @@
     font-style: italic;
 }
 
+label {
+    padding-right: 1em;
+    padding-left: 1em;
+}
+
 #dump {
     display: none;
     background: rgba(0, 0, 0, 50%);
