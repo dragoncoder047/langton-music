@@ -68,6 +68,7 @@ class CanvasMove {
             playfield.style.width = `${rect.width}px`;
             playfield.style.height = `${rect.height}px`;
         });
+        window.dispatchEvent(new Event('resize'));
     }
     enter() {
         this.ctx.save();
