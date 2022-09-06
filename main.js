@@ -194,10 +194,10 @@ function dump() {
 dumpBtn.addEventListener('click', dump);
 
 window.addEventListener('hashchange', () => {
-    var where = 'main>div.flex-row.padding'
+    var where = '#statuswrapper'
     if (location.hash === '#dump') {
         dump();
-        where = '#dump>div';
+        where = '#dumpstatuswrapper';
     }
     $(where).insertBefore(statusBar, $(where).firstChild);
     var rect = $('#textbox').parentElement.getBoundingClientRect();

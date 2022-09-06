@@ -12,7 +12,7 @@
         <main class="flex-column">
             <div class="heading padding">Langton's Ant Music version 2</div>
             <div class="flex-row padding">
-                <div class="expanding"><output id="statusbar"></output></div>
+                <div class="expanding" id="statuswrapper"><output id="statusbar"></output></div>
                 <a href="#dump">Edit</a>
             </div>
             <div class="flex-row wrapping padding">
@@ -48,6 +48,7 @@
         </main>
         <div id="dump">
             <div class="flex-column">
+                <div id="dumpstatuswrapper" class="padding"></div>
                 <div class="flex-row">
                     <div class="flex-row expanding"><button id="loadbtn">Load</button><button id="dumpbtn">Dump</button>
                     </div>
@@ -56,7 +57,7 @@
                 <div class="expanding">
                     <div id="textbox"></div>
                 </div>
-                <div><a href="https://github.com/dragoncoder047/langton-music/blob/main/format.md">Formatting/syntax
+                <div class="padding"><a href="https://github.com/dragoncoder047/langton-music/blob/main/format.md">Formatting/syntax
                         guide</a></div>
             </div>
         </div>
