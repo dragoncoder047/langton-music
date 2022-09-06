@@ -35,7 +35,7 @@ function loadWorld(text, antSpecies, world, breeder) {
     var ants = [];
     for (var a of xml.querySelectorAll('ant')) {
         var breed = checkattr(a, 'breed', 'ant');
-        var id = checkattr(a, 'id', 'ant');
+        var id = checkattr(a, 'id', 'ant', undefined);
         var dir = checkint(a, 'dir', 'ant');
         var state = checkint(a, 'state', 'ant', 1);
         var x = checkint(a, 'x', 'ant');

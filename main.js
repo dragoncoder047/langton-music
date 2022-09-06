@@ -199,3 +199,4 @@ window.addEventListener('hashchange', () => {
     textbox.resize(true);
     if (location.hash === '#dump') dump();
 });
+if (location.hash === '#dump') window.dispatchEvent(new Event('hashchange'));

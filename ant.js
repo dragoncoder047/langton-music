@@ -52,7 +52,7 @@ class Breeder {
 
 
 class Ant {
-    constructor(breeder, antList, breed, world, commands, initialState, x, y, dir, id = null) {
+    constructor(breeder, antList, breed, world, commands, initialState, x, y, dir, id) {
         this.breeder = breeder;
         this.antList = antList;
         this.breed = breed;
