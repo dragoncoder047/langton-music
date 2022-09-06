@@ -47,7 +47,7 @@ function fitEnable(canFit) {
     } else {
         fitBtn.setAttribute('disabled', true);
         autoFit.setAttribute('disabled', true);
-        autoFit.removeAttribute('checked');
+        autoFit.setAttribute('checked', false);
     }
 }
 
