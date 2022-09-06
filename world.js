@@ -56,7 +56,7 @@ class World {
     dump() {
         var { tl: [minX, minY], br: [maxX, maxY] } = this.bbox([]);
         var uncompressed = '';
-        for (var y = minY + 1; y <= maxY; y++) {
+        for (var y = minY; y <= maxY; y++) {
             var line = '';
             for (var x = minX; x <= maxX; x++) {
                 line += stateNumToLetters(this.getCell(x, y));
@@ -64,7 +64,7 @@ class World {
             uncompressed += '$';
             uncompressed += line.replace(/\.*$/, '');
         }
-        return `<rle x="${minX}" y="${minY}">${rleCompress(uncompressed)}</rle>`;
+        return `<rle x="${minX}" y="${minY - 1}">${rleCompress(uncompressed)}</rle>`;
     }
     paste(rle, x, y) {
         var origX = x;
@@ -86,7 +86,7 @@ function rleCompress(text) {
         return (all.length / one.length) + '(' + one + ')';
     }).replaceAll(/([p-x]?[A-X]|\.|\$)\1+/g, function (all, one) {
         return (all.length / one.length) + one;
-    }).replaceAll(/(\d)+(?:\(([p-x]?[A-X]|[$.])\))/g, function (all, num, t){
+    }).replaceAll(/(\d)+(?:\(([p-x]?[A-X]|[$.])\))/g, function (all, num, t) {
         return num + t;
     });
 }
