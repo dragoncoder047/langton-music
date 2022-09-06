@@ -40,17 +40,6 @@ function runEnable(canRun) {
     }
 }
 
-function fitEnable(canFit) {
-    if (canFit) {
-        fitBtn.removeAttribute('disabled');
-        autoFit.removeAttribute('disabled');
-    } else {
-        fitBtn.setAttribute('disabled', true);
-        autoFit.setAttribute('disabled', true);
-        autoFit.setAttribute('checked', false);
-    }
-}
-
 function render() {
     dragController.enter();
     dragController.clear();
@@ -180,10 +169,8 @@ fit();
 
 function followAnt(antID) {
     if (!antID) {
-        fitEnable(true);
         return;
     } else {
-        fitEnable(false);
         var ant = ants.filter(ant => ant.id === antID)[0];
         center(ant.x, ant.y);
     }
