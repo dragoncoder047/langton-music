@@ -1,33 +1,54 @@
 <!DOCTYPE html>
 <html>
+
     <head>
         <title>Langton's Ant Music v2</title>
-        <style type="text/css" media="screen">
-            #textbox { 
-                display: block;
-                width: 100%;
-                height: 32em;
-            }
-            canvas {
-                border: 1px solid black;
-            }
-        </style>
+        <link rel="stylesheet" href="style.css">
         <script src="https://cdn.jsdelivr.net/npm/tone@14.7.77/build/Tone.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.10.0/src-noconflict/ace.min.js"></script>
     </head>
+
     <body>
-        <h1>Langton's Ant Music version 2</h1>
-        <p><button id="startstop">Start</button> <button id="step">Step</button> <output id="statusbar"></output></p>
-        <p>Step: <output id="stepnum"></output>. Number of ants: <output id="antscount"></output>. Follow an ant: <select id="follow">
-            <option value="">NONE</option>
-            <option disabled>TODO</option>
-        </select></p>
-        <p><button id="fit">Fit to Window</button><label><input type="checkbox" checked id="autofit">Autofit</label></p>
-        <canvas id="playfield"></canvas>
-        <p>Input text</p>
-        <p><button id="loadbtn">Load</button><button id="dumpbtn">Dump</button> <span style="opacity: 50%">&larr;CAUTION: this will WIPE OUT your comments!</span></p>
-        <div id="textbox"></div>
-        <p><a href="https://github.com/dragoncoder047/langton-music/blob/main/format.md">Formatting/syntax guide</a></p>
+        <main class="flex-column">
+            <div class="heading">Langton's Ant Music version 2</div>
+            <div class="flex-row">
+                <div class="expanding"><output id="statusbar"></output></div>
+                <a href="#dump">Edit</a>
+            </div>
+            <div class="flex-row wrapping">
+                <label>Step: <output id="stepnum"></output></label>
+                <label>Number of ants: <output id="antscount"></output></label>
+                <label>Follow an ant: <select id="follow">
+                        <option value="">NONE</option>
+                        <option disabled>TODO</option>
+                    </select></label>
+            </div>
+            <div class="flex-row wrapping">
+                <button id="startstop">Start</button>
+                <button id="step">Step</button>
+            </div>
+            <div class="flex-row wrapping">
+                <button id="fit">Fit to Window</button>
+                <label><input type="checkbox" checked id="autofit">Autofit</label>
+            </div>
+            <div class="flex-row wrapping expanding">
+                <canvas id="playfield"></canvas>
+            </div>
+        </main>
+        <div id="dump">
+            <div class="flex-column">
+                <div class="flex-row">
+                    <div class="flex-row expanding"><button id="loadbtn">Load</button><button id="dumpbtn">Dump</button>
+                    </div>
+                    <div><a href="#">X</a></div>
+                </div>
+                <div class="expanding">
+                    <div class="textbox"></div>
+                </div>
+                <div><a href="https://github.com/dragoncoder047/langton-music/blob/main/format.md">Formatting/syntax
+                        guide</a></div>
+            </div>
+        </div>
         <script src="interpol.js"></script>
         <script src="ant.js"></script>
         <script src="notes.js"></script>
@@ -36,4 +57,5 @@
         <script src="world.js"></script>
         <script src="main.js"></script>
     </body>
+
 </html>
