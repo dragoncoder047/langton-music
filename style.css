@@ -12,10 +12,6 @@ label {
     padding-right: 0.5em;
 }
 
-output {
-    padding-left: 0.5em;
-}
-
 #dump {
     background: rgba(0, 0, 0, 50%);
     z-index: 999999;
