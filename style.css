@@ -11,7 +11,7 @@ label {
     padding-right: 0.5em;
 }
 
-#dump {
+.popover {
     background: rgba(0, 0, 0, 50%);
     z-index: 999999;
     position: absolute;
@@ -24,7 +24,7 @@ label {
     align-items: center;
 }
 
-#dump>div {
+.popover>div {
     background: white;
     width: 80%;
     height: 80%;
@@ -32,7 +32,7 @@ label {
     padding: 1em;
 }
 
-#dump:target {
+.popover:target {
     top: 0;
 }
 
