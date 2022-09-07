@@ -14,12 +14,15 @@ const followSelector = $('#follow');
 
 ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.10.0/src-noconflict/');
 const textbox = ace.edit('textbox', { mode: 'ace/mode/xml' });
-textbox.setValue('<langton><breed species="Beetle" name="langton"><case cell="0"><action><command name="put">1</command><command name="rt"></command><command name="fd"></command><command name="play">C2</command></action></case><case cell="1"><action><command name="put">0</command><command name="lt"></command><command name="fd"></command><command name="play">G2</command></action></case></breed><ant id="langton1" breed="langton" x="0" y="0" dir="1"></ant></langton>');
+textbox.setValue('<langton><breed species="Beetle" name="langton"><case cell="0"><action><command name="put">1</command><command name="rt"></command><command name="fd"></command><command name="play">C2</command></action></case><case cell="1"><action><command name="put">0</command><command name="lt"></command><command name="fd"></command><command name="play">G2</command></action></case></breed><ant breed="langton" x="0" y="0" dir="1"></ant></langton>');
 textbox.setTheme('ace/theme/chrome');
 textbox.clearSelection();
 
-var dragController = new CanvasMove(playfield, false);
-var world = new World(dragController.ctx);
+var ctx = playfield.getContext('2d');
+var world = new World(ctx);
+var canvasTools = new CanvasToolsManager(playfield, $('#toolselect'), $('#tooloption'), [
+    new DragTool(),
+]);
 var header = { stepCount: 0 };
 var interpolations = [];
 var ants = [];
@@ -41,14 +44,27 @@ function runEnable(canRun) {
 }
 
 function render() {
-    dragController.enter();
-    dragController.clear();
-    world.draw();
-    ants.forEach(ant => ant.draw());
-    dragController.exit();
+    canvasTools.drawTransformed(() => {
+        canvasTools.clear();
+        world.draw();
+        ants.forEach(ant => ant.draw());
+    });
     stepCounter.textContent = header.stepCount;
     antsCounter.textContent = ants.length;
-    setTimeout(render, 50); // 20 fps
+    var selectedAnt = followSelector.value;
+    followSelector.childNodes.forEach(node => {
+        if (!ants.some(ant => ant.id === node.textContent))
+            node.remove();
+    })
+    ants.forEach(ant => {
+        if (!followSelector.childNodes.some(node => node.textContent === ant.id)) {
+            var n = document.createElement('option');
+            n.textContent = ant.id;
+            followSelector.append(n);
+        }
+    })
+    followSelector.value = ants.some(ant => ant.id === selectedAnt) ? selectedAnt : '';
+    requestAnimationFrame(render)
 }
 render();
 
@@ -129,11 +145,6 @@ function load() {
         header.stepCount = header.stepCount ?? 0;
         Tone.Transport.bpm.setValueAtTime(2 * (parseInt(header.bpm) || 240), Tone.now());
         Tone.Transport.start();
-        var s = '<option selected value="">NONE</option>';
-        for (var ant of ants) {
-            s += `<option>${ant.id}</option>`;
-        }
-        followSelector.innerHTML = s;
     } catch (e) {
         stop();
         runEnable(false);
@@ -151,8 +162,8 @@ loadBtn.addEventListener('click', load);
 load();
 
 function center(cellX, cellY) {
-    dragController.x = -cellX * world.cellSize * dragController.zoom + playfield.width / 2;
-    dragController.y = -cellY * world.cellSize * dragController.zoom + playfield.height / 2;
+    canvasTools.panxy.x = -cellX * world.cellSize * canvasTools.zoom + playfield.width / 2;
+    canvasTools.panxy.y = -cellY * world.cellSize * canvasTools.zoom + playfield.height / 2;
 }
 
 function fit() {
@@ -161,7 +172,7 @@ function fit() {
     var dimensions = [bbox.br[0] - bbox.tl[0] + 1, bbox.br[1] - bbox.tl[1] + 1]; // +1 to preclude dividing by zero
     var leftRightZoom = playfield.width / dimensions[0] / world.cellSize;
     var upDownZoom = playfield.height / dimensions[1] / world.cellSize;
-    dragController.zoom = Math.min(upDownZoom, leftRightZoom);
+    canvasTools.zoom = Math.min(upDownZoom, leftRightZoom);
     center(middle[0], middle[1]);
 }
 fitBtn.addEventListener('click', fit);
@@ -175,7 +186,6 @@ function followAnt(antID) {
         center(ant.x, ant.y);
     }
 }
-followSelector.addEventListener('change', () => followAnt(followSelector.value));
 
 function dump() {
     try {
@@ -201,9 +211,7 @@ function fitace() {
     }, 0);
 }
 
-window.addEventListener('resize', () => {
-    if (location.hash === '#dump') fitace();
-});
+window.addEventListener('resize', fitace);
 
 window.addEventListener('hashchange', () => {
     var where = '#statuswrapper'
