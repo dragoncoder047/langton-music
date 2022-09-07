@@ -18,15 +18,17 @@ textbox.setValue('<langton><breed species="Beetle" name="langton"><case cell="0"
 textbox.setTheme('ace/theme/chrome');
 textbox.clearSelection();
 
+var ants = [];
+var breeder = new Breeder();
 var ctx = playfield.getContext('2d');
 var world = new World(ctx);
 var canvasTools = new CanvasToolsManager(playfield, $('#toolselect'), $('#tooloption'), [
     new DragTool(),
+    new WorldEditTool(world),
+    new DrawAntsTool(world, breeder, ants),
 ]);
 var header = { stepCount: 0 };
 var interpolations = [];
-var ants = [];
-var breeder = new Breeder();
 
 function showStatus(text, color = 'black') {
     statusBar.value = text;
@@ -56,14 +58,14 @@ function render() {
         if (node.value === '') return;
         if (!ants.some(ant => ant.id === node.textContent))
             node.remove();
-    })
+    });
     ants.forEach(ant => {
         if (![].some.call(followSelector.childNodes, node => node.textContent === ant.id)) {
             var n = document.createElement('option');
             n.textContent = ant.id;
             followSelector.append(n);
         }
-    })
+    });
     followSelector.value = ants.some(ant => ant.id === selectedAnt) ? selectedAnt : '';
     requestAnimationFrame(render)
 }
@@ -138,7 +140,7 @@ function load() {
     header.stepCount = 0;
     showStatus('Loading...');
     try {
-        ({ ants, header } = loadWorld(textbox.getValue(), { Ant, Beetle, Cricket }, world, breeder));
+        header = loadWorld(textbox.getValue(), { Ant, Beetle, Cricket }, world, breeder, ants);
         interpolations = [];
         for (var prop of Object.getOwnPropertyNames(header)) {
             if (prop.startsWith('#')) interpolations.push([prop.slice(1), header[prop]]);

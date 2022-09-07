@@ -10,7 +10,7 @@ function checkint(node, attr, tag, fallback = null, required = true) {
     return xn ?? fallback;
 }
 
-function loadWorld(text, antSpecies, world, breeder) {
+function loadWorld(text, antSpecies, world, breeder, ants) {
     var xml = (new DOMParser()).parseFromString(text, 'application/xml');
     for (var err of xml.querySelectorAll('parsererror div')) {
         throw err.textContent;
@@ -32,7 +32,7 @@ function loadWorld(text, antSpecies, world, breeder) {
         breeder.addBreed(name, antSpecies[species], b);
     }
     if (foundAntBreeds === 0) throw 'There are no ant breeds.';
-    var ants = [];
+    ants.length = 0;
     for (var a of xml.querySelectorAll('ant')) {
         var breed = checkattr(a, 'breed', 'ant');
         var id = checkattr(a, 'id', 'ant', undefined, false);
@@ -52,5 +52,5 @@ function loadWorld(text, antSpecies, world, breeder) {
         var cy = checkint(rle, 'y', 'rle', 0, false);
         world.paste(r, cx, cy);
     }
-    return { header, ants };
+    return header;
 }

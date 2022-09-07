@@ -31,6 +31,11 @@ class World {
         if (state === 0) delete this.cells[coords];
         else this.cells[coords] = state;
     }
+    paint(x, y, state) {
+        var s = this.getCell(x, y);
+        if (s === state) thir.setCell(x, y, 0);
+        else this.setCell(x, y, state);
+    }
     clear() {
         this.cells = {};
     }

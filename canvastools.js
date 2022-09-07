@@ -140,7 +140,10 @@ function makeModifiers(e) {
 // base class
 class Tool {
     displayName = 'Nothing'
-    constructor() { this.element = document.createElement('span'); }
+    constructor() {
+        this.element = document.createElement('span');
+        this.element.classList.add('flex-row');
+    }
     onMouseDown(tm, xy, mod, e) { return false; }
     onMouseUp(tm, xy, mod, e) { return false; }
     onClick(tm, xy, mod, e) { return false; }
@@ -175,6 +178,103 @@ class DragTool extends Tool {
         else {
             tm.panxy.y -= xy.y;
             tm.panxy.x -= xy.x;
+        }
+    }
+}
+
+class WorldEditTool extends Tool {
+    displayName = '_edit'
+    constructor(world) {
+        super();
+        this.world = world;
+    }
+    toCellCoords(tm, xy) {
+        var c = vectorScale(tm.transformMousePoint(xy), 1 / this.world.cellSize);
+        return { x: Math.round(c.x), y: Math.round(c.y) };
+    }
+}
+
+class DrawCellsTool extends WorldEditTool {
+    displayName = 'Draw Cells'
+    constructor(world) {
+        super(world);
+        this.element.innerHTML = '<label>Cell State: <input type="number" min="0" step="1"></input></label>';
+        this.input = this.element.querySelectorAll('input');
+        this.isErasing = false;
+    }
+    onClick(tm, xy, mod) {
+        var c = this.toCellCoords(tm, xy);
+        if (mod & K_SHIFT)
+            this.input.value = this.world.getCell(c.x, c.y);
+        else
+            this.world.paint(c.x, c.y, this.input.value);
+    }
+    onMouseDown(tm, xy) {
+        var c = this.toCellCoords(tm, xy);
+        this.erasing = this.input.value === this.world.getCell(c.x, c.y);
+    }
+    onDrag(tm) {
+        var c = this.toCellCoords(tm, tm.lastxy);
+        if (this.erasing) this.world.setCell(c.x, c.y, 0);
+        else this.world.setCell(c.x, c.y, this.input.value);
+    }
+}
+
+class DrawAntsTool extends WorldEditTool {
+    constructor(world, breeder, antsList) {
+        super(world);
+        this.breeder = breeder;
+        this.antsList = antsList;
+        this.element.innerHTML = '<label>Breed: <select class="bsel"></select></label> <label>State: <input type="number" min="0" step="1"></input></label> <label>Direction: <select class="dirsel"><option value="0">North</option><option value="1">East</option><option value="2">South</option><option value="3">West</option></select></label>';
+        this.breedSelect = this.element.querySelectorAll('.bsel');
+        this.stateSelect = this.element.querySelectorAll('input');
+        this.direcSelect = this.element.querySelectorAll('.dirsel');
+        // do some monkey patching
+        var oldBreederEmpty = breeder.empty.bind(breeder);
+        var oldBreederAddBreed = breeder.addBreed.bind(breeder);
+        breeder.empty = () => {
+            oldBreederEmpty();
+            this.updateBreedSelector();
+        };
+        breeder.addBreed = (...args) => {
+            oldBreederAddBreed(...args);
+            this.updateBreedSelector();
+        }
+    }
+    updateBreedSelector() {
+        var sb = this.breedSelect.value;
+        var breedNames = Object.getOwnPropertyNames(this.breeder.breeds);
+        this.breedSelect.childNodes.forEach(node => {
+            if (node.value === '') return;
+            if (!breedNames.some(b => b === node.textContent))
+                node.remove();
+        });
+        breedNames.forEach(b => {
+            if (![].some.call(this.breedSelect.childNodes, node => node.textContent === b)) {
+                var n = document.createElement('option');
+                n.textContent = b;
+                this.breedSelect.append(n);
+            }
+        });
+        this.breedSelect.value = breedNames.some(b => b === sb) ? sb : (breedNames[0] || '');
+    }
+    onClick(tm, xy, mod) {
+        var c = this.toCellCoords(tm, xy);
+        var i = this.antsList.find(ant => ant.x === c.x && ant.y === c.y);
+        if (mod & K_SHIFT) {
+            if (i !== -1) {
+                var ant = this.antsList[i];
+                this.breedSelect.value = ant.breed;
+                this.stateSelect.value = ant.state;
+                this.direcSelect.value = ant.dir;
+            }
+        } else {
+            if (mod & K_CTRL) {
+                if (i !== -1) this.antsList.splice(i, 1);
+                else /* noop */;
+            } else {
+                this.antsList.push(this.breeder.createAnt(this.breedSelect.value, this.world, c.x, c.y, this.direcSelect.value, this.stateSelect.value, undefined));
+            }
         }
     }
 }
