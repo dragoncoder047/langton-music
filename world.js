@@ -28,12 +28,12 @@ class World {
     }
     setCell(x, y, state) {
         var coords = `${x.toString(16)},${y.toString(16)}`;
-        if (state === 0) delete this.cells[coords];
+        if (state == 0) delete this.cells[coords];
         else this.cells[coords] = state;
     }
     paint(x, y, state) {
         var s = this.getCell(x, y);
-        if (s === state) thir.setCell(x, y, 0);
+        if (s === state) this.setCell(x, y, 0);
         else this.setCell(x, y, state);
     }
     clear() {

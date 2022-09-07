@@ -64,8 +64,8 @@ class CanvasToolsManager {
         this.ctx.imageSmoothingEnabled = false;
         window.addEventListener('resize', () => {
             var rect = canvas.parentElement.getBoundingClientRect();
-            canvas.width = rect.width * ratio;
-            canvas.height = rect.height * ratio;
+            canvas.width = (rect.width * ratio) - 10;
+            canvas.height = (rect.height * ratio) - 10;
             canvas.style.width = `${rect.width - 10}px`;
             canvas.style.height = `${rect.height - 10}px`;
         });
@@ -76,7 +76,7 @@ class CanvasToolsManager {
             var t = this.tools[i];
             var e = document.createElement('option');
             e.setAttribute('value', i);
-            e.textContent = t.displayName;
+            e.textContent = t.constructor.displayName;
             this.toolSelector.append(e);
         }
         this.toolSelector.addEventListener('change', () => {
@@ -105,11 +105,11 @@ class CanvasToolsManager {
         var tool = this.tools[this.activeToolIndex];
         var fun = tool[name];
         if (typeof fun !== 'function') return;
-        var cancel = fun.call(tool, this, point, makeModifiers(e), e);
-        if (cancel) e.preventDefault();
+        var bubble = fun.call(tool, this, point, makeModifiers(e), e);
+        if (!bubble) e.preventDefault();
     }
     transformMousePoint(pt) {
-        return { x: (pt.x - this.panxy.x) / this.zoomFactor, y: (pt.y - this.panxy.y) / this.zoomFactor };
+        return { x: (pt.x - this.panxy.x) / this.zoom, y: (pt.y - this.panxy.y) / this.zoom };
     }
     changeTool(toolIndex) {
         if (toolIndex === this.activeToolIndex) return;
@@ -139,18 +139,17 @@ function makeModifiers(e) {
 
 // base class
 class Tool {
-    displayName = 'Nothing'
     constructor() {
         this.element = document.createElement('span');
         this.element.classList.add('flex-row');
     }
-    onMouseDown(tm, xy, mod, e) { return false; }
-    onMouseUp(tm, xy, mod, e) { return false; }
-    onClick(tm, xy, mod, e) { return false; }
-    onDrag(tm, xy, mod, e) { return false; }
-    onScroll(tm, xy, mod, e) { return false; }
-    onKey(tm, xy, mod, e) { return false; }
-    onKeyUp(tm, xy, mod, e) { return false; }
+    onMouseDown(tm, xy, mod, e) { return true; }
+    onMouseUp(tm, xy, mod, e) { return true; }
+    onClick(tm, xy, mod, e) { return true; }
+    onDrag(tm, xy, mod, e) { return true; }
+    onScroll(tm, xy, mod, e) { return true; }
+    onKey(tm, xy, mod, e) { return true; }
+    onKeyUp(tm, xy, mod, e) { return true; }
     activate(container) {
         container.appendChild(this.element);
     }
@@ -158,9 +157,9 @@ class Tool {
         this.element.remove();
     }
 }
+Tool.displayName = 'Nothing';
 
 class DragTool extends Tool {
-    displayName = 'Drag'
     constructor(zoomFactor = 1.01) {
         super();
         this.zoomFactor = zoomFactor;
@@ -169,21 +168,21 @@ class DragTool extends Tool {
         tm.panxy = vectorSum(tm.panxy, xy);
     }
     onScroll(tm, xy, mod) {
-        if (!(mod & K_SHIFT)) {
+        if (mod & K_SHIFT) {
+            tm.panxy.y -= xy.y;
+            tm.panxy.x -= xy.x;
+        }
+        else {
             var factor = this.zoomFactor ** (-xy.y);
             tm.zoom *= factor;
             tm.panxy.x = (tm.panxy.x * factor) - (factor * tm.lastxy.x) + tm.lastxy.x;
             tm.panxy.y = (tm.panxy.y * factor) - (factor * tm.lastxy.y) + tm.lastxy.y;
         }
-        else {
-            tm.panxy.y -= xy.y;
-            tm.panxy.x -= xy.x;
-        }
     }
 }
+DragTool.displayName = 'Drag';
 
 class WorldEditTool extends Tool {
-    displayName = '_edit'
     constructor(world) {
         super();
         this.world = world;
@@ -195,10 +194,9 @@ class WorldEditTool extends Tool {
 }
 
 class DrawCellsTool extends WorldEditTool {
-    displayName = 'Draw Cells'
     constructor(world) {
         super(world);
-        this.element.innerHTML = '<label>Cell State: <input type="number" min="0" step="1"></input></label>';
+        this.element.innerHTML = '<label>Cell State: <input type="number" min="0" step="1" value ="0"></input></label>';
         this.input = this.element.querySelector('input');
         this.isErasing = false;
     }
@@ -219,14 +217,14 @@ class DrawCellsTool extends WorldEditTool {
         else this.world.setCell(c.x, c.y, this.input.value);
     }
 }
+DrawCellsTool.displayName = 'Draw Cells';
 
 class DrawAntsTool extends WorldEditTool {
-    displayName = 'Draw Ants';
     constructor(world, breeder, antsList) {
         super(world);
         this.breeder = breeder;
         this.antsList = antsList;
-        this.element.innerHTML = '<label>Breed: <select class="bsel"></select></label> <label>State: <input type="number" min="0" step="1"></input></label> <label>Direction: <select class="dirsel"><option value="0">North</option><option value="1">East</option><option value="2">South</option><option value="3">West</option></select></label>';
+        this.element.innerHTML = '<label>Breed: <select class="bsel"></select></label> <label>State: <input type="number" min="0" step="1" value="1"></input></label> <label>Direction: <select class="dirsel"><option value="0">North</option><option value="1" selected>East</option><option value="2">South</option><option value="3">West</option></select></label>';
         this.breedSelect = this.element.querySelector('.bsel');
         this.stateSelect = this.element.querySelector('input');
         this.direcSelect = this.element.querySelector('.dirsel');
@@ -240,7 +238,7 @@ class DrawAntsTool extends WorldEditTool {
         breeder.addBreed = (...args) => {
             oldBreederAddBreed(...args);
             this.updateBreedSelector();
-        }
+        };
     }
     updateBreedSelector() {
         var sb = this.breedSelect.value;
@@ -261,7 +259,7 @@ class DrawAntsTool extends WorldEditTool {
     }
     onClick(tm, xy, mod) {
         var c = this.toCellCoords(tm, xy);
-        var i = this.antsList.find(ant => ant.x === c.x && ant.y === c.y);
+        var i = this.antsList.findIndex(ant => ant.x === c.x && ant.y === c.y);
         if (mod & K_SHIFT) {
             if (i !== -1) {
                 var ant = this.antsList[i];
@@ -279,3 +277,4 @@ class DrawAntsTool extends WorldEditTool {
         }
     }
 }
+DrawAntsTool.displayName = 'Draw Ants';
