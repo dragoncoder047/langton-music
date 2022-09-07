@@ -20,7 +20,7 @@ class Breeder {
         var allCases = {};
         for (var case_ of cases.childNodes) {
             if (checknode(case_, 'case', 'breed')) continue;
-            var state = checkint(case_, 'state', 'case', 1);
+            var state = checkint(case_, 'state', 'case', 1, false);
             var cell = checkint(case_, 'cell', 'case');
             var fixedCase = [];
             for (var action of case_.childNodes) {

@@ -1,10 +1,10 @@
-function checkattr(node, attr, tag, fallback = null) {
-    if (fallback === null && (!node.hasAttribute(attr) || node.getAttribute(attr) === '')) throw `Need attribute ${attr} on <${tag}>`;
+function checkattr(node, attr, tag, fallback = null, required = true) {
+    if (required && (!node.hasAttribute(attr) || node.getAttribute(attr) === '')) throw `Need attribute ${attr} on <${tag}>`;
     return node.getAttribute(attr) ?? fallback;
 }
 
-function checkint(node, attr, tag, fallback = null) {
-    var x = checkattr(node, attr, tag, fallback);
+function checkint(node, attr, tag, fallback = null, required = true) {
+    var x = checkattr(node, attr, tag, fallback, required);
     var xn = parseInt(x);
     if (isNaN(x)) throw `Attribute ${attr} on <${tag}> is not an integer: ${x}`;
     return xn ?? fallback;
@@ -35,9 +35,9 @@ function loadWorld(text, antSpecies, world, breeder) {
     var ants = [];
     for (var a of xml.querySelectorAll('ant')) {
         var breed = checkattr(a, 'breed', 'ant');
-        var id = checkattr(a, 'id', 'ant', undefined);
+        var id = checkattr(a, 'id', 'ant', undefined, false);
         var dir = checkint(a, 'dir', 'ant');
-        var state = checkint(a, 'state', 'ant', 1);
+        var state = checkint(a, 'state', 'ant', 1, false);
         var x = checkint(a, 'x', 'ant');
         var y = checkint(a, 'y', 'ant');
         var ant = breeder.createAnt(breed, world, x, y, dir, state, ants, id);
@@ -48,8 +48,8 @@ function loadWorld(text, antSpecies, world, breeder) {
     world.clear();
     for (var rle of xml.querySelectorAll('rle')) {
         var r = rle.textContent;
-        var cx = checkint(rle, 'x', 'rle', 0);
-        var cy = checkint(rle, 'y', 'rle', 0);
+        var cx = checkint(rle, 'x', 'rle', 0, false);
+        var cy = checkint(rle, 'y', 'rle', 0, false);
         world.paste(r, cx, cy);
     }
     return { header, ants };
