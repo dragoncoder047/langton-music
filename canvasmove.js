@@ -67,8 +67,8 @@ class CanvasMove {
             this.y += (rect.height - canvas.height) / 2;
             canvas.width = rect.width * ratio;
             canvas.height = rect.height * ratio;
-            playfield.style.width = `${rect.width - 10}px`;
-            playfield.style.height = `${rect.height - 10}px`;
+            canvas.style.width = `${rect.width - 10}px`;
+            canvas.style.height = `${rect.height - 10}px`;
         });
         window.dispatchEvent(new Event('resize'));
     }
