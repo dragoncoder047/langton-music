@@ -172,7 +172,9 @@ class DragTool extends Tool {
             tm.panxy.x = (tm.panxy.x * factor) - (factor * tm.lastxy.x) + tm.lastxy.x;
             tm.panxy.y = (tm.panxy.y * factor) - (factor * tm.lastxy.y) + tm.lastxy.y;
         }
-        else tm.panxy.y -= xy.y;
-        tm.panxy.x += xy.x;
+        else {
+            tm.panxy.y -= xy.y;
+            tm.panxy.x -= xy.x;
+        }
     }
 }
