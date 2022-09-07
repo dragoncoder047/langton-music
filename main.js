@@ -1,6 +1,6 @@
 try {
     const $ = s => document.querySelector(s);
-    
+
     const playfield = $('#playfield');
     const startStopBtn = $('#startstop');
     const stepBtn = $('#step');
@@ -12,13 +12,13 @@ try {
     const fitBtn = $('#fit');
     const autoFit = $('#autofit');
     const followSelector = $('#follow');
-    
+
     ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.10.0/src-noconflict/');
     const textbox = ace.edit('textbox', { mode: 'ace/mode/xml' });
     textbox.setValue('<langton><breed species="Beetle" name="langton"><case cell="0"><action><command name="put">1</command><command name="rt"></command><command name="fd"></command><command name="play">C2</command></action></case><case cell="1"><action><command name="put">0</command><command name="lt"></command><command name="fd"></command><command name="play">G2</command></action></case></breed><ant breed="langton" x="0" y="0" dir="1"></ant></langton>');
     textbox.setTheme('ace/theme/chrome');
     textbox.clearSelection();
-    
+
     var ctx = playfield.getContext('2d');
     var world = new World(ctx);
     var canvasTools = new CanvasToolsManager(playfield, $('#toolselect'), $('#tooloption'), [
@@ -28,12 +28,12 @@ try {
     var interpolations = [];
     var ants = [];
     var breeder = new Breeder();
-    
+
     function showStatus(text, color = 'black') {
         statusBar.value = text;
         statusBar.style.color = color;
     }
-    
+
     function runEnable(canRun) {
         if (canRun) {
             startStopBtn.removeAttribute('disabled');
@@ -43,7 +43,7 @@ try {
             stepBtn.setAttribute('disabled', true);
         }
     }
-    
+
     function render() {
         canvasTools.drawTransformed(() => {
             canvasTools.clear();
@@ -59,7 +59,7 @@ try {
                 node.remove();
         })
         ants.forEach(ant => {
-            if (!followSelector.childNodes.some(node => node.textContent === ant.id)) {
+            if (![].some.call(followSelector.childNodes, node => node.textContent === ant.id)) {
                 var n = document.createElement('option');
                 n.textContent = ant.id;
                 followSelector.append(n);
@@ -69,9 +69,9 @@ try {
         requestAnimationFrame(render)
     }
     render();
-    
+
     var running = false;
-    
+
     function start() {
         if (!running) {
             running = true;
@@ -80,26 +80,26 @@ try {
         startStopBtn.textContent = 'Pause';
         showStatus('Running...');
     }
-    
+
     function stop() {
         running = false;
         startStopBtn.textContent = 'Resume';
         showStatus('Paused.');
     }
-    
+
     function step() {
         stop();
         tick();
     }
-    
+
     function togglePlayPause() {
         if (running) stop();
         else start();
     }
-    
+
     startStopBtn.addEventListener('click', togglePlayPause);
     stepBtn.addEventListener('click', step);
-    
+
     function tick() {
         try {
             ants.slice().forEach(ant => ant.tick());
@@ -133,7 +133,7 @@ try {
         followAnt(followSelector.value);
         if (running) setTimeout(tick, 60000 / (header.bpm ?? 240));
     }
-    
+
     function load() {
         stop();
         header.stepCount = 0;
@@ -157,17 +157,17 @@ try {
         showStatus('Press START.');
         runEnable(true);
         fit();
-    
+
     }
     loadBtn.addEventListener('click', () => Tone.start(), { once: true });
     loadBtn.addEventListener('click', load);
     load();
-    
+
     function center(cellX, cellY) {
         canvasTools.panxy.x = -cellX * world.cellSize * canvasTools.zoom + playfield.width / 2;
         canvasTools.panxy.y = -cellY * world.cellSize * canvasTools.zoom + playfield.height / 2;
     }
-    
+
     function fit() {
         var bbox = world.bbox(ants);
         var middle = [(bbox.tl[0] + bbox.br[0]) / 2, (bbox.tl[1] + bbox.br[1]) / 2];
@@ -179,7 +179,7 @@ try {
     }
     fitBtn.addEventListener('click', fit);
     fit();
-    
+
     function followAnt(antID) {
         if (!antID) {
             return;
@@ -188,7 +188,7 @@ try {
             center(ant.x, ant.y);
         }
     }
-    
+
     function dump() {
         try {
             stop();
@@ -204,7 +204,7 @@ try {
         }
     }
     dumpBtn.addEventListener('click', dump);
-    
+
     function fitace() {
         setTimeout(() => {
             var rect = $('#textbox').parentElement.getBoundingClientRect();
@@ -212,9 +212,9 @@ try {
             textbox.resize(true);
         }, 0);
     }
-    
+
     window.addEventListener('resize', fitace);
-    
+
     window.addEventListener('hashchange', () => {
         var where = '#statuswrapper'
         if (location.hash === '#dump') {
@@ -225,7 +225,7 @@ try {
         fitace();
     });
     if (location.hash === '#dump') window.dispatchEvent(new Event('hashchange'));
-    
+
 } catch (error) {
     alert(error);
 }

@@ -1,21 +1,3 @@
-const M_LEFT = 0b000000001;
-const M_RIGHT = 0b000000010;
-const M_WHEEL = 0b000000100;
-const M_BACK = 0b000001000;
-const M_FORWARD = 0b000010000;
-const K_ALT = 0b000100000;
-const K_CTRL = 0b001000000;
-const K_META = 0b010000000;
-const K_SHIFT = 0b100000000;
-function makeModifiers(e) {
-    var out = e.buttons || 0;
-    if (e.altKey) out |= K_ALT;
-    if (e.ctrlKey) out |= K_CTRL;
-    if (e.metaKey) out |= K_META;
-    if (e.shiftKey) out |= K_SHIFT;
-    return out;
-}
-
 class CanvasToolsManager {
     constructor(canvas, toolSelector, toolContainer, tools = []) {
         this.canvas = canvas;
@@ -121,7 +103,9 @@ class CanvasToolsManager {
     }
     event(e, name, point) {
         var tool = this.tools[this.activeToolIndex];
-        var cancel = tool[name](this, point, makeModifiers(e), e);
+        var fun = tool[name];
+        if (typeof fun !== 'function') return;
+        var cancel = fun.call(tool, this, point, makeModifiers(e), e);
         if (cancel) e.preventDefault();
     }
     transformMousePoint(pt) {
@@ -133,6 +117,24 @@ class CanvasToolsManager {
         this.tools[toolIndex].activate(this.toolContainer);
         this.activeToolIndex = toolIndex;
     }
+}
+
+const M_LEFT = 0b000000000001;
+const M_RIGHT = 0b00000000010;
+const M_WHEEL = 0b00000000100;
+const M_BACK = 0b000000001000;
+const M_FORWARD = 0b000010000;
+const K_ALT = 0b0000000100000;
+const K_CTRL = 0b000001000000;
+const K_META = 0b000010000000;
+const K_SHIFT = 0b00100000000;
+function makeModifiers(e) {
+    var out = e.buttons || 0;
+    if (e.altKey) out |= K_ALT;
+    if (e.ctrlKey) out |= K_CTRL;
+    if (e.metaKey) out |= K_META;
+    if (e.shiftKey) out |= K_SHIFT;
+    return out;
 }
 
 // base class
