@@ -64,8 +64,8 @@ class CanvasToolsManager {
         this.ctx.imageSmoothingEnabled = false;
         window.addEventListener('resize', () => {
             var rect = canvas.parentElement.getBoundingClientRect();
-            canvas.width = (rect.width * ratio) - 10;
-            canvas.height = (rect.height * ratio) - 10;
+            canvas.width = (rect.width - 10) * ratio;
+            canvas.height = (rect.height - 10) * ratio;
             canvas.style.width = `${rect.width - 10}px`;
             canvas.style.height = `${rect.height - 10}px`;
         });
