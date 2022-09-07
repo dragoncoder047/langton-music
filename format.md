@@ -133,6 +133,8 @@ Otherwise this is just the same as Golly RLE format:
 
 ### `Ant` (base class for all)
 
+(Do note that the parenthesis notation here is used only to save space. `foo(bar)` would really be written `<command name="foo">bar</command>`.)
+
 | Command | What it does |
 |:-------:|:-------------|
 | `fd(num)`, `bk(num)` | Moves forward or that many cells. Defaults to 1 if argument is omitted. |
