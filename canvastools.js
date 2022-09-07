@@ -157,6 +157,7 @@ class Tool {
 class DragTool extends Tool {
     displayName = 'Drag'
     constructor(zoomFactor = 1.01) {
+        super();
         this.zoomFactor = zoomFactor;
     }
     onDrag(tm, xy, mod) {
