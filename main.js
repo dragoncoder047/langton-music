@@ -54,6 +54,7 @@ try {
         antsCounter.textContent = ants.length;
         var selectedAnt = followSelector.value;
         followSelector.childNodes.forEach(node => {
+            if (node.value === '') return;
             if (!ants.some(ant => ant.id === node.textContent))
                 node.remove();
         })

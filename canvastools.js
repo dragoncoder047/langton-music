@@ -94,7 +94,7 @@ class CanvasToolsManager {
             var t = this.tools[i];
             var e = document.createElement('option');
             e.setAttribute('value', i);
-            e.textContent = t.constructor.displayName;
+            e.textContent = t.displayName;
             this.toolSelector.append(e);
         }
         this.toolSelector.addEventListener('change', () => {
