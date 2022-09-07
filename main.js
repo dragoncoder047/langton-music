@@ -24,7 +24,7 @@ var ctx = playfield.getContext('2d');
 var world = new World(ctx);
 var canvasTools = new CanvasToolsManager(playfield, $('#toolselect'), $('#tooloption'), [
     new DragTool(),
-    new WorldEditTool(world),
+    new DrawCellsTool(world),
     new DrawAntsTool(world, breeder, ants),
 ]);
 var header = { stepCount: 0 };

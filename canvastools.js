@@ -199,7 +199,7 @@ class DrawCellsTool extends WorldEditTool {
     constructor(world) {
         super(world);
         this.element.innerHTML = '<label>Cell State: <input type="number" min="0" step="1"></input></label>';
-        this.input = this.element.querySelectorAll('input');
+        this.input = this.element.querySelector('input');
         this.isErasing = false;
     }
     onClick(tm, xy, mod) {
@@ -221,14 +221,15 @@ class DrawCellsTool extends WorldEditTool {
 }
 
 class DrawAntsTool extends WorldEditTool {
+    displayName = 'Draw Ants';
     constructor(world, breeder, antsList) {
         super(world);
         this.breeder = breeder;
         this.antsList = antsList;
         this.element.innerHTML = '<label>Breed: <select class="bsel"></select></label> <label>State: <input type="number" min="0" step="1"></input></label> <label>Direction: <select class="dirsel"><option value="0">North</option><option value="1">East</option><option value="2">South</option><option value="3">West</option></select></label>';
-        this.breedSelect = this.element.querySelectorAll('.bsel');
-        this.stateSelect = this.element.querySelectorAll('input');
-        this.direcSelect = this.element.querySelectorAll('.dirsel');
+        this.breedSelect = this.element.querySelector('.bsel');
+        this.stateSelect = this.element.querySelector('input');
+        this.direcSelect = this.element.querySelector('.dirsel');
         // do some monkey patching
         var oldBreederEmpty = breeder.empty.bind(breeder);
         var oldBreederAddBreed = breeder.addBreed.bind(breeder);
