@@ -53,13 +53,13 @@ class World {
             minY = Math.min(minY, ant.y); maxY = Math.max(maxY, ant.y);
             got = true;
         }
-        if (!got) return { tl: [0, 0], br: [0, 0] };
-        console.log({ tl: [minX, minY], br: [maxX, maxY] });
-        return { tl: {x: minX, y: minY}, br: {x: maxX, y: maxY} };
+        if (!got) return { tl: { x: 0, y: 0 }, br: { x: 0, y: 0 } };
+        console.log({ tl: { x: minX, y: minY }, br: { x: maxX, y: maxY } });
+        return { tl: { x: minX, y: minY }, br: { x: maxX, y: maxY } };
     }
 
     dump() {
-        var { tl: {x: minX, y: minY}, br: {x: maxX, y: maxY} } = this.bbox([]);
+        var { tl: { x: minX, y: minY }, br: { x: maxX, y: maxY } } = this.bbox([]);
         var uncompressed = '';
         for (var y = minY; y <= maxY; y++) {
             var line = '';
