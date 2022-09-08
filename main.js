@@ -220,11 +220,11 @@ window.addEventListener('resize', fitace);
 
 window.addEventListener('hashchange', () => {
     var where = '#statuswrapper'
-    if (location.hash === '#dump') {
+    if (location.hash === '#editor') {
         dump();
         where = '#dumpstatuswrapper';
     }
     $(where).append(statusBar);
     fitace();
 });
-if (location.hash === '#dump') window.dispatchEvent(new Event('hashchange'));
+if (location.hash === '#editor') window.dispatchEvent(new Event('hashchange'));
