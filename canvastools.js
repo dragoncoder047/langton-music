@@ -13,6 +13,7 @@ class CanvasToolsManager {
         this.toolSelector = toolSelector;
         this.ctx = canvas.getContext('2d');
         this.mouseDown = false;
+        this.timeDown = 0;
         this.panxy = { x: 0, y: 0 };
         this.downxy = { x: 0, y: 0 };
         this.lastxy = { x: 0, y: 0 };
@@ -24,6 +25,7 @@ class CanvasToolsManager {
         canvas.addEventListener('mousedown', e => {
             if (!this.enabled) return;
             this.mouseDown = true;
+            this.timeDown = +new Date();
             this.lastxy = this.downxy = getMousePos(canvas, e);
             this.event(e, 'onMouseDown', this.downxy);
         });
@@ -31,7 +33,7 @@ class CanvasToolsManager {
             if (!this.enabled) return;
             this.mouseDown = false;
             this.event(e, 'onMouseUp', this.lastxy);
-            if (vectorDistance(this.lastxy, this.downxy) < 16) this.event(e, 'onClick', this.downxy);
+            if (vectorDistance(this.lastxy, this.downxy) < 16 && +new Date() - this.timeDown < 0.25) this.event(e, 'onClick', this.downxy);
         });
         canvas.addEventListener('touchmove', e => {
             if (!this.enabled) return;
