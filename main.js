@@ -181,6 +181,7 @@ try {
 $('#save').addEventListener('click', () => {
     try {
         showStatus('Saving...');
+        dump();
         localStorage.setItem('save', textbox.getValue());
         showStatus('Saved to localStorage.', 'green');
     } catch (e) {
