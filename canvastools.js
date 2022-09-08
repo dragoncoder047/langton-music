@@ -40,7 +40,7 @@ class CanvasToolsManager {
                 this.downxy = getMousePos(canvas, e);
                 this.event(e, 'onMouseDown', this.downxy);
             } else {
-                this.event(e, 'onDrag', vectorDifference(getMousePos(canvas, e), this.lastxy));
+                this.event(e, 'onDrag', vMinus(getMousePos(canvas, e), this.lastxy));
             }
             this.lastxy = getMousePos(canvas, e);
         });
@@ -50,7 +50,7 @@ class CanvasToolsManager {
                 this.event(e, 'onMouseOver', getMousePos(canvas, e));
             }
             else {
-                this.event(e, 'onDrag', vectorDifference(getMousePos(canvas, e), this.lastxy));
+                this.event(e, 'onDrag', vMinus(getMousePos(canvas, e), this.lastxy));
             }
             this.lastxy = getMousePos(canvas, e);
         });
@@ -176,18 +176,16 @@ class DragTool extends Tool {
         this.zoomFactor = zoomFactor;
     }
     onDrag(tm, xy, mod) {
-        tm.panxy = vectorSum(tm.panxy, xy);
+        tm.panxy = vPlus(tm.panxy, xy);
     }
     onScroll(tm, xy, mod) {
         if (mod & K_SHIFT) {
-            tm.panxy.y -= xy.y;
-            tm.panxy.x -= xy.x;
+            tm.panxy = vMinus(tm.panxy, xy);
         }
         else {
             var factor = this.zoomFactor ** (-xy.y);
             tm.zoom *= factor;
-            tm.panxy.x = (tm.panxy.x * factor) - (factor * tm.lastxy.x) + tm.lastxy.x;
-            tm.panxy.y = (tm.panxy.y * factor) - (factor * tm.lastxy.y) + tm.lastxy.y;
+            tm.panxy = vPlus(vMinus(vScale(tm.panxy, factor), vScale(tm.lastxy, factor)), tm.lastxy);
         }
     }
 }
@@ -199,7 +197,7 @@ class WorldEditTool extends Tool {
         this.world = world;
     }
     toCellCoords(tm, xy) {
-        var c = vectorScale(tm.transformMousePoint(xy), 1 / this.world.cellSize);
+        var c = vScale(tm.transformMousePoint(xy), 1 / this.world.cellSize);
         return { x: Math.round(c.x), y: Math.round(c.y) };
     }
 }
