@@ -105,6 +105,7 @@ startStopBtn.addEventListener('click', togglePlayPause);
 stepBtn.addEventListener('click', step);
 
 function tick() {
+    if (!running) return;
     try {
         ants.slice().forEach(ant => ant.tick());
         header.stepCount++;
@@ -132,7 +133,7 @@ function tick() {
     }
     if (autoFit.checked && running) fit();
     followAnt(followSelector.value);
-    if (running) setTimeout(tick, 60000 / (header.bpm ?? 240));
+    setTimeout(tick, 60000 / (header.bpm ?? 240));
 }
 
 function load() {
@@ -216,6 +217,7 @@ function followAnt(antID) {
 
 function dump() {
     try {
+        var oldRunning = running;
         stop();
         var h = Object.getOwnPropertyNames(header).map(n => `    <config name="${n}">${header[n]}</config>`).join('\n');
         var b = breeder.dumpBreeds();
@@ -223,6 +225,7 @@ function dump() {
         var r = world.dump(ants);
         textbox.setValue(`<langton>\n${h}\n${b}\n${a}\n    ${r}\n</langton>`);
         textbox.clearSelection();
+        if (oldRunning) start();
     } catch (e) {
         showStatus('Error: ' + e.toString(), 'red');
         throw e;
@@ -243,6 +246,7 @@ window.addEventListener('resize', fitace);
 window.addEventListener('hashchange', () => {
     var where = '#statuswrapper'
     if (location.hash === '#editor') {
+        stop();
         dump();
         where = '#dumpstatuswrapper';
     }
