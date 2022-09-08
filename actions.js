@@ -11,18 +11,26 @@ function save() {
 
 function share() {
     if (location.protocol.startsWith('file')) {
-        showStatus('You must use the Web version to share.', 'red');
+        showStatus('You must use the Web version to be able to share.', 'red');
         return;
     }
-    try {
-        dump();
-        var text = textbox.getValue();
-        navigator.share({
-            url: window.location,
-            text,
-            title: 'Langton\'s Ant Music',
-        }).catch(() => showStatus('Error sharing', 'red'));
-    } catch (e) {
-        showStatus('Error sharing', 'red');
+    dump();
+    var text = textbox.getValue();
+    navigator.share({
+        url: window.location,
+        text,
+        title: 'Langton\'s Ant Music',
+    }).catch(() => showStatus('Error sharing', 'red'));
+
+}
+
+function copy(bbcode) {
+    if (location.protocol.startsWith('file')) {
+        showStatus('You must use the Web version to be able to copy.', 'red');
+        return;
     }
+    dump();
+    var text = textbox.getValue();
+    if (bbcode) text = '[code]\n' + text + '\n[/code]\n';
+    navigator.clipboard.writeText(text).catch(() => showStatus('Error copying', 'red'));
 }

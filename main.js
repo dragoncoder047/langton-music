@@ -246,15 +246,21 @@ window.addEventListener('hashchange', () => {
 });
 if (location.hash === '#editor') window.dispatchEvent(new Event('hashchange'));
 
-actionsSelector.addEventListener('change', () =>{
+actionsSelector.addEventListener('change', () => {
     var action = actionsSelector.value;
     actionsSelector.value = '';
-    switch(action) {
+    switch (action) {
         case 'save':
             save();
             break;
         case 'share':
             share();
+            break;
+        case 'copy':
+            copy(false);
+            break;
+        case 'bbcode':
+            copy(true);
             break;
         default:
             showStatus('Error: unimplemented', 'red');
