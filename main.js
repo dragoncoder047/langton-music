@@ -166,19 +166,18 @@ loadBtn.addEventListener('click', () => Tone.start(), { once: true });
 loadBtn.addEventListener('click', load);
 load();
 
-function center(cellX, cellY) {
-    canvasTools.panxy.x = -cellX * world.cellSize * canvasTools.zoom + playfield.width / 2;
-    canvasTools.panxy.y = -cellY * world.cellSize * canvasTools.zoom + playfield.height / 2;
+function center(cell) {
+    canvasTools.panxy = vPlus(vScale(cell, -1 * world.cellSize * canvasTools.zoom), vScale({ x: playfield.width, y: playfield.height }, 0.5));
 }
 
 function fit() {
     var bbox = world.bbox(ants);
-    var middle = [(bbox.tl[0] + bbox.br[0]) / 2, (bbox.tl[1] + bbox.br[1]) / 2];
-    var dimensions = [bbox.br[0] - bbox.tl[0] + 1, bbox.br[1] - bbox.tl[1] + 1]; // +1 to preclude dividing by zero
-    var leftRightZoom = playfield.width / dimensions[0] / world.cellSize;
-    var upDownZoom = playfield.height / dimensions[1] / world.cellSize;
+    var middle = vScale(vPlus(bbox.tl, bbox.br), 0.5);
+    var dimensions = vPlus({ x: 1, y: 1 }, vMinus(bbox.br, bbox.tl)); // +1 to preclude dividing by zero
+    var leftRightZoom = playfield.width / dimensions.x / world.cellSize;
+    var upDownZoom = playfield.height / dimensions.y / world.cellSize;
     canvasTools.zoom = Math.min(upDownZoom, leftRightZoom);
-    center(middle[0], middle[1]);
+    center(middle);
 }
 fitBtn.addEventListener('click', fit);
 fit();
@@ -188,7 +187,7 @@ function followAnt(antID) {
         return;
     } else {
         var ant = ants.filter(ant => ant.id === antID)[0];
-        center(ant.x, ant.y);
+        center(ant);
     }
 }
 

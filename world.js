@@ -55,11 +55,11 @@ class World {
         }
         if (!got) return { tl: [0, 0], br: [0, 0] };
         console.log({ tl: [minX, minY], br: [maxX, maxY] });
-        return { tl: [minX, minY], br: [maxX, maxY] };
+        return { tl: {x: minX, y: minY}, br: {x: maxX, y: maxY} };
     }
 
     dump() {
-        var { tl: [minX, minY], br: [maxX, maxY] } = this.bbox([]);
+        var { tl: {x: minX, y: minY}, br: {x: maxX, y: maxY} } = this.bbox([]);
         var uncompressed = '';
         for (var y = minY; y <= maxY; y++) {
             var line = '';
