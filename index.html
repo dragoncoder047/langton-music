@@ -64,63 +64,58 @@
                 <div class="flex-row">
                     <span class="expanding">
                         <h1>Formatting</h1>
+
+                        <h1>Langton-Music Format</h1>
                     </span>
                     <p style="text-align: right;"><a href="#" onclick="history.back()">X</a></p>
                 </div>
                 <div class="scroller expanding">
-                    <div id="help" class="popover">
-                        <div class="flex-column">
-                            <div class="flex-row">
-                                <span class="expanding">
-                                    <h1>Langton-Music Format</h1>
-                                </span>
-                                <p style="text-align: right;"><a href="#" onclick="history.back()">X</a></p>
-                            </div>
-                            <div class="scroller expanding">
-                                <h2>Overview</h2>
-                                <p>The format is based on XML.</p>
-                                <p>The entire document is enclosed in <code>&lt;langton&gt;</code> tags.</p>
-                                <p>Then there can be 4 things inside that:</p>
-                                <ul>
-                                    <li><code>&lt;config&gt;</code> tags: for header configuration values</li>
-                                    <li><code>&lt;breed&gt;</code> tags: Defining the ant breeds</li>
-                                    <li><code>&lt;ant&gt;</code> tags: instantiating (using) the ant</li>
-                                    <li><code>&lt;rle&gt;</code> tags: RLE data to specify the cells on the grid.</li>
-                                </ul>
-                                <p>Addidtionally, because it's XML, you can put comments anywhere you like by using
-                                    <code>&lt;!-- --&gt;</code>.</p>
-                                <h2>Header - <code>&lt;config&gt;</code> tags</h2>
-                                <p>This is pretty simple. Each tag is formatted like this:
-                                    <code>&lt;config name="KEY"&gt;VALUE&lt;/config&gt;</code></p>
-                                <h3>Supported Header Options</h3>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th style="text-align:center">Option (<code>name</code> attribute)</th>
-                                            <th style="text-align:left">Function (content)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td style="text-align:center"><code>bpm</code></td>
-                                            <td style="text-align:left">Controls maximum beats per minute of playback.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>stepCount</code></td>
-                                            <td style="text-align:left">Doesn't really do anything, it just changes the initial
-                                                step number from the default zero when you press LOAD. Useful for
-                                                restoring from a dump.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>#blah</code></td>
-                                            <td style="text-align:left">An arbitrary interpolation value (see below).</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <h2>Ant Breeds - <code>&lt;breed&gt;</code> tag</h2>
-                                <p>This is a little complicated. Let's start with an example, classic Langton's
-                                    Ant:</p>
-                                <pre><code class="language-xml">
+                    <h2>Overview</h2>
+                    <p>The format is based on XML.</p>
+                    <p>The entire document is enclosed in <code>&lt;langton&gt;</code> tags.</p>
+                    <p>Then there can be 4 things inside that:</p>
+                    <ul>
+                        <li><code>&lt;config&gt;</code> tags: for header configuration values</li>
+                        <li><code>&lt;breed&gt;</code> tags: Defining the ant breeds</li>
+                        <li><code>&lt;ant&gt;</code> tags: instantiating (using) the ant</li>
+                        <li><code>&lt;rle&gt;</code> tags: RLE data to specify the cells on the grid.</li>
+                    </ul>
+                    <p>Addidtionally, because it's XML, you can put comments anywhere you like by using
+                        <code>&lt;!-- --&gt;</code>.
+                    </p>
+                    <h2>Header - <code>&lt;config&gt;</code> tags</h2>
+                    <p>This is pretty simple. Each tag is formatted like this:
+                        <code>&lt;config name="KEY"&gt;VALUE&lt;/config&gt;</code>
+                    </p>
+                    <h3>Supported Header Options</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="text-align:center">Option (<code>name</code> attribute)</th>
+                                <th style="text-align:left">Function (content)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="text-align:center"><code>bpm</code></td>
+                                <td style="text-align:left">Controls maximum beats per minute of playback.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>stepCount</code></td>
+                                <td style="text-align:left">Doesn't really do anything, it just changes the initial
+                                    step number from the default zero when you press LOAD. Useful for
+                                    restoring from a dump.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>#blah</code></td>
+                                <td style="text-align:left">An arbitrary interpolation value (see below).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h2>Ant Breeds - <code>&lt;breed&gt;</code> tag</h2>
+                    <p>This is a little complicated. Let's start with an example, classic Langton's
+                        Ant:</p>
+                    <pre><code class="language-xml">
 &lt;breed species="Ant" name="langton"&gt;
     &lt;case cell="0"&gt;
         &lt;action&gt;
@@ -138,334 +133,334 @@
     &lt;/case&gt;
 &lt;/breed&gt;
 </code></pre>
-                                <p>Each "breed" of ant is enclosed in <code>&lt;breed&gt;</code> tags. The
-                                    <code>species</code> attribute determines what commands are available, and the
-                                    <code>name</code> attribute gives the ant breed a name so it can be referred to
-                                    later on.</p>
-                                <p>Inside the <code>&lt;breed&gt;</code>, there are one or more
-                                    <code>&lt;case&gt;</code>s. The <code>&lt;case&gt;</code>s each have a
-                                    <code>cell</code> attribute and a <code>state</code> attribute that determines when
-                                    the case is applied - <code>state</code> is the <em>internal</em> state that the ant
-                                    is in, and <code>cell</code> is the <em>external</em> state of the cell the ant is
-                                    sitting on. Both must be numbers; and if <code>state</code> is omitted it defaults
-                                    to 1.</p>
-                                <p>If there is no case for a state:cell pair, the ant will halt and do nothing until
-                                    another ant comes and changes the cell. (Multiple ants can occupy the same cell, and
-                                    must if an ant is to be re-started in this manner, but if two "active"
-                                    ants run into each other, the behavior is not defined.)</p>
-                                <p>Within the <code>&lt;case&gt;</code>s there are <code>&lt;action&gt;</code>s that
-                                    define groups of commands. Each action is queued, and only one action executes per
-                                    tick. Case lookup only occurs when the queue is exhausted. Within the action group,
-                                    all commands execute at once.</p>
-                                <p>Each <code>&lt;command&gt;</code> has a <code>name</code> attribute that is the
-                                    command. In some cases the command needs an argument; this goes inside the tag.</p>
-                                <p>Scroll to the bottom for the list of supported commands and species of ants.</p>
-                                <h3>Interpolations</h3>
-                                <p>Inside each <code>&lt;command&gt;</code>, the parameter can also include
-                                    interpolations.</p>
-                                <p>There are two types of interpolations: fixed and expressions.</p>
-                                <h4>Fixed Interpolations</h4>
-                                <p>These look like <code>#xxx</code>, where <code>xxx</code> is a name. Some names are
-                                    provided by the ant, which take precedence; the rest are user-defined via
-                                    <code>&lt;config&gt;</code>s.</p>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th style="text-align:center">Fixed Interpolation Name</th>
-                                            <th style="text-align:left">Value</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td style="text-align:center"><code>dir</code></td>
-                                            <td style="text-align:left">0, 1, 2, or 3 depending on the ant's direction.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>state</code></td>
-                                            <td style="text-align:left">Whatever state the ant is in.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>blah</code></td>
-                                            <td style="text-align:left">Whatever value <code>#blah</code> is set to in a
-                                                <code>&lt;config&gt;</code>. (<code>blah</code> can be anything.)</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <h4>Expression Interpolations</h4>
-                                <p>These are similar to fixed interpolations: They look like <code>#xxx;</code> - the
-                                    only difference is a semicolon at the end and the <code>xxx</code>'s are an
-                                    expression. Expressions are processed after fixed interpolations; so the former can
-                                    include the latter.</p>
-                                <p>The expression language is a crude stack-based (postfix) language that is somewhat
-                                    like Befunge; it's not Turing-complete, but it should suffice. The
-                                    "returned value" is the top of the stack after the expression is executed.
-                                </p>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th style="text-align:center">Command/Token</th>
-                                            <th style="text-align:left">Function</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td style="text-align:center"><code>0-9</code> number</td>
-                                            <td style="text-align:left">Pushes the arbitrary number to the stack; only integers are
-                                                supported.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>`string`</code></td>
-                                            <td style="text-align:left">Pushes the arbitrary string between the backticks.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>'</code></td>
-                                            <td style="text-align:left">No-op. Useful for separating numbers (the parser is greedy
-                                                so it needs a non-digit character to stop it).</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>\</code></td>
-                                            <td style="text-align:left">Swap top two items on the stack.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>$</code></td>
-                                            <td style="text-align:left">Drops the top item.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>:</code></td>
-                                            <td style="text-align:left">Duplicates the top item.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>?</code></td>
-                                            <td style="text-align:left">Pushes a random integer from 0 to the top number minus 1.
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>%</code></td>
-                                            <td style="text-align:left">Pushes second number mod top number.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>*</code></td>
-                                            <td style="text-align:left">Pushes second number times top number.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>/</code></td>
-                                            <td style="text-align:left">Pushes second number divided by top number.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>+</code></td>
-                                            <td style="text-align:left">Pushes second number plus top number.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>-</code></td>
-                                            <td style="text-align:left">Pushes second number minus top number.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>~</code></td>
-                                            <td style="text-align:left">Pushes negation of top number. Shortcut for
-                                                <code>,0\-</code>.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>|</code></td>
-                                            <td style="text-align:left">Pushes second number bitwise or top number.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>&amp;</code></td>
-                                            <td style="text-align:left">Pushes second number bitwise and top number.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>^</code></td>
-                                            <td style="text-align:left">Pushes second number bitwise xor top number.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>&lt;</code></td>
-                                            <td style="text-align:left">Pushes true or false depending on if second number is less
-                                                than the top number.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>&gt;</code></td>
-                                            <td style="text-align:left">Pushes true or false depending on if second number is
-                                                greater than the top number.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>=</code></td>
-                                            <td style="text-align:left">Pushes true or false depending on if second number is equal
-                                                to the top number.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>@</code></td>
-                                            <td style="text-align:left">Pushes the third number if the first is true, otherwise the
-                                                second.</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <p>An (incomplete) test suite is available at <a
-                                        href="https://dragoncoder047.github.io/langton-music/interpoltest.html">https://dragoncoder047.github.io/langton-music/interpoltest.html</a>.
-                                </p>
-                                <h2>Actual Ants - <code>&lt;ant&gt;</code> tag</h2>
-                                <p>Ants are simpler and do not have any contents.</p>
-                                <p>A full <code>&lt;ant&gt;</code> looks like this:
-                                    <code>&lt;ant breed="langton" id="ant1" state="1" dir="1" x="0" y="0"&gt;&lt;/ant&gt;</code>.
-                                </p>
-                                <ul>
-                                    <li><code>breed</code> is the breed of ant, which references a
-                                        <code>&lt;breed&gt;</code> elsewhere.</li>
-                                    <li><code>id</code> is the "name" of the ant as it appears in the
-                                        "Track Ant" pulldown menu. If this is not supplied. a random one will
-                                        be generated automatically.</li>
-                                    <li><code>state</code> is the initial state of the ant; if omitted it defults to 1.
-                                    </li>
-                                    <li><code>dir</code> is the direction of the ant; it is 0, 1, 2, or 3.</li>
-                                    <li><code>x</code> and <code>y</code> are the position of the ant.</li>
-                                </ul>
-                                <h2>Cell Data - <code>&lt;rle&gt;</code> tag</h2>
-                                <p>This is almost like Golly's RLE format, but it has some differeces. First, there
-                                    is no <code>x = N, y = N, rule = N</code> header line per se. The metadata (x- and
-                                    y-offset) is stored in the <code>offsetx</code> and <code>offsety</code> attributes
-                                    of the <code>&lt;rle&gt;</code> tag, and default to 0 if omitted.</p>
-                                <p>Otherwise this is just the same as Golly RLE format:</p>
-                                <blockquote>
-                                    <p>For rules with more than two states, a "." represents a zero state;
-                                        states 1..24 are represented by "A".."X", states 25..48 by
-                                        "pA".."pX", states 49..72 by "qA".."qX",
-                                        and on up to states 241..255 represented by "yA".."yO".</p>
-                                </blockquote>
-                                <h2>Supported Ant Species and Commands</h2>
-                                <h3><code>Ant</code> (base class for all)</h3>
-                                <p>(Do note that the parenthesis notation here is used only to save space.
-                                    <code>foo(bar)</code> would really be written
-                                    <code>&lt;command name="foo"&gt;bar&lt;/command&gt;</code>.)</p>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th style="text-align:center">Command</th>
-                                            <th style="text-align:left">What it does</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td style="text-align:center"><code>fd(num)</code>, <code>bk(num)</code></td>
-                                            <td style="text-align:left">Moves forward or that many cells. Defaults to 1 if argument
-                                                is omitted.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>rt(num)</code>, <code>lt(num)</code></td>
-                                            <td style="text-align:left">Turn right or left that many steps (step = 90 degrees).
-                                                Defaults to 1 if argument is omitted.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>dir(num)</code></td>
-                                            <td style="text-align:left">Set the direction to <code>num</code>. Use of this command
-                                                turns the ant into an <strong>absolute turmite</strong>.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>put(state)</code></td>
-                                            <td style="text-align:left">Set the cell the ant is sitting on to <code>state</code>
-                                                (which must be a number).</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>state(num)</code></td>
-                                            <td style="text-align:left">Sets the ant's internal state to <code>num</code>. Use
-                                                of this command turns the ant into an <strong>turmite</strong>.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>spawn(breed:dir:state)</code></td>
-                                            <td style="text-align:left">Spawn an ant of breed <code>breed</code> here, in state
-                                                <code>state</code> and facing in <code>dir</code>. <code>dir</code> is
-                                                relative, meaning 0 = same way as me, 1 = right turn from me, etc.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>die</code></td>
-                                            <td style="text-align:left">Mark this ant as dead, so it will be removed.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>alert(text)</code></td>
-                                            <td style="text-align:left">Shows the text to the user in an alert box. Useful for
-                                                debugging.</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:center"><code>status(text, color)</code></td>
-                                            <td style="text-align:left">Puts the text in the status bar. Color is optional,
-                                                defaults to black.</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <h3><code>Beetle</code> and <code>Cricket</code></h3>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th style="text-align:center">Command</th>
-                                            <th style="text-align:left">What it does</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td style="text-align:center"><code>play(note:pan)</code></td>
-                                            <td style="text-align:left">Play that note for 1 tick. <code>note</code> can be a
-                                                number, which is a frequency in hertz, or a note name string such as
-                                                <code>Bb5</code> which is converted to the frequency of that piano note.
-                                                Support for stereo pan is experimental - defaults to 0.</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <p><code>Beetle</code> (think: "beat") uses a <a
-                                        href="https://tonejs.github.io/docs/14.7.77/MembraneSynth"><code>Tone.MembraneSynth</code></a>,
-                                    whereas <code>Cricket</code> uses a <a
-                                        href="https://tonejs.github.io/docs/14.7.77/AMSynth"><code>Tone.AMSynth</code></a>.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    <p>Each "breed" of ant is enclosed in <code>&lt;breed&gt;</code> tags. The
+                        <code>species</code> attribute determines what commands are available, and the
+                        <code>name</code> attribute gives the ant breed a name so it can be referred to
+                        later on.
+                    </p>
+                    <p>Inside the <code>&lt;breed&gt;</code>, there are one or more
+                        <code>&lt;case&gt;</code>s. The <code>&lt;case&gt;</code>s each have a
+                        <code>cell</code> attribute and a <code>state</code> attribute that determines when
+                        the case is applied - <code>state</code> is the <em>internal</em> state that the ant
+                        is in, and <code>cell</code> is the <em>external</em> state of the cell the ant is
+                        sitting on. Both must be numbers; and if <code>state</code> is omitted it defaults
+                        to 1.
+                    </p>
+                    <p>If there is no case for a state:cell pair, the ant will halt and do nothing until
+                        another ant comes and changes the cell. (Multiple ants can occupy the same cell, and
+                        must if an ant is to be re-started in this manner, but if two "active"
+                        ants run into each other, the behavior is not defined.)</p>
+                    <p>Within the <code>&lt;case&gt;</code>s there are <code>&lt;action&gt;</code>s that
+                        define groups of commands. Each action is queued, and only one action executes per
+                        tick. Case lookup only occurs when the queue is exhausted. Within the action group,
+                        all commands execute at once.</p>
+                    <p>Each <code>&lt;command&gt;</code> has a <code>name</code> attribute that is the
+                        command. In some cases the command needs an argument; this goes inside the tag.</p>
+                    <p>Scroll to the bottom for the list of supported commands and species of ants.</p>
+                    <h3>Interpolations</h3>
+                    <p>Inside each <code>&lt;command&gt;</code>, the parameter can also include
+                        interpolations.</p>
+                    <p>There are two types of interpolations: fixed and expressions.</p>
+                    <h4>Fixed Interpolations</h4>
+                    <p>These look like <code>#xxx</code>, where <code>xxx</code> is a name. Some names are
+                        provided by the ant, which take precedence; the rest are user-defined via
+                        <code>&lt;config&gt;</code>s.
+                    </p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="text-align:center">Fixed Interpolation Name</th>
+                                <th style="text-align:left">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="text-align:center"><code>dir</code></td>
+                                <td style="text-align:left">0, 1, 2, or 3 depending on the ant's direction.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>state</code></td>
+                                <td style="text-align:left">Whatever state the ant is in.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>blah</code></td>
+                                <td style="text-align:left">Whatever value <code>#blah</code> is set to in a
+                                    <code>&lt;config&gt;</code>. (<code>blah</code> can be anything.)
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h4>Expression Interpolations</h4>
+                    <p>These are similar to fixed interpolations: They look like <code>#xxx;</code> - the
+                        only difference is a semicolon at the end and the <code>xxx</code>'s are an
+                        expression. Expressions are processed after fixed interpolations; so the former can
+                        include the latter.</p>
+                    <p>The expression language is a crude stack-based (postfix) language that is somewhat
+                        like Befunge; it's not Turing-complete, but it should suffice. The
+                        "returned value" is the top of the stack after the expression is executed.
+                    </p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="text-align:center">Command/Token</th>
+                                <th style="text-align:left">Function</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="text-align:center"><code>0-9</code> number</td>
+                                <td style="text-align:left">Pushes the arbitrary number to the stack; only integers are
+                                    supported.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>`string`</code></td>
+                                <td style="text-align:left">Pushes the arbitrary string between the backticks.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>'</code></td>
+                                <td style="text-align:left">No-op. Useful for separating numbers (the parser is greedy
+                                    so it needs a non-digit character to stop it).</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>\</code></td>
+                                <td style="text-align:left">Swap top two items on the stack.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>$</code></td>
+                                <td style="text-align:left">Drops the top item.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>:</code></td>
+                                <td style="text-align:left">Duplicates the top item.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>?</code></td>
+                                <td style="text-align:left">Pushes a random integer from 0 to the top number minus 1.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>%</code></td>
+                                <td style="text-align:left">Pushes second number mod top number.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>*</code></td>
+                                <td style="text-align:left">Pushes second number times top number.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>/</code></td>
+                                <td style="text-align:left">Pushes second number divided by top number.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>+</code></td>
+                                <td style="text-align:left">Pushes second number plus top number.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>-</code></td>
+                                <td style="text-align:left">Pushes second number minus top number.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>~</code></td>
+                                <td style="text-align:left">Pushes negation of top number. Shortcut for
+                                    <code>,0\-</code>.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>|</code></td>
+                                <td style="text-align:left">Pushes second number bitwise or top number.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>&amp;</code></td>
+                                <td style="text-align:left">Pushes second number bitwise and top number.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>^</code></td>
+                                <td style="text-align:left">Pushes second number bitwise xor top number.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>&lt;</code></td>
+                                <td style="text-align:left">Pushes true or false depending on if second number is less
+                                    than the top number.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>&gt;</code></td>
+                                <td style="text-align:left">Pushes true or false depending on if second number is
+                                    greater than the top number.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>=</code></td>
+                                <td style="text-align:left">Pushes true or false depending on if second number is equal
+                                    to the top number.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>@</code></td>
+                                <td style="text-align:left">Pushes the third number if the first is true, otherwise the
+                                    second.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>An (incomplete) test suite is available at <a
+                            href="https://dragoncoder047.github.io/langton-music/interpoltest.html">https://dragoncoder047.github.io/langton-music/interpoltest.html</a>.
+                    </p>
+                    <h2>Actual Ants - <code>&lt;ant&gt;</code> tag</h2>
+                    <p>Ants are simpler and do not have any contents.</p>
+                    <p>A full <code>&lt;ant&gt;</code> looks like this:
+                        <code>&lt;ant breed="langton" id="ant1" state="1" dir="1" x="0" y="0"&gt;&lt;/ant&gt;</code>.
+                    </p>
+                    <ul>
+                        <li><code>breed</code> is the breed of ant, which references a
+                            <code>&lt;breed&gt;</code> elsewhere.
+                        </li>
+                        <li><code>id</code> is the "name" of the ant as it appears in the
+                            "Track Ant" pulldown menu. If this is not supplied. a random one will
+                            be generated automatically.</li>
+                        <li><code>state</code> is the initial state of the ant; if omitted it defults to 1.
+                        </li>
+                        <li><code>dir</code> is the direction of the ant; it is 0, 1, 2, or 3.</li>
+                        <li><code>x</code> and <code>y</code> are the position of the ant.</li>
+                    </ul>
+                    <h2>Cell Data - <code>&lt;rle&gt;</code> tag</h2>
+                    <p>This is almost like Golly's RLE format, but it has some differeces. First, there
+                        is no <code>x = N, y = N, rule = N</code> header line per se. The metadata (x- and
+                        y-offset) is stored in the <code>offsetx</code> and <code>offsety</code> attributes
+                        of the <code>&lt;rle&gt;</code> tag, and default to 0 if omitted.</p>
+                    <p>Otherwise this is just the same as Golly RLE format:</p>
+                    <blockquote>
+                        <p>For rules with more than two states, a "." represents a zero state;
+                            states 1..24 are represented by "A".."X", states 25..48 by
+                            "pA".."pX", states 49..72 by "qA".."qX",
+                            and on up to states 241..255 represented by "yA".."yO".</p>
+                    </blockquote>
+                    <h2>Supported Ant Species and Commands</h2>
+                    <h3><code>Ant</code> (base class for all)</h3>
+                    <p>(Do note that the parenthesis notation here is used only to save space.
+                        <code>foo(bar)</code> would really be written
+                        <code>&lt;command name="foo"&gt;bar&lt;/command&gt;</code>.)
+                    </p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="text-align:center">Command</th>
+                                <th style="text-align:left">What it does</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="text-align:center"><code>fd(num)</code>, <code>bk(num)</code></td>
+                                <td style="text-align:left">Moves forward or that many cells. Defaults to 1 if argument
+                                    is omitted.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>rt(num)</code>, <code>lt(num)</code></td>
+                                <td style="text-align:left">Turn right or left that many steps (step = 90 degrees).
+                                    Defaults to 1 if argument is omitted.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>dir(num)</code></td>
+                                <td style="text-align:left">Set the direction to <code>num</code>. Use of this command
+                                    turns the ant into an <strong>absolute turmite</strong>.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>put(state)</code></td>
+                                <td style="text-align:left">Set the cell the ant is sitting on to <code>state</code>
+                                    (which must be a number).</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>state(num)</code></td>
+                                <td style="text-align:left">Sets the ant's internal state to <code>num</code>. Use
+                                    of this command turns the ant into an <strong>turmite</strong>.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>spawn(breed:dir:state)</code></td>
+                                <td style="text-align:left">Spawn an ant of breed <code>breed</code> here, in state
+                                    <code>state</code> and facing in <code>dir</code>. <code>dir</code> is
+                                    relative, meaning 0 = same way as me, 1 = right turn from me, etc.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>die</code></td>
+                                <td style="text-align:left">Mark this ant as dead, so it will be removed.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>alert(text)</code></td>
+                                <td style="text-align:left">Shows the text to the user in an alert box. Useful for
+                                    debugging.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>status(text, color)</code></td>
+                                <td style="text-align:left">Puts the text in the status bar. Color is optional,
+                                    defaults to black.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h3><code>Beetle</code> and <code>Cricket</code></h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="text-align:center">Command</th>
+                                <th style="text-align:left">What it does</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="text-align:center"><code>play(note:pan)</code></td>
+                                <td style="text-align:left">Play that note for 1 tick. <code>note</code> can be a
+                                    number, which is a frequency in hertz, or a note name string such as
+                                    <code>Bb5</code> which is converted to the frequency of that piano note.
+                                    Support for stereo pan is experimental - defaults to 0.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p><code>Beetle</code> (think: "beat") uses a <a
+                            href="https://tonejs.github.io/docs/14.7.77/MembraneSynth"><code>Tone.MembraneSynth</code></a>,
+                        whereas <code>Cricket</code> uses a <a
+                            href="https://tonejs.github.io/docs/14.7.77/AMSynth"><code>Tone.AMSynth</code></a>.
+                    </p>
                 </div>
-                <div id="help" class="popover">
-                    <div class="flex-column">
-                        <div class="flex-row">
-                            <span class="expanding">
-                                <h1>Help</h1>
-                            </span>
-                            <p style="text-align: right;"><a href="#" onclick="history.back()">X</a></p>
-                        </div>
-                        <div class="scroller expanding">
-                            <h2>Drag Tool</h2>
-                            <p>This allows you to pan around the world and zoom in and out. Click and drag to pan in any
-                                direction, and scroll up and down to zoom.</p>
-                            <p>If you hold down <small>SHIFT</small> this will disable zoom, and it will instead pan up
-                                and
-                                down. If you have a mouse that supports left-right scrolling as well (such as a trackpad
-                                or
-                                Apple Magic Mouse) you can scroll to pan left and right too.</p>
-                            <h2>Draw Cells tool</h2>
-                            <p>This lets you draw cells under the ants to change whet they do. Enter a cell state in the
-                                box,
-                                and draw it onto the canvas.</p>
-                            <p>If you start drawing by clicking on the same cell state as the one selected in the box,
-                                you will
-                                begin erasing the cells and setting them to state 0.</p>
-                            <p>If you hold down <small>SHIFT</small> and click on a cell, it will become an eyedropper
-                                tool and
-                                update the cell state in the box with the one you clicked on instead of drawing.</p>
-                            <h2>Draw Ants tool</h2>
-                            <p>Like the Draw Cells tool, this tool allows you to place ants. Select a breed, state, and
-                                direction, and click on the canvas to place an ant. (You can't drag to place multiple
-                                ants at
-                                once; I might add this in the future.)</p>
-                            <p>You can't edit the behavior of the ants with this tool; for that, you will have to use
-                                the raw
-                                XML <a href="#editor">editor</a>.</p>
-                            <p>If you hold down <small>SHIFT</small> and click on an ant, it become an eyedropper and
-                                update the
-                                ant value pickers similar to the Draw Cells tool.</p>
-                            <p>If you hold down <small>CTRL</small> and click on an ant, the ant will be removed.</p>
-                        </div>
-                    </div>
+            </div>
+        </div>
+        <div id="help" class="popover">
+            <div class="flex-column">
+                <div class="flex-row">
+                    <span class="expanding">
+                        <h1>Help</h1>
+                    </span>
+                    <p style="text-align: right;"><a href="#" onclick="history.back()">X</a></p>
                 </div>
-                <script src="interpol.js"></script>
-                <script src="ant.js"></script>
-                <script src="notes.js"></script>
-                <script src="antsparser.js"></script>
-                <script src="vector.js"></script>
-                <script src="canvastools.js"></script>
-                <script src="world.js"></script>
-                <script src="main.js"></script>
+                <div class="scroller expanding">
+                    <h2>Drag Tool</h2>
+                    <p>This allows you to pan around the world and zoom in and out. Click and drag to pan in any
+                        direction, and scroll up and down to zoom.</p>
+                    <p>If you hold down <small>SHIFT</small> this will disable zoom, and it will instead pan up
+                        and down. If you have a mouse that supports left-right scrolling as well (such as a trackpad
+                        or Apple Magic Mouse) you can scroll to pan left and right too.</p>
+                    <h2>Draw Cells tool</h2>
+                    <p>This lets you draw cells under the ants to change whet they do. Enter a cell state in the
+                        box, and draw it onto the canvas.</p>
+                    <p>If you start drawing by clicking on the same cell state as the one selected in the box,
+                        you will begin erasing the cells and setting them to state 0.</p>
+                    <p>If you hold down <small>SHIFT</small> and click on a cell, it will become an eyedropper
+                        tool and update the cell state in the box with the one you clicked on instead of drawing.</p>
+                    <h2>Draw Ants tool</h2>
+                    <p>Like the Draw Cells tool, this tool allows you to place ants. Select a breed, state, and
+                        direction, and click on the canvas to place an ant. (You can't drag to place multiple
+                        ants at once; I might add this in the future.)</p>
+                    <p>You can't edit the behavior of the ants with this tool; for that, you will have to use
+                        the raw XML <a href="#editor">editor</a>.</p>
+                    <p>If you hold down <small>SHIFT</small> and click on an ant, it become an eyedropper and
+                        update the ant value pickers similar to the Draw Cells tool.</p>
+                    <p>If you hold down <small>CTRL</small> and click on an ant, the ant will be removed.</p>
+                </div>
+            </div>
+        </div>
+        <script src="interpol.js"></script>
+        <script src="ant.js"></script>
+        <script src="notes.js"></script>
+        <script src="antsparser.js"></script>
+        <script src="vector.js"></script>
+        <script src="canvastools.js"></script>
+        <script src="world.js"></script>
+        <script src="main.js"></script>
     </body>
 
 </html>
