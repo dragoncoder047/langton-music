@@ -1,3 +1,11 @@
+function getMousePos(canvas, evt) {
+    var rect = canvas.getBoundingClientRect();
+    return {
+        x: (evt.clientX - rect.left) / (rect.right - rect.left) * canvas.width,
+        y: (evt.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height
+    };
+}
+
 class CanvasToolsManager {
     constructor(canvas, toolSelector, toolContainer, tools = []) {
         this.canvas = canvas;
@@ -16,8 +24,7 @@ class CanvasToolsManager {
         canvas.addEventListener('mousedown', e => {
             if (!this.enabled) return;
             this.mouseDown = true;
-            this.lastxy = { x: e.offsetX, y: e.offsetY };
-            this.downxy = { x: e.offsetX, y: e.offsetY };
+            this.lastxy = this.downxy = getMousePos(canvas, e);
             this.event(e, 'onMouseDown', this.downxy);
         });
         canvas.addEventListener('mouseup', e => {
@@ -30,22 +37,22 @@ class CanvasToolsManager {
             if (!this.enabled) return;
             if (!this.mouseDown) {
                 this.mouseDown = true;
-                this.downxy = { x: e.offsetX, y: e.offsetY };
+                this.downxy = getMousePos(canvas, e);
                 this.event(e, 'onMouseDown', this.downxy);
             } else {
-                this.event(e, 'onDrag', vectorDifference({ x: e.offsetX, y: e.offsetY }, this.lastxy));
+                this.event(e, 'onDrag', vectorDifference(getMousePos(canvas, e), this.lastxy));
             }
-            this.lastxy = { x: e.offsetX, y: e.offsetY };
+            this.lastxy = getMousePos(canvas, e);
         });
         canvas.addEventListener('mousemove', e => {
             if (!this.enabled) return;
             if (!this.mouseDown) {
-                this.event(e, 'onMouseOver', { x: e.offsetX, y: e.offsetY });
+                this.event(e, 'onMouseOver', getMousePos(canvas, e));
             }
             else {
-                this.event(e, 'onDrag', vectorDifference({ x: e.offsetX, y: e.offsetY }, this.lastxy));
+                this.event(e, 'onDrag', vectorDifference(getMousePos(canvas, e), this.lastxy));
             }
-            this.lastxy = { x: e.offsetX, y: e.offsetY };
+            this.lastxy = getMousePos(canvas, e);
         });
         canvas.addEventListener('wheel', e => {
             if (!this.enabled) return;

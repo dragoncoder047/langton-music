@@ -68,6 +68,7 @@ function render() {
             var n = document.createElement('option');
             n.textContent = ant.id;
             followSelector.append(n);
+            runEnable(true);
         }
     });
     followSelector.value = ants.some(ant => ant.id === selectedAnt) ? selectedAnt : '';
