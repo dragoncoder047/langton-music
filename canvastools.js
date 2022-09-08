@@ -64,19 +64,19 @@ class CanvasToolsManager {
         canvas.addEventListener('keyup', e => {
             this.event(e, 'onKeyUp', e.key);
         });
-        // setup canbas resizing
+        // setup canvas resizing
         var dpr = window.devicePixelRatio || 1;
         var bsr = this.ctx.webkitBackingStorePixelRatio || this.ctx.mozBackingStorePixelRatio || this.ctx.msBackingStorePixelRatio || this.ctx.oBackingStorePixelRatio || this.ctx.backingStorePixelRatio || 1;
         var ratio = dpr / bsr;
         this.ctx.imageSmoothingEnabled = false;
         window.addEventListener('resize', () => {
-            var rect = canvas.parentElement.getBoundingClientRect();
-            canvas.width = (rect.width - 10) * ratio;
-            canvas.height = (rect.height - 10) * ratio;
-            canvas.style.width = `${rect.width - 10}px`;
-            canvas.style.height = `${rect.height - 10}px`;
+            canvas.width = (canvas.clientWidth - 10) * ratio;
+            canvas.height = (canvas.clientHeight - 10) * ratio;
         });
         window.dispatchEvent(new UIEvent('resize'));
+        // autofocus
+        canvas.addEventListener('mouseover', () => canvas.focus());
+        canvas.addEventListener('mouseout', () => canvas.blur());
         // setup tool selector
         this.toolSelector.innerHTML = '';
         for (var i = 0; i < this.tools.length; i++) {
@@ -111,7 +111,11 @@ class CanvasToolsManager {
     event(e, name, point) {
         var tool = this.tools[this.activeToolIndex];
         var fun = tool[name];
-        if (typeof fun !== 'function') return;
+        if (typeof fun !== 'function') {
+            tool = this.tools[0];
+            fun = tool[name];
+            if (typeof fun !== 'function') return;
+        }
         var bubble = fun.call(tool, this, point, makeModifiers(e), e);
         if (!bubble) e.preventDefault();
     }
