@@ -13,7 +13,7 @@
             <div class="heading padding">Langton's Ant Music version 2</div>
             <div class="flex-row padding">
                 <div class="expanding" id="statuswrapper"><output id="statusbar"></output></div>
-                <a href="#dump">Edit</a>
+                <a href="#editor">Edit</a>
             </div>
             <div class="flex-row wrapping padding">
                 <label>Step: <output id="stepnum"></output></label>
@@ -40,11 +40,11 @@
                 <canvas id="playfield"></canvas>
             </div>
         </main>
-        <div id="dump" class="popover">
+        <div id="editor" class="popover">
             <div class="flex-column">
                 <div class="flex-row">
                     <div id="dumpstatuswrapper" class="expanding padding"></div>
-                    <div><a href="#">X</a></div>
+                    <div><a href="#" onclick="history.back()">X</a></div>
                 </div>
                 <div class="flex-row"><button id="loadbtn">Load</button><button id="dumpbtn">Dump</button>
                 </div>
@@ -54,6 +54,36 @@
                 <div class="padding flex-row"><a class="expanding"
                         href="https://github.com/dragoncoder047/langton-music/blob/main/format.md">Formatting/syntax
                         guide</a><a class="expanding" href="/langton-music/interpoltest.html">Interpolator test</a>
+                </div>
+            </div>
+        </div>
+        <div id="help" class="popover">
+            <div class="flex-column">
+                <p style="text-align: right;"><a href="#" onclick="history.back()">X</a></p>
+                <div class="scroller expanding">
+                    <h1>Help</h1>
+                    <h2>Drag Tool</h2>
+                    <p>This allows you to pan around the world and zoom in and out. Click and drag to pan in any
+                        direction, and scroll up and down to zoom.</p>
+                    <p>If you hold down <small>SHIFT</small> this will disable zoom, and it will instead pan up and
+                        down. If you have a mouse that supports left-right scrolling as well (such as a trackpad or
+                        Apple Magic Mouse) you can scroll to pan left and right too.</p>
+                    <h2>Draw Cells tool</h2>
+                    <p>This lets you draw cells under the ants to change whet they do. Enter a cell state in the box,
+                        and draw it onto the canvas.</p>
+                    <p>If you start drawing by clicking on the same cell state as the one selected in the box, you will
+                        begin erasing the cells and setting them to state 0.</p>
+                    <p>If you hold down <small>SHIFT</small> and click on a cell, it will become an eyedropper tool and
+                        update the cell state in the box with the one you clicked on instead of drawing.</p>
+                    <h2>Draw Ants tool</h2>
+                    <p>Like the Draw Cells tool, this tool allows you to place ants. Select a breed, state, and
+                        direction, and click on the canvas to place an ant. (You can't drag to place multiple ants at
+                        once; I might add this in the future.)</p>
+                    <p>You can't edit the behavior of the ants with this tool; for that, you will have to use the raw
+                        XML <a href="#editor">editor</a>.</p>
+                    <p>If you hold down <small>SHIFT</small> and click on an ant, it become an eyedropper and update the
+                        ant value pickers similar to the Draw Cells tool.</p>
+                    <p>If you hold down <small>CTRL</small> and click on an ant, the ant will be removed.</p>
                 </div>
             </div>
         </div>
