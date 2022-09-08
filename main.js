@@ -16,17 +16,14 @@ ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.10.0/src-n
 const textbox = ace.edit('textbox', { mode: 'ace/mode/xml' });
 textbox.on('change', () => {
     try {
+        showStatus('Saving...');
         localStorage.setItem('save', textbox.getValue());
         showStatus('Saved to localStorage.', 'green');
     } catch (e) {
         showStatus('Error saving to localStorage', 'red');
     }
 });
-textbox.setValue(`
-<langton><breed species="Beetle" name="langton"><case cell="0"><action><command name="put">1</command><command name="rt"></command><command name="fd"></command><command name="play">C2</command></action></case><case cell="1"><action><command name="put">0</command><command name="lt"></command><command name="fd"></command><command name="play">G2</command></action></case></breed><ant breed="langton" x="0" y="0" dir="1"></ant></langton>
-`);
 textbox.setTheme('ace/theme/chrome');
-textbox.clearSelection();
 
 var ants = [];
 var breeder = new Breeder();
@@ -178,12 +175,18 @@ try {
     var saved = localStorage.getItem('save');
     if (saved) {
         textbox.setValue(saved);
+        load();
         showStatus('Loaded from localStorage.', 'green');
+    } else {
+        textbox.setValue(`
+<langton><breed species="Beetle" name="langton"><case cell="0"><action><command name="put">1</command><command name="rt"></command><command name="fd"></command><command name="play">C2</command></action></case><case cell="1"><action><command name="put">0</command><command name="lt"></command><command name="fd"></command><command name="play">G2</command></action></case></breed><ant breed="langton" x="0" y="0" dir="1"></ant></langton>
+`);
+        load();
     }
+    textbox.clearSelection();
 } catch (e) {
     ;
 }
-load();
 
 function center(cell) {
     canvasTools.panxy = vPlus(vScale(cell, -1 * world.cellSize * canvasTools.zoom), vScale({ x: playfield.width, y: playfield.height }, 0.5));
