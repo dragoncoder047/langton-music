@@ -211,5 +211,5 @@ class Ant {
 }
 
 function randuuid() {
-    return new Array(4).fill().map(() => Math.floor(Math.random() * (2 ** 32)).toString(16)).join('-');
+    return Math.floor(Math.random() * (2 ** 32)).toString(16).padStart(8, '0');
 }
