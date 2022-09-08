@@ -16,12 +16,9 @@ function share() {
     }
     dump();
     var text = textbox.getValue();
-    navigator.share({
-        url: window.location,
-        text,
-        title: 'Langton\'s Ant Music',
-    }).catch(() => showStatus('Error sharing', 'red'));
-
+    navigator.share({ url: window.location, text, title: 'Langton\'s Ant Music' })
+        .catch(() => showStatus('Error sharing', 'red'))
+        .then(() => showStatus('Shared.'));
 }
 
 function copy(bbcode) {
@@ -32,5 +29,7 @@ function copy(bbcode) {
     dump();
     var text = textbox.getValue();
     if (bbcode) text = '[code]\n' + text + '\n[/code]\n';
-    navigator.clipboard.writeText(text).catch(() => showStatus('Error copying', 'red'));
+    navigator.clipboard.writeText(text)
+        .catch(() => showStatus('Error copying', 'red'))
+        .then(() => showStatus('Copied.'));
 }
