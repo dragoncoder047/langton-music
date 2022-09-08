@@ -11,6 +11,7 @@ const statusBar = $('#statusbar');
 const fitBtn = $('#fit');
 const autoFit = $('#autofit');
 const followSelector = $('#follow');
+const actionsSelector = $('#actions');
 
 ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.10.0/src-noconflict/');
 const textbox = ace.edit('textbox', { mode: 'ace/mode/xml' });
@@ -179,16 +180,6 @@ try {
 } catch (e) {
     /* noop */;
 }
-$('#save').addEventListener('click', () => {
-    try {
-        showStatus('Saving...');
-        dump();
-        localStorage.setItem('save', textbox.getValue());
-        showStatus('Saved to localStorage.', 'green');
-    } catch (e) {
-        showStatus('Error saving to localStorage', 'red');
-    }
-});
 
 function center(cell) {
     canvasTools.panxy = vPlus(vScale(cell, -1 * world.cellSize * canvasTools.zoom), vScale({ x: playfield.width, y: playfield.height }, 0.5));
@@ -254,3 +245,18 @@ window.addEventListener('hashchange', () => {
     fitace();
 });
 if (location.hash === '#editor') window.dispatchEvent(new Event('hashchange'));
+
+actionsSelector.addEventListener('change', () =>{
+    var action = actionsSelector.value;
+    actionsSelector.value = '';
+    switch(action) {
+        case 'save':
+            save();
+            break;
+        case 'share':
+            share();
+            break;
+        default:
+            showStatus('Error: unimplemented', 'red');
+    }
+})

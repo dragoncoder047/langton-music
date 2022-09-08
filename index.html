@@ -16,11 +16,17 @@
                 <a href="#editor">Edit</a>&nbsp;&nbsp;-&nbsp;&nbsp;
                 <a href="#xml">Formatting</a>&nbsp;&nbsp;-&nbsp;&nbsp;
                 <a href="#help">Help</a>&nbsp;&nbsp;-&nbsp;&nbsp;
-                <button id="save">Save to localStorage</button>
             </div>
             <div class="flex-row wrapping padding">
-                <label>Step: <output id="stepnum"></output></label>
-                <label>Number of ants: <output id="antscount"></output></label>
+                <div class="flex-row wrapping padding expanding">
+                    <label>Step: <output id="stepnum"></output></label>
+                    <label>Number of ants: <output id="antscount"></output></label>
+                </div>
+                <select id="actions">
+                    <option value="">Actions...</option>
+                    <option value="save">Save</option>
+                    <option value="share">Share</option>
+                </select>
             </div>
             <div class="flex-row wrapping padding">
                 <button id="startstop">Start</button>
@@ -459,6 +465,7 @@
         <script src="vector.js"></script>
         <script src="canvastools.js"></script>
         <script src="world.js"></script>
+        <script src="actions.js"></script>
         <script src="main.js"></script>
     </body>
 
