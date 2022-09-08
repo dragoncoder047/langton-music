@@ -69,7 +69,7 @@ class CanvasToolsManager {
             canvas.style.width = `${rect.width - 10}px`;
             canvas.style.height = `${rect.height - 10}px`;
         });
-        window.dispatchEvent(new Event('resize'));
+        window.dispatchEvent(new UIEvent('resize'));
         // setup tool selector
         this.toolSelector.innerHTML = '';
         for (var i = 0; i < this.tools.length; i++) {
@@ -196,7 +196,7 @@ class WorldEditTool extends Tool {
 class DrawCellsTool extends WorldEditTool {
     constructor(world) {
         super(world);
-        this.element.innerHTML = '<label>Cell State: <input type="number" min="0" step="1" value ="0"></input></label>';
+        this.element.innerHTML = '<label>Cell State: <input type="number" min="0" step="1" value ="1"></input></label>';
         this.input = this.element.querySelector('input');
         this.isErasing = false;
     }

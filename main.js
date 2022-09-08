@@ -51,6 +51,10 @@ function render() {
         world.draw();
         ants.forEach(ant => ant.draw());
     });
+    // test mouse xy lineup
+    ctx.fillStyle = 'red';
+    ctx.rect(canvasTools.lastxy.x - 4, canvasTools.lastxy.y - 4, 8, 8);
+    // END test
     stepCounter.textContent = header.stepCount;
     antsCounter.textContent = ants.length;
     var selectedAnt = followSelector.value;
