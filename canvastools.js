@@ -33,7 +33,7 @@ class CanvasToolsManager {
             if (!this.enabled) return;
             this.mouseDown = false;
             this.event(e, 'onMouseUp', this.lastxy);
-            if (vectorDistance(this.lastxy, this.downxy) < 16 && +new Date() - this.timeDown < 0.25) this.event(e, 'onClick', this.downxy);
+            if (vectorDistance(this.lastxy, this.downxy) < 16 && +new Date() - this.timeDown < 250) this.event(e, 'onClick', this.downxy);
         });
         canvas.addEventListener('touchmove', e => {
             if (!this.enabled) return;
