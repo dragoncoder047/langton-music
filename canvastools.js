@@ -70,8 +70,8 @@ class CanvasToolsManager {
         var ratio = dpr / bsr;
         this.ctx.imageSmoothingEnabled = false;
         window.addEventListener('resize', () => {
-            canvas.width = (canvas.clientWidth - 10) * ratio;
-            canvas.height = (canvas.clientHeight - 10) * ratio;
+            canvas.width = (canvas.parentElement.clientWidth - 10) * ratio;
+            canvas.height = (canvas.parentElement.clientHeight - 10) * ratio;
         });
         window.dispatchEvent(new UIEvent('resize'));
         // autofocus
