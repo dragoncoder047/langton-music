@@ -13,7 +13,7 @@
             <div class="heading padding">Langton's Ant Music version 2</div>
             <div class="flex-row padding">
                 <div class="expanding" id="statuswrapper"><output id="statusbar"></output></div>
-                <a href="#editor">Edit</a> -
+                <a href="#editor">Edit</a>&nbsp;&nbsp;-&nbsp;&nbsp;
                 <a href="#help">Help</a>
             </div>
             <div class="flex-row wrapping padding">
@@ -52,17 +52,19 @@
                 <div class="expanding">
                     <div id="textbox"></div>
                 </div>
-                <div class="padding flex-row"><a class="expanding"
+                <div class="padding flex-row distribute"><a
                         href="https://github.com/dragoncoder047/langton-music/blob/main/format.md">Formatting/syntax
-                        guide</a><a class="expanding" href="/langton-music/interpoltest.html">Interpolator test</a>
+                        guide</a><a href="/langton-music/interpoltest.html">Interpolator test</a>
                 </div>
             </div>
         </div>
         <div id="help" class="popover">
             <div class="flex-column">
-                <p style="text-align: right;"><a href="#" onclick="history.back()">X</a></p>
+                <div class="flex-row">
+                    <span class="expanding"><h1>Help</h1></span>
+                    <p style="text-align: right;"><a href="#" onclick="history.back()">X</a></p>
+                </div>
                 <div class="scroller expanding">
-                    <h1>Help</h1>
                     <h2>Drag Tool</h2>
                     <p>This allows you to pan around the world and zoom in and out. Click and drag to pan in any
                         direction, and scroll up and down to zoom.</p>

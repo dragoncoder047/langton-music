@@ -28,7 +28,7 @@ label {
     background: white;
     width: 80%;
     height: 80%;
-    border: 2px solid black;
+    border: 3px solid black;
     padding: 1em;
 }
 
@@ -73,6 +73,11 @@ body {
     flex: 1;
 }
 
+.distribute {
+    justify-content: space-evenly;
+}
+
 .scroller {
     overflow: scroll;
+    border: 1px solid black;
 }
