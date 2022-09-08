@@ -14,15 +14,6 @@ const followSelector = $('#follow');
 
 ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.10.0/src-noconflict/');
 const textbox = ace.edit('textbox', { mode: 'ace/mode/xml' });
-textbox.on('change', () => {
-    try {
-        showStatus('Saving...');
-        localStorage.setItem('save', textbox.getValue());
-        showStatus('Saved to localStorage.', 'green');
-    } catch (e) {
-        showStatus('Error saving to localStorage', 'red');
-    }
-});
 textbox.setTheme('ace/theme/chrome');
 
 var ants = [];
@@ -185,8 +176,17 @@ try {
     }
     textbox.clearSelection();
 } catch (e) {
-    ;
+    /* noop */;
 }
+$('#save').addEventListener('click', () => {
+    try {
+        showStatus('Saving...');
+        localStorage.setItem('save', textbox.getValue());
+        showStatus('Saved to localStorage.', 'green');
+    } catch (e) {
+        showStatus('Error saving to localStorage', 'red');
+    }
+});
 
 function center(cell) {
     canvasTools.panxy = vPlus(vScale(cell, -1 * world.cellSize * canvasTools.zoom), vScale({ x: playfield.width, y: playfield.height }, 0.5));
