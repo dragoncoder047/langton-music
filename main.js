@@ -155,6 +155,11 @@ render();
 var running = false;
 
 /**
+ * @type {boolean}
+ */
+ var GLOBAL_MUTE = false;
+
+/**
  * Starts running
  */
 function start() {
@@ -248,9 +253,11 @@ function load() {
         if (header.bpm < 1200) {
             Tone.Transport.bpm.setValueAtTime(2 * (parseInt(header.bpm) || 240), Tone.now());
             Tone.Transport.start();
+            GLOBAL_MUTE = false;
         } else {
             Tone.Transport.stop();
-            s = 'BPM too high. Sound is disabled.'
+            s = 'BPM too high. Sound is disabled.';
+            GLOBAL_MUTE = true;
         }
     } catch (e) {
         stop();

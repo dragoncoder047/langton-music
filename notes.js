@@ -8,6 +8,7 @@ class Beetle extends Ant {
         this.drum = new Tone.PolySynth(Tone.MembraneSynth).connect(this.panner);
     }
     do_play(arg) {
+        if (GLOBAL_MUTE) return;
         var [_, note, pan] = /([^:]+)(?::([-+\d.]+))?/.exec(arg);
         if (!pan) pan = 0;
         this.panner.pan.setValueAtTime(pan, Tone.now());
@@ -25,6 +26,7 @@ class Cricket extends Ant {
         this.synth = new Tone.PolySynth(Tone.AMSynth).connect(this.panner);
     }
     do_play(arg) {
+        if (GLOBAL_MUTE) return;
         var [_, note, pan] = /([^:]+)(?::([-+\d.]+))?/.exec(arg);
         if (!pan) pan = 0;
         this.panner.pan.setValueAtTime(pan, Tone.now());
