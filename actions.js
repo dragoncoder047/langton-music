@@ -34,7 +34,7 @@ function copy(bbcode) {
         showStatus('You must use the Web version to be able to copy.', 'red');
         return;
     }
-    if (typeof navigator.clipboard !== 'function') {
+    if (!('clipboard' in navigator) || typeof navigator.clipboard.writeText !== 'function') {
         showStatus('Your browser doesn\'t support dynamic copying. Open the editor and copy it.', 'red');
         return;
     }
