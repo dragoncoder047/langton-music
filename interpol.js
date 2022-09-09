@@ -1,3 +1,8 @@
+/**
+ * Processes all the interpolations.
+ * @param {string} expr 
+ * @returns {string}
+ */
 function processExpressions(expr) {
     // find expressions
     while (true) {
@@ -9,6 +14,11 @@ function processExpressions(expr) {
     return expr;
 }
 
+/**
+ * Evaluates the expression.
+ * @param {string} expr The stripped expression.
+ * @returns {string|number}
+ */
 function evalExpression(expr) {
     var s = [];
     while (expr) {
@@ -21,7 +31,7 @@ function evalExpression(expr) {
         else if (match[2]) {
             s.push(match[2]);
         }
-        else if (/[\s']/.test(token)) ; // spaces and ' are noop
+        else if (/[\s']/.test(token)); // spaces and ' are noop
         else {
             var a = s.pop();
             var b = s.pop();

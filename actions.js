@@ -1,3 +1,6 @@
+/**
+ * Save the world state to `localStorage`.
+ */
 function save() {
     try {
         showStatus('Saving...');
@@ -9,6 +12,9 @@ function save() {
     }
 }
 
+/**
+ * Shares the world content useing `navigator.share`.
+ */
 function share() {
     if (location.protocol.startsWith('file')) {
         showStatus('You must use the Web version to be able to share.', 'red');
@@ -29,6 +35,10 @@ function share() {
     }
 }
 
+/**
+ * Copies the world content to the clipboard.
+ * @param {boolean} bbcode Whether the XML should be wrapped in `[code][/code]` tags.
+ */
 function copy(bbcode) {
     if (location.protocol.startsWith('file')) {
         showStatus('You must use the Web version to be able to copy.', 'red');

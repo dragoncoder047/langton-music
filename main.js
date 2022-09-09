@@ -1,39 +1,110 @@
+/**
+ * Selector
+ * @param {string} s Selector
+ * @returns {HTMLElement}
+ */
 const $ = s => document.querySelector(s);
 
+/**
+ * @type {HTMLCanvasElement}
+ */
 const playfield = $('#playfield');
+/**
+ * @type {HTMLButtonElement}
+ */
 const startStopBtn = $('#startstop');
+/**
+ * @type {HTMLButtonElement}
+ */
 const stepBtn = $('#step');
+/**
+ * @type {HTMLOutputElement}
+ */
 const stepCounter = $('#stepnum');
+/**
+ * @type {HTMLOutputElement}
+ */
 const antsCounter = $('#antscount');
+/**
+ * @type {HTMLButtonElement}
+ */
 const loadBtn = $('#loadbtn');
+/**
+ * @type {HTMLButtonElement}
+ */
 const dumpBtn = $('#dumpbtn');
+/**
+ * @type {HTMLOutputElement}
+ */
 const statusBar = $('#statusbar');
+/**
+ * @type {HTMLButtonElement}
+ */
 const fitBtn = $('#fit');
+/**
+ * @type {HTMLInputElement}
+ */
 const autoFit = $('#autofit');
+/**
+ * @type {HTMLSelectElement}
+ */
 const followSelector = $('#follow');
+/**
+ * @type {HTMLSelectElement}
+ */
 const actionsSelector = $('#actions');
 
 ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.10.0/src-noconflict/');
 const textbox = ace.edit('textbox', { mode: 'ace/mode/xml' });
 textbox.setTheme('ace/theme/chrome');
 
+/**
+ * @type {Ant[]}
+ */
 var ants = [];
+/**
+ * @type {Breeder}
+ */
 var breeder = new Breeder();
+/**
+ * @type {CanvasRenderingContext2D}
+ */
 var ctx = playfield.getContext('2d');
+/**
+ * @type {World}
+ */
 var world = new World(ctx);
+/**
+ * @type {CanvasToolsManager}
+ */
 var canvasTools = new CanvasToolsManager(playfield, $('#toolselect'), $('#tooloption'), [
     new DragTool(),
     new DrawCellsTool(world),
     new DrawAntsTool(world, breeder, ants),
 ]);
+/**
+ * @type {object}
+ */
 var header = { stepCount: 0 };
+/**
+ * @type {string[][]}
+ */
 var interpolations = [];
 
+/**
+ * Shows the text in the status bar.
+ * @param {string} text Text to show
+ * @param {string} [color='black'] Color; default is black
+ */
 function showStatus(text, color = 'black') {
     statusBar.value = text;
     statusBar.style.color = color;
 }
 
+/**
+ * Enables or disable sthe Play/Pause and Step buttons if an error occurred of something changed.
+ * @param {boolean} canRun Whether the buttons should be enabled.
+ */
 function runEnable(canRun) {
     if (canRun) {
         startStopBtn.removeAttribute('disabled');
@@ -44,6 +115,9 @@ function runEnable(canRun) {
     }
 }
 
+/**
+ * Render loop function
+ */
 function render() {
     canvasTools.drawTransformed(() => {
         canvasTools.clear();
@@ -75,8 +149,14 @@ function render() {
 }
 render();
 
+/**
+ * @type {boolean}
+ */
 var running = false;
 
+/**
+ * Starts running
+ */
 function start() {
     if (!running) {
         running = true;
@@ -86,17 +166,26 @@ function start() {
     showStatus('Running...');
 }
 
+/**
+ * Pauses running.
+ */
 function stop() {
     running = false;
     startStopBtn.textContent = 'Resume';
     showStatus('Paused.');
 }
 
+/**
+ * Stops, and then runs one tick.
+ */
 function step() {
     stop();
     tick(true);
 }
 
+/**
+ * Toggles play/pause.
+ */
 function togglePlayPause() {
     if (running) stop();
     else start();
@@ -105,6 +194,10 @@ function togglePlayPause() {
 startStopBtn.addEventListener('click', togglePlayPause);
 stepBtn.addEventListener('click', step);
 
+/**
+ * Runs the world one tick.
+ * @param {boolean} force Force run one tick.
+ */
 function tick(force = false) {
     if (!running && !force) return;
     try {
@@ -137,6 +230,9 @@ function tick(force = false) {
     if (!force) setTimeout(tick, 60000 / (header.bpm ?? 240));
 }
 
+/**
+ * Loads the text from the text box and updates the world.
+ */
 function load() {
     stop();
     header.stepCount = 0;
@@ -181,10 +277,17 @@ try {
     /* noop */;
 }
 
+/**
+ * Centers the cell in the viewport.
+ * @param {Vector} cell
+ */
 function center(cell) {
     canvasTools.panxy = vPlus(vScale(cell, -1 * world.cellSize * canvasTools.zoom), vScale({ x: playfield.width, y: playfield.height }, 0.5));
 }
 
+/**
+ * Fits the entire world in the viewport.
+ */
 function fit() {
     var bbox = world.bbox(ants);
     var middle = vScale(vPlus(bbox.tl, bbox.br), 0.5);
@@ -197,6 +300,10 @@ function fit() {
 fitBtn.addEventListener('click', fit);
 fit();
 
+/**
+ * Centers the requested ant in the viewport, if it exists.
+ * @param {string} antID
+ */
 function followAnt(antID) {
     if (!antID) {
         return;
@@ -206,6 +313,9 @@ function followAnt(antID) {
     }
 }
 
+/**
+ * Serializes the entire world state to XML and puts it in the text box.
+ */
 function dump() {
     try {
         var oldRunning = running;
@@ -224,6 +334,9 @@ function dump() {
 }
 dumpBtn.addEventListener('click', dump);
 
+/**
+ * Fits the ace code editor to the box it's in when the box changes size.
+ */
 function fitace() {
     setTimeout(() => {
         var rect = $('#textbox').parentElement.getBoundingClientRect();
