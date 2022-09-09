@@ -1,5 +1,12 @@
-function vectorDistance(p1, p2) {
-    var d = vMinus(p1, p2);
+function vApply(fun, ...vectors) {
+    return { x: fun(...vectors.map(v => v.x)), y: fun(...vectors.map(v => v.y)) };
+}
+
+function vRelMag(p1, p2) {
+    return vMagnitude(vMinus(p1, p2));
+}
+
+function vMagnitude(d) {
     return Math.sqrt((d.x * d.x) + (d.y * d.y));
 }
 

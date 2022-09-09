@@ -33,7 +33,7 @@ class CanvasToolsManager {
             if (!this.enabled) return;
             this.mouseDown = false;
             this.event(e, 'onMouseUp', this.lastxy);
-            if (vectorDistance(this.lastxy, this.downxy) < 16 && +new Date() - this.timeDown < 250) this.event(e, 'onClick', this.downxy);
+            if (vRelMag(this.lastxy, this.downxy) < 16 && +new Date() - this.timeDown < 250) this.event(e, 'onClick', this.downxy);
         });
         canvas.addEventListener('touchmove', e => {
             if (!this.enabled) return;
@@ -113,13 +113,13 @@ class CanvasToolsManager {
     event(e, name, point) {
         var tool = this.tools[this.activeToolIndex];
         var fun = tool[name];
-        if (typeof fun !== 'function') {
+        var unhandled = fun.call(tool, this, point, makeModifiers(e), e);
+        if (unhandled) {
             tool = this.tools[0];
             fun = tool[name];
-            if (typeof fun !== 'function') return;
+            unhandled = fun.call(tool, this, point, makeModifiers(e), e);
         }
-        var bubble = fun.call(tool, this, point, makeModifiers(e), e);
-        if (!bubble) e.preventDefault();
+        if (!unhandled) e.preventDefault();
     }
     transformMousePoint(pt) {
         return { x: (pt.x - this.panxy.x) / this.zoom, y: (pt.y - this.panxy.y) / this.zoom };
