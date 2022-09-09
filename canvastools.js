@@ -91,24 +91,26 @@ class CanvasToolsManager {
         });
         canvas.addEventListener('touchmove', e => {
             if (!this.enabled) return;
+            var xy = getMousePos(canvas, e);
             if (!this.mouseDown) {
                 this.mouseDown = true;
-                this.downxy = getMousePos(canvas, e);
+                this.downxy = xy;
                 this.event(e, 'onMouseDown', this.downxy);
             } else {
-                this.event(e, 'onDrag', vMinus(getMousePos(canvas, e), this.lastxy));
+                this.event(e, 'onDrag', vMinus(xy, this.lastxy));
             }
-            this.lastxy = getMousePos(canvas, e);
+            this.lastxy = xy;
         });
         canvas.addEventListener('mousemove', e => {
             if (!this.enabled) return;
+            var xy = getMousePos(canvas, e);
             if (!this.mouseDown) {
-                this.event(e, 'onMouseOver', getMousePos(canvas, e));
+                this.event(e, 'onMouseOver', xy);
             }
             else {
-                this.event(e, 'onDrag', vMinus(getMousePos(canvas, e), this.lastxy));
+                this.event(e, 'onDrag', vMinus(xy, this.lastxy));
             }
-            this.lastxy = getMousePos(canvas, e);
+            this.lastxy = xy;
         });
         canvas.addEventListener('wheel', e => {
             if (!this.enabled) return;
