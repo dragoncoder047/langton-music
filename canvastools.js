@@ -104,6 +104,7 @@ class CanvasToolsManager {
         canvas.addEventListener('mousemove', e => {
             if (!this.enabled) return;
             var xy = getMousePos(canvas, e);
+            showStatus(xy.x + ', ' + xy.y);
             if (!this.mouseDown) {
                 this.event(e, 'onMouseOver', xy);
             }
