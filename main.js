@@ -94,7 +94,7 @@ function stop() {
 
 function step() {
     stop();
-    tick();
+    tick(true);
 }
 
 function togglePlayPause() {
@@ -105,8 +105,8 @@ function togglePlayPause() {
 startStopBtn.addEventListener('click', togglePlayPause);
 stepBtn.addEventListener('click', step);
 
-function tick() {
-    if (!running) return;
+function tick(force = false) {
+    if (!running && !force) return;
     try {
         ants.slice().forEach(ant => ant.tick());
         header.stepCount++;
@@ -134,7 +134,7 @@ function tick() {
     }
     if (autoFit.checked && running) fit();
     followAnt(followSelector.value);
-    setTimeout(tick, 60000 / (header.bpm ?? 240));
+    if (!force) setTimeout(tick, 60000 / (header.bpm ?? 240));
 }
 
 function load() {
