@@ -235,6 +235,7 @@ function tick(force = false) {
  */
 function load() {
     stop();
+    var s = 'Press START.'
     header.stepCount = 0;
     showStatus('Loading...');
     try {
@@ -244,8 +245,13 @@ function load() {
             if (prop.startsWith('#')) interpolations.push([prop.slice(1), header[prop]]);
         }
         header.stepCount = header.stepCount ?? 0;
-        Tone.Transport.bpm.setValueAtTime(2 * (parseInt(header.bpm) || 240), Tone.now());
-        Tone.Transport.start();
+        if (header.bpm < 1200) {
+            Tone.Transport.bpm.setValueAtTime(2 * (parseInt(header.bpm) || 240), Tone.now());
+            Tone.Transport.start();
+        } else {
+            Tone.Transport.stop();
+            s = 'BPM too high. Sound is disabled.'
+        }
     } catch (e) {
         stop();
         runEnable(false);
@@ -253,7 +259,7 @@ function load() {
         throw e;
     }
     startStopBtn.textContent = 'Start';
-    showStatus('Press START.');
+    showStatus(s);
     runEnable(true);
     fit();
 
