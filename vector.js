@@ -10,7 +10,7 @@
  * @param {Vector[]} vectors
  */
 function vApply(fun, ...vectors) {
-    return { x: fun(...vectors.map(v => v.x)), y: fun(...vectors.map(v => v.y)) };
+    return Object.freeze({ x: fun(...vectors.map(v => v.x)), y: fun(...vectors.map(v => v.y)) });
 }
 
 /**
@@ -39,7 +39,7 @@ function vMagnitude(d) {
  * @returns {Vector}
  */
 function vMinus(p1, p2) {
-    return { x: p1.x - p2.x, y: p1.y - p2.y };
+    return Object.freeze({ x: p1.x - p2.x, y: p1.y - p2.y });
 }
 
 /**
@@ -49,7 +49,7 @@ function vMinus(p1, p2) {
 * @returns {Vector}
 */
 function vPlus(p1, p2) {
-    return { x: p1.x + p2.x, y: p1.y + p2.y };
+    return Object.freeze({ x: p1.x + p2.x, y: p1.y + p2.y });
 }
 
 /**
@@ -59,7 +59,7 @@ function vPlus(p1, p2) {
 * @returns {Vector}
 */
 function vScale(p1, k) {
-    return { x: p1.x * k, y: p1.y * k };
+    return Object.freeze({ x: p1.x * k, y: p1.y * k });
 }
 
 /**
@@ -68,5 +68,5 @@ function vScale(p1, k) {
  * @returns {Vector}
  */
 function vClone(p1) {
-    return { x: p1.x, y: p1.y };
+    return Object.freeze({ x: p1.x, y: p1.y });
 }
