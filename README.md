@@ -1,6 +1,6 @@
 # Langton-Music
 
-[![discussion](https://img.shields.io/badge/discussion-conwaylife.com-blue)](https://conwaylife.com/forums/viewtopic.php?f=11&p=150192) [![pages-build-deployment](https://github.com/dragoncoder047/langton-music/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/dragoncoder047/langton-music/actions/workflows/pages/pages-build-deployment)
+[![discussion](https://img.shields.io/badge/discussion-conwaylife.com-blue)](https://conwaylife.com/forums/viewtopic.php?f=11&p=147432) [![pages-build-deployment](https://github.com/dragoncoder047/langton-music/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/dragoncoder047/langton-music/actions/workflows/pages/pages-build-deployment)
 
 ## Features
 
