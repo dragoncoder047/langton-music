@@ -44,10 +44,10 @@ class Breeder {
             var cell = checkint(case_, 'cell');
             var fixedCase = [];
             for (var action of case_.childNodes) {
-                if (checknode(action, 'case')) continue;
+                if (checknode(action, 'case', 'action')) continue;
                 var fixedAction = [];
                 for (var command of action.childNodes) {
-                    if (checknode(command, 'action')) continue;
+                    if (checknode(command, 'action', 'command')) continue;
                     var commandName = checkattr(command, 'name');
                     var argument = command.textContent;
                     if (typeof klass.prototype[`do_${commandName}`] !== 'function') throw `Ant breed ${breedName}: Unknown command '${commandName}' to species ${klass.name}`;
