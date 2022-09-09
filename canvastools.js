@@ -80,7 +80,8 @@ class CanvasToolsManager {
             if (!this.enabled) return;
             this.mouseDown = true;
             this.timeDown = +new Date();
-            this.lastxy = this.downxy = getMousePos(canvas, e);
+            this.downxy = getMousePos(canvas, e);
+            this.lastxy = vClone(this.downxy);
             this.event(e, 'onMouseDown', this.downxy);
         });
         canvas.addEventListener('mouseup', e => {
@@ -94,12 +95,12 @@ class CanvasToolsManager {
             var xy = getMousePos(canvas, e);
             if (!this.mouseDown) {
                 this.mouseDown = true;
-                this.downxy = xy;
+                this.downxy = vClone(xy);
                 this.event(e, 'onMouseDown', this.downxy);
             } else {
                 this.event(e, 'onDrag', vMinus(xy, this.lastxy));
             }
-            this.lastxy = xy;
+            this.lastxy = vClone(xy);
         });
         canvas.addEventListener('mousemove', e => {
             if (!this.enabled) return;
@@ -111,7 +112,7 @@ class CanvasToolsManager {
             else {
                 this.event(e, 'onDrag', vMinus(xy, this.lastxy));
             }
-            this.lastxy = xy;
+            this.lastxy = vClone(xy);
         });
         canvas.addEventListener('wheel', e => {
             if (!this.enabled) return;

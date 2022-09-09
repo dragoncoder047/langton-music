@@ -61,3 +61,12 @@ function vPlus(p1, p2) {
 function vScale(p1, k) {
     return { x: p1.x * k, y: p1.y * k };
 }
+
+/**
+ * Clone a vector
+ * @param {Vector} p1
+ * @returns {Vector}
+ */
+function vClone(p1) {
+    return { x: p1.x, y: p1.y };
+}
