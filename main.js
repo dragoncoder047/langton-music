@@ -250,8 +250,9 @@ function load() {
             if (prop.startsWith('#')) interpolations.push([prop.slice(1), header[prop]]);
         }
         header.stepCount = header.stepCount ?? 0;
-        if (header.bpm < 1200) {
-            Tone.Transport.bpm.setValueAtTime(2 * (parseInt(header.bpm) || 240), Tone.now());
+        header.bpm = parseInt(header.bpm) || 240;
+        if (header.bpm < 1000) {
+            Tone.Transport.bpm.setValueAtTime(2 * header.bpm, Tone.now());
             Tone.Transport.start();
             GLOBAL_MUTE = false;
         } else {
