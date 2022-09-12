@@ -1,14 +1,21 @@
 /**
  * Finds the mouse position from the event on the canvas.
  * @param {HTMLCanvasElement} canvas The canvas
- * @param {MouseEvent} evt The mouse event to get the coordinates on.
+ * @param {MouseEvent|TouchEvent} evt The mouse event to get the coordinates on.
  * @returns {Vector}
  */
 function getMousePos(canvas, evt) {
     var rect = canvas.getBoundingClientRect();
+    var reportedXY;
+    if (evt.touches) {
+        reportedXY = vScale([].map.call(evt.touches, t => ({ x: t.clientX, y: t.clientY })).reduce(vPlus), 1 / evt.touches.length);
+    }
+    else {
+        reportedXY = { x: evt.clientX, y: evt.clientY };
+    }
     return {
-        x: (evt.clientX - rect.left) / (rect.right - rect.left) * canvas.width,
-        y: (evt.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height
+        x: (reportedXY.x - rect.left) / (rect.right - rect.left) * canvas.width,
+        y: (reportedXY.y - rect.top) / (rect.bottom - rect.top) * canvas.height
     };
 }
 
@@ -77,7 +84,13 @@ class CanvasToolsManager {
         this.activeToolIndex = 0;
         // attach event listeners
         canvas.addEventListener('mousedown', e => {
-            if (!this.enabled) return;
+            this.mouseDown = true;
+            this.timeDown = +new Date();
+            this.downxy = getMousePos(canvas, e);
+            this.lastxy = vClone(this.downxy);
+            this.event(e, 'onMouseDown', this.downxy);
+        });
+        canvas.addEventListener('touchstart', e => {
             this.mouseDown = true;
             this.timeDown = +new Date();
             this.downxy = getMousePos(canvas, e);
@@ -85,13 +98,16 @@ class CanvasToolsManager {
             this.event(e, 'onMouseDown', this.downxy);
         });
         canvas.addEventListener('mouseup', e => {
-            if (!this.enabled) return;
+            this.mouseDown = false;
+            this.event(e, 'onMouseUp', this.lastxy);
+            if (vRelMag(this.lastxy, this.downxy) < 16 && +new Date() - this.timeDown < 250) this.event(e, 'onClick', this.downxy);
+        });
+        canvas.addEventListener('touchend', e => {
             this.mouseDown = false;
             this.event(e, 'onMouseUp', this.lastxy);
             if (vRelMag(this.lastxy, this.downxy) < 16 && +new Date() - this.timeDown < 250) this.event(e, 'onClick', this.downxy);
         });
         canvas.addEventListener('touchmove', e => {
-            if (!this.enabled) return;
             var xy = getMousePos(canvas, e);
             if (!this.mouseDown) {
                 this.mouseDown = true;
@@ -103,7 +119,6 @@ class CanvasToolsManager {
             this.lastxy = vClone(xy);
         });
         canvas.addEventListener('mousemove', e => {
-            if (!this.enabled) return;
             var xy = getMousePos(canvas, e);
             if (!this.mouseDown) {
                 this.event(e, 'onMouseOver', xy);
@@ -114,15 +129,10 @@ class CanvasToolsManager {
             this.lastxy = vClone(xy);
         });
         canvas.addEventListener('wheel', e => {
-            if (!this.enabled) return;
             this.event(e, 'onScroll', { x: e.deltaX, y: e.deltaY });
         });
-        canvas.addEventListener('keydown', e => {
-            this.event(e, 'onKey', e.key);
-        });
-        canvas.addEventListener('keyup', e => {
-            this.event(e, 'onKeyUp', e.key);
-        });
+        canvas.addEventListener('keydown', e => this.event(e, 'onKey', e.key));
+        canvas.addEventListener('keyup', e => this.event(e, 'onKeyUp', e.key));
         // setup canvas resizing
         var dpr = window.devicePixelRatio || 1;
         var bsr = this.ctx.webkitBackingStorePixelRatio || this.ctx.mozBackingStorePixelRatio || this.ctx.msBackingStorePixelRatio || this.ctx.oBackingStorePixelRatio || this.ctx.backingStorePixelRatio || 1;
@@ -187,6 +197,7 @@ class CanvasToolsManager {
      * @param {Vector} point The detail point for the event.
      */
     event(e, name, point) {
+        if (!this.enabled) return;
         var tool = this.tools[this.activeToolIndex];
         var fun = tool[name];
         var unhandled = fun.call(tool, this, point, makeModifiers(e), e);
@@ -277,7 +288,7 @@ class Tool {
      * @param {number} mod 
      * @param {MouseEvent} e 
      */
-     onMouseOver(tm, xy, mod, e) { return true; }
+    onMouseOver(tm, xy, mod, e) { return true; }
     /**
      * Handle mouse click.
      * @abstract
