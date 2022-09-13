@@ -1,14 +1,14 @@
 /**
  * Save the world state to `localStorage`.
  */
-function save() {
+function savelocal() {
     try {
         showStatus('Saving...');
         dump();
         localStorage.setItem('save', textbox.getValue());
         showStatus('Saved to localStorage.', 'green');
     } catch (e) {
-        showStatus('Error saving to localStorage.', 'red');
+        showStatus('Error saving to localStorage: ' + e, 'red');
     }
 }
 
@@ -21,7 +21,7 @@ function share() {
         return;
     }
     if (typeof navigator.share !== 'function') {
-        showStatus('Your browser doesn\'t support dynamic sharing. Open the editor and copy/paste.', 'red');
+        showStatus('Sorry, your browser doesn\'t support the Share API. Open the editor and copy/paste.', 'red');
         return;
     }
     try {
@@ -45,7 +45,7 @@ function copy(bbcode) {
         return;
     }
     if (!('clipboard' in navigator) || typeof navigator.clipboard.writeText !== 'function') {
-        showStatus('Your browser doesn\'t support dynamic copying. Open the editor and copy it.', 'red');
+        showStatus('Sorry, your browser doesn\'t support the Clipboard API. Open the editor and copy it from there.', 'red');
         return;
     }
     try {
@@ -58,4 +58,46 @@ function copy(bbcode) {
     } catch (e) {
         showStatus('Error: ' + e);
     }
+}
+
+/**
+ * Reads the contents of the user's clipboard and lods it.
+ */
+function openclip() {
+    if (location.protocol.startsWith('file')) {
+        showStatus('You must use the Web version to be able to open from clipboard.', 'red');
+        return;
+    }
+    if (!('clipboard' in navigator) || typeof navigator.clipboard.readText !== 'function') {
+        showStatus('Sorry, your browser doesn\'t support the Clipboard API. Open the editor, paste, and click LOAD.', 'red');
+        return;
+    }
+    try {
+        navigator.clipboard.readText()
+            .then(clip => {
+                textbox.setValue(text);
+                try {
+                    load();
+                } catch (e) {
+                    showStatus('Error in clipboard contents: ' + e, 'red');
+                    return;
+                }
+                showStatus('Loaded clipboard.', 'green');
+            })
+            .catch(e => {
+                showStatus('Error reading clipboard: ' + e, 'red');
+            });
+    } catch (e) {
+        showStatus('Error: ' + e);
+    }
+}
+
+/**
+ * Takes a screenshot of the canvas and downloads it.
+ */
+function savescreenshot() {
+    var a = document.createElement('a');
+    a.setAttribute('href', playfield.toDataURL());
+    a.setAttribute('download', 'langton.png');
+    a.dispatchEvent(new MouseEvent('click'));
 }

@@ -377,8 +377,11 @@ actionsSelector.addEventListener('change', () => {
     var action = actionsSelector.value;
     actionsSelector.value = '';
     switch (action) {
-        case 'save':
-            save();
+        case 'openclip':
+            openclip();
+            break;
+        case 'savelocal':
+            savelocal();
             break;
         case 'share':
             share();
@@ -388,6 +391,9 @@ actionsSelector.addEventListener('change', () => {
             break;
         case 'bbcode':
             copy(true);
+            break;
+        case 'scrot':
+            savescreenshot();
             break;
         default:
             showStatus('Error: unimplemented', 'red');

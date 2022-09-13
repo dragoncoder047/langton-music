@@ -24,10 +24,12 @@
                 </div>
                 <select id="actions">
                     <option value="">Actions...</option>
-                    <option value="save">Save</option>
+                    <option value="openclip">Open Clipboard</option>
+                    <option value="savelocal">Save</option>
                     <option value="share">Share</option>
                     <option value="copy">Copy as XML</option>
                     <option value="bbcode">Copy as BBCode</option>
+                    <option value="scrot">Screenshot</option>
                 </select>
             </div>
             <div class="flex-row wrapping padding">
@@ -459,6 +461,27 @@
                         update the ant value pickers similar to the Draw Cells tool.</p>
                     <p>If you hold down <small>CTRL</small> and click on an ant, the ant will be removed.</p>
                     <h2>Actions menu</h2>
+                    <h3>Open Clipboard</h3>
+                    <p>This reads your clipboard, and loads it into the world.</p>
+                    <h3>Save</h3>
+                    <p>This saves the world state into your browser's local storage so that you won't lose it when you
+                        close Langton-Music. It will be automatically loaded when you open Langton-Music the next time.
+                    </p>
+                    <p>Nothing is ever sent to any server, it is all stored locally on your computer. This also means
+                        that if you "save" on one device, you won't be able to load it on another device.</p>
+                    <h3>Share</h3>
+                    <p>This lets you share the world state through any tool that your browser supports sharing to, such
+                        as email, iMessage, Discord, etc. The choices of tools is wholly dependent on your browser and
+                        the other apps you have installed -- it may differ between devices.</p>
+                    <h3>Copy as XML</h3>
+                    <p>This copies the XML-serialized state of the world (what you see when you open the <a
+                            href="#editor">editor</a>) to your clipboard.</p>
+                    <h3>Copy as BBCode</h3>
+                    <p>This is the same as the <strong>Copy as XML</strong> option, except it wraps the content in
+                        <code>[code][/code]</code> tags for easier pasting into a forums post.
+                    </p>
+                    <h3>Screenshot</h3>
+                    <p>This captures the current contents of the canvas, and downloads it as a PNG image.</p>
                 </div>
             </div>
         </div>
