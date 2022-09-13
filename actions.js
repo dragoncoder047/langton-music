@@ -75,17 +75,12 @@ function openclip() {
     try {
         navigator.clipboard.readText()
             .then(clip => {
-                textbox.setValue(text);
-                try {
-                    load();
-                } catch (e) {
-                    showStatus('Error in clipboard contents: ' + e, 'red');
-                    return;
-                }
+                textbox.setValue(clip);
+                load();
                 showStatus('Loaded clipboard.', 'green');
             })
             .catch(e => {
-                showStatus('Error reading clipboard: ' + e, 'red');
+                showStatus('Error: ' + e, 'red');
             });
     } catch (e) {
         showStatus('Error: ' + e);
