@@ -225,6 +225,7 @@ class CanvasToolsManager {
         this.tools[this.activeToolIndex].deactivate();
         this.tools[toolIndex].activate(this.toolContainer);
         this.activeToolIndex = toolIndex;
+        window.dispatchEvent(new UIEvent('resize')); // changing a tool usually triggers a layout reflow
     }
 }
 
