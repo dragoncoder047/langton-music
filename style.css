@@ -86,7 +86,7 @@ body {
 table,
 td,
 th {
-    padding: 1em;
+    padding: 0.4em;
     border: 1px solid black;
     border-collapse: collapse;
 }
