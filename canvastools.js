@@ -256,6 +256,7 @@ function makeModifiers(e) {
  * Base class for a tool.
  */
 class Tool {
+    static displayName = "Nothing";
     constructor() {
         /**
          * @type {HTMLElement}
@@ -349,12 +350,12 @@ class Tool {
         this.element.remove();
     }
 }
-Tool.displayName = 'Nothing';
 
 /**
  * Drag, pan, nd zoom tool.
  */
 class DragTool extends Tool {
+    static displayName = "Drag";
     /**
      * @param {number} zoomFactor Factor to change zoom by when scrolling.
      */
@@ -376,7 +377,6 @@ class DragTool extends Tool {
         }
     }
 }
-DragTool.displayName = 'Drag';
 
 /**
  * Base class for tools that edit the world.
@@ -404,6 +404,7 @@ class WorldEditTool extends Tool {
  * Tool to draw cells into the world.
  */
 class DrawCellsTool extends WorldEditTool {
+    static displayName = "Draw Cells";
     constructor(world) {
         super(world);
         this.element.innerHTML = '<label>Cell State: <input type="number" min="0" step="1" value ="1"></input></label>';
@@ -433,14 +434,13 @@ class DrawCellsTool extends WorldEditTool {
         else this.world.setCell(c.x, c.y, this.input.value);
     }
 }
-DrawCellsTool.displayName = 'Draw Cells';
 
 /**
  * Tool to draw ants into the world.
  */
 class DrawAntsTool extends WorldEditTool {
+    static displayName = "Draw Ants";
     /**
-     * 
      * @param {World} world 
      * @param {Breeder} breeder 
      * @param {Ant[]} antsList 
@@ -520,4 +520,3 @@ class DrawAntsTool extends WorldEditTool {
         }
     }
 }
-DrawAntsTool.displayName = 'Draw Ants';
