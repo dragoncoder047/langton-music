@@ -409,3 +409,8 @@ if ("serviceWorker" in navigator) {
 window.addEventListener('beforeinstallprompt', () => {
     showStatus("You can now install Langton's Ant music as a web app on your device!", "green");
 });
+
+// hide alert when app is actually installed
+window.addEventListener('appinstalled', () => {
+    showStatus("Ready.");
+});
