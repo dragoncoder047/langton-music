@@ -152,12 +152,7 @@ function render() {
             runEnable(true);
         }
     });
-    var ant = ants.filter(ant => ant.id === selectedAnt)[0];
-    followSelector.value = ant ? selectedAnt : '';
-    if (ant) {
-        var diff = vMinus(ant, canvasTools.panxy);
-        canvasTools.panxy = vSum(canvasTools.panxy, vScale(diff, 1/vMagnitude(diff)));
-    }
+    followSelector.value = ants.some(ant => ant.id === selectedAnt) ? selectedAnt : '';
     requestAnimationFrame(render)
 }
 render();
@@ -244,6 +239,7 @@ function tick(force = false) {
         return;
     }
     if (autoFit.checked && running) fit();
+    followAnt(followSelector.value);
     if (!force) setTimeout(tick, 60000 / (header.bpm ?? 240));
 }
 
@@ -316,6 +312,19 @@ function fit() {
 }
 fitBtn.addEventListener('click', fit);
 fit();
+
+/**
+ * Centers the requested ant in the viewport, if it exists.
+ * @param {string} antID
+ */
+function followAnt(antID) {
+    if (!antID) {
+        return;
+    } else {
+        var ant = ants.filter(ant => ant.id === antID)[0];
+        center(ant);
+    }
+}
 
 /**
  * Serializes the entire world state to XML and puts it in the text box.
