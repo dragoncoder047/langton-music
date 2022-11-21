@@ -14,6 +14,8 @@
 
 ## Running Offline
 
+### You can install this as a progressive web app from your browser -- that's the recommended method now.
+
 1. `git clone` this repository locally, or dowload a zip and unpack.
 2. [Download Tone.js](https://cdn.jsdelivr.net/npm/tone@14.7.77/build/Tone.min.js) and save it in the same folder as everything else.
 3. [Go here](https://cdn.jsdelivr.net/npm/ace-builds@1.10.0/src-noconflict/) and download `ace.js`, `mode-xml.js`, and any theme file. Create a folder `ace/` and save them there.
