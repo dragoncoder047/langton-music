@@ -8,7 +8,7 @@ self.addEventListener('fetch', e => {
                 cache.put(e.request, networkResponse.clone());
                 return networkResponse;
             });
-        return cachedResponse || fetchedResponse;
+            return cachedResponse || fetchedResponse;
         });
     }));
 });
