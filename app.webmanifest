@@ -1,0 +1,10 @@
+{
+    "name": "Langton's Ant Music",
+    "short_name": "LAM",
+    "background_color": "white",
+    "icons": [],
+    "start_url": "/langton-music/index.html",
+    "display": "minimal-ui",
+    "lang": "en-US",
+    "orientation": "landscape"
+}
