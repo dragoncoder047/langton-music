@@ -2,7 +2,20 @@
     "name": "Langton's Ant Music",
     "short_name": "LAM",
     "background_color": "white",
-    "icons": [],
+    "icons": [
+        {
+            "src": "/langton-music/langton-512.png",
+            "type": "image/png",
+            "sizes": "512x512",
+            "purpose": "maskable any"
+        },
+        {
+            "src": "/langton-music/langton-192.png",
+            "type": "image/png",
+            "sizes": "192x192",
+            "purpose": "maskable any"
+        }
+    ],
     "start_url": "/langton-music/index.html",
     "display": "minimal-ui",
     "lang": "en-US",
