@@ -371,7 +371,7 @@ window.addEventListener('hashchange', () => {
     $(where).append(statusBar);
     fitace();
 });
-if (location.hash === '#editor') window.dispatchEvent(new Event('hashchange'));
+if (location.hash !== '#') window.dispatchEvent(new Event('hashchange'));
 
 actionsSelector.addEventListener('change', () => {
     var action = actionsSelector.value;
@@ -398,4 +398,8 @@ actionsSelector.addEventListener('change', () => {
         default:
             showStatus('Error: unimplemented', 'red');
     }
-})
+});
+
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/langton-music/serviceWorker.js").then(e => console.log("Service worker registered", e));
+}
