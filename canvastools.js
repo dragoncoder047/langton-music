@@ -214,7 +214,7 @@ class CanvasToolsManager {
      * @returns {Vector} Trasformed point
      */
     transformMousePoint(pt) {
-        return { x: (pt.x - this.panxy.x) / this.zoom, y: (pt.y - this.panxy.y) / this.zoom };
+        return vScale(vMinus(pt, this.panxy), 1/this.zoom);
     }
     /**
      * Switches the currently active tool.
