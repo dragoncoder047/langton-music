@@ -22,6 +22,14 @@ const stepBtn = $('#step');
  */
 const stepCounter = $('#stepnum');
 /**
+ * @type {HTMLInputElement}
+ */
+const speedSlider = $('#speedslider');
+/**
+ * @type {HTMLInputElement}
+ */
+const speedBox = $('#speedbox');
+/**
  * @type {HTMLOutputElement}
  */
 const antsCounter = $('#antscount');
@@ -372,6 +380,17 @@ window.addEventListener('hashchange', () => {
     fitace();
 });
 if (location.hash !== '#') window.dispatchEvent(new Event('hashchange'));
+
+// Speed slider and box
+function updateSpeedInputs(value) {
+    if (!value || parseInt(value) === 0) value = 240;
+    speedBox.value = value;
+    speedSlider.value = value;
+    header.bpm = value;
+    Tone.Transport.bpm.setValueAtTime(2 * header.bpm, Tone.now());
+}
+speedBox.addEventListener('input', () => updateSpeedInputs(speedBox.value));
+speedSlider.addEventListener('input', () => updateSpeedInputs(speedSlider.value));
 
 actionsSelector.addEventListener('change', () => {
     var action = actionsSelector.value;
