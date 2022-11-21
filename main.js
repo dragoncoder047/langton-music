@@ -400,6 +400,12 @@ actionsSelector.addEventListener('change', () => {
     }
 });
 
+// Register service worker
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/langton-music/serviceWorker.js").then(e => console.log("Service worker registered", e));
 }
+
+// alert user that they can now install LAM
+window.addEventListener('beforeinstallprompt', () => {
+    showStatus("You can now install Langton's Ant music as a web app on your device!", "green");
+});
