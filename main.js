@@ -258,16 +258,7 @@ function load() {
             if (prop.startsWith('#')) interpolations.push([prop.slice(1), header[prop]]);
         }
         header.stepCount = header.stepCount ?? 0;
-        header.bpm = parseInt(header.bpm) || 240;
-        if (header.bpm < 1000) {
-            Tone.Transport.bpm.setValueAtTime(2 * header.bpm, Tone.now());
-            Tone.Transport.start();
-            GLOBAL_MUTE = false;
-        } else {
-            Tone.Transport.stop();
-            s = 'BPM too high. Sound is disabled.';
-            GLOBAL_MUTE = true;
-        }
+        updateSpeedInputs(header.bpm);
     } catch (e) {
         stop();
         runEnable(false);
@@ -383,11 +374,20 @@ if (location.hash !== '#') window.dispatchEvent(new Event('hashchange'));
 
 // Speed slider and box
 function updateSpeedInputs(value) {
-    if (!value || parseInt(value) === 0) value = 240;
+    value = parseInt(value);
+    if (!value || value === 0) value = 240;
+    header.bpm = value;
+    if (header.bpm < 1000) {
+        Tone.Transport.bpm.setValueAtTime(2 * header.bpm, Tone.now());
+        Tone.Transport.start();
+        GLOBAL_MUTE = false;
+    } else {
+        Tone.Transport.stop();
+        showStatus('BPM too high. Sound is disabled.');
+        GLOBAL_MUTE = true;
+    }
     speedBox.value = value;
     speedSlider.value = value;
-    header.bpm = value;
-    Tone.Transport.bpm.setValueAtTime(2 * header.bpm, Tone.now());
 }
 speedBox.addEventListener('input', () => updateSpeedInputs(speedBox.value));
 speedSlider.addEventListener('input', () => updateSpeedInputs(speedSlider.value));
