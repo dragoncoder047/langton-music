@@ -401,7 +401,7 @@ function enableMute(enabled) {
     if (enabled) muteCheckbox.removeAttribute("disabled");
     else {
         muteCheckbox.setAttribute("disabled", true);
-        muteCheckbox.setAttribute("checked", true);
+        muteCheckbox.checked = true;
         GLOBAL_MUTE = true;
     }
 }
