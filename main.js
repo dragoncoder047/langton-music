@@ -387,8 +387,8 @@ function updateSpeedInputs(value) {
         enableMute(true);
     } else {
         Tone.Transport.stop();
-        showStatus('BPM too high. Sound is disabled.');
         enableMute(false);
+        showStatus('BPM too high. Sound is disabled.');
     }
     speedBox.value = value;
     speedSlider.value = value;
@@ -408,6 +408,7 @@ function enableMute(enabled) {
 function updateMute() {
     if (muteCheckbox.getAttribute("disabled")) GLOBAL_MUTE = false;
     else GLOBAL_MUTE = muteCheckbox.getAttribute("checked");
+    showStatus("Sound is " + (GLOBAL_MUTE ? "disabled" : "enabled") + ".");
 }
 muteCheckbox.addEventListener('change', updateMute);
 
