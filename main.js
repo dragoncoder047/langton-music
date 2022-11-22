@@ -398,14 +398,14 @@ speedSlider.addEventListener('input', () => updateSpeedInputs(speedSlider.value)
 
 // Mute/unmute
 function enableMute(enabled) {
-    muteCheckbox.setAttribute("enabled", enabled);
+    muteCheckbox.setAttribute("disabled", !enabled);
     if (!enabled) {
         muteCheckbox.setAttribute("checked", true);
         GLOBAL_MUTE = true;
     }
 }
 function updateMute() {
-    if (!muteCheckbox.getAttribute("enabled")) GLOBAL_MUTE = false;
+    if (muteCheckbox.getAttribute("disabled")) GLOBAL_MUTE = false;
     else GLOBAL_MUTE = muteCheckbox.getAttribute("checked");
 }
 muteCheckbox.addEventListener('change', updateMute);
