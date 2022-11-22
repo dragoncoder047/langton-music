@@ -30,6 +30,10 @@ const speedSlider = $('#speedslider');
  */
 const speedBox = $('#speedbox');
 /**
+ * @type {HTMLInputElement}
+ */
+const muteCheckbox = $('#mutecheck');
+/**
  * @type {HTMLOutputElement}
  */
 const antsCounter = $('#antscount');
@@ -380,17 +384,31 @@ function updateSpeedInputs(value) {
     if (header.bpm < 1000) {
         Tone.Transport.bpm.setValueAtTime(2 * header.bpm, Tone.now());
         Tone.Transport.start();
-        GLOBAL_MUTE = false;
+        enableMute(true);
     } else {
         Tone.Transport.stop();
         showStatus('BPM too high. Sound is disabled.');
-        GLOBAL_MUTE = true;
+        enableMute(false);
     }
     speedBox.value = value;
     speedSlider.value = value;
 }
 speedBox.addEventListener('input', () => updateSpeedInputs(speedBox.value));
 speedSlider.addEventListener('input', () => updateSpeedInputs(speedSlider.value));
+
+// Mute/unmute
+function enableMute(enabled) {
+    speedCheckbox.setAttribute("enabled", enabled);
+    if (!enabled) {
+        speedCheckbox.setAttribute("checked", true);
+        GLOBAL_MUTE = true;
+    }
+}
+function updateMute() {
+    if (!speedCheckbox.getAttribute("enabled")) GLOBAL_MUTE = false;
+    else GLOBAL_MUTE = speedCheckbox.getAttribute("checked");
+}
+speedCheckbox.addEventListener('change', updateMute);
 
 actionsSelector.addEventListener('change', () => {
     var action = actionsSelector.value;
