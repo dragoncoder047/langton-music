@@ -398,17 +398,17 @@ speedSlider.addEventListener('input', () => updateSpeedInputs(speedSlider.value)
 
 // Mute/unmute
 function enableMute(enabled) {
-    speedCheckbox.setAttribute("enabled", enabled);
+    muteCheckbox.setAttribute("enabled", enabled);
     if (!enabled) {
-        speedCheckbox.setAttribute("checked", true);
+        muteCheckbox.setAttribute("checked", true);
         GLOBAL_MUTE = true;
     }
 }
 function updateMute() {
-    if (!speedCheckbox.getAttribute("enabled")) GLOBAL_MUTE = false;
-    else GLOBAL_MUTE = speedCheckbox.getAttribute("checked");
+    if (!muteCheckbox.getAttribute("enabled")) GLOBAL_MUTE = false;
+    else GLOBAL_MUTE = muteCheckbox.getAttribute("checked");
 }
-speedCheckbox.addEventListener('change', updateMute);
+muteCheckbox.addEventListener('change', updateMute);
 
 actionsSelector.addEventListener('change', () => {
     var action = actionsSelector.value;
