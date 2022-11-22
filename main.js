@@ -398,8 +398,9 @@ speedSlider.addEventListener('input', () => updateSpeedInputs(speedSlider.value)
 
 // Mute/unmute
 function enableMute(enabled) {
-    muteCheckbox.setAttribute("disabled", !enabled);
-    if (!enabled) {
+    if (enabled) muteCheckbox.removeAttribute("disabled");
+    else {
+        muteCheckbox.setAttribute("disabled", true);
         muteCheckbox.setAttribute("checked", true);
         GLOBAL_MUTE = true;
     }
