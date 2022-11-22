@@ -407,7 +407,7 @@ function enableMute(enabled) {
 }
 function updateMute() {
     if (muteCheckbox.hasAttribute("disabled")) GLOBAL_MUTE = true;
-    else GLOBAL_MUTE = !!muteCheckbox.value;
+    else GLOBAL_MUTE = muteCheckbox.checked;
     showStatus("Sound is " + (GLOBAL_MUTE ? "disabled" : "enabled") + ".");
 }
 muteCheckbox.addEventListener('change', updateMute);
