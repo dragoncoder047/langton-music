@@ -435,12 +435,7 @@ actionsSelector.addEventListener('change', () => {
             savescreenshot();
             break;
         case 'install':
-            if (installPrompt) {
-                installPrompt.prompt();
-                installPrompt = null;
-                installOption.remove();
-                installOption = null;
-            }
+            if (installPrompt) installPrompt.prompt();
             else showStatus('Oops! You should not see that option!', 'red');
             break;
         default:
@@ -463,10 +458,11 @@ window.addEventListener('beforeinstallprompt', e => {
     installOption.value = 'install';
     installOption.textContent = 'Install Web App';
     actionsSelector.append(installOption);
-    showStatus("You can now install Langton's Ant music as a web app on your device! Go to the Actions meu to install.", "green");
+    showStatus("You can now install Langton's Ant music as a web app on your device! Go to the Actions menu to install.", "green");
 });
 
 // hide alert when app is actually installed
 window.addEventListener('appinstalled', () => {
-    showStatus("Ready.");
+    showStatus("Web app installed successfully.");
+    installOption.remove();
 });
