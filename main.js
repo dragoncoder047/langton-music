@@ -454,6 +454,7 @@ var installOption = null;
 window.addEventListener('beforeinstallprompt', e => {
     e.preventDefault();
     installPrompt = e;
+    if (installOption) return; // beforeinstallprompt event fires if user clicks cancel on the install box... wierd...
     installOption = document.createElement('option');
     installOption.value = 'install';
     installOption.textContent = 'Install Web App';
