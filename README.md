@@ -11,15 +11,4 @@
 * Responsive design works on all screen sizes.
 * All-in-one documentation and help included.
 * Simple XML-based format.
-
-## Running Offline
-
-### You can install this as a progressive web app from your browser -- that's the recommended method now.
-
-1. `git clone` this repository locally, or dowload a zip and unpack.
-2. [Download Tone.js](https://cdn.jsdelivr.net/npm/tone@14.7.77/build/Tone.min.js) and save it in the same folder as everything else.
-3. [Go here](https://cdn.jsdelivr.net/npm/ace-builds@1.10.0/src-noconflict/) and download `ace.js`, `mode-xml.js`, and any theme file. Create a folder `ace/` and save them there.
-4. Open `main.js` and change the `ace.config.set('basePath', 'xxx')` towards the top to point to the new `ace/` folder instead of jsDelivr. Also, if you chose a theme other than `chrome`, change the `textbox.setTheme('ace/theme/chrome')` as well.
-5. Open `index.html` in a text editor and change the two links at the top to point to the downloaded copies of Ace and Tone.js instead of jsDelivr.
-6. Open `index.html` in a browser.
-7. Enjoy!
+* Integrates with the [MediaSession API](https://developer.mozilla.org/en-US/docs/Web/API/MediaSession) to allow control with the tab in the background.
