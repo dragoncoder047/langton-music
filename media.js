@@ -44,19 +44,19 @@ function syncMediaSession() {
 }
 
 function mediaPause() {
-    navigator.mediaSession.playbackState = "paused";
+    setTimeout(() => navigator.mediaSession.playbackState = "paused", 0);
 }
 
 function mediaPlay() {
-    navigator.mediaSession.playbackState = "playing";
+    setTimeout(() => navigator.mediaSession.playbackState = "playing", 0);
 }
 
 function setMediaPlaybackState() {
-    navigator.mediaSession.setPositionState({
+    setTimeout(() => navigator.mediaSession.setPositionState({
         duration: (header.stepCount ?? 0) + 150,
         playbackRate: header.bpm / 240,
         position: header.stepCount ?? 0,
-    });
+    }), 0);
 }
 
 function forcePlayElement() {
