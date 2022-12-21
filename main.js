@@ -81,11 +81,11 @@ var breeder = new Breeder();
 /**
  * @type {CanvasRenderingContext2D}
  */
-var ctx = playfield.getContext('2d');
+var mainCtx = playfield.getContext('2d');
 /**
  * @type {World}
  */
-var world = new World(ctx);
+var world = new World();
 /**
  * @type {CanvasToolsManager}
  */
@@ -131,15 +131,11 @@ function runEnable(canRun) {
  * Render loop function
  */
 function render() {
+    canvasTools.clear();
     canvasTools.drawTransformed(() => {
-        canvasTools.clear();
-        world.draw();
-        ants.forEach(ant => ant.draw());
+        world.draw(mainCtx);
+        ants.forEach(ant => ant.draw(mainCtx));
     });
-//     // test mouse xy lineup
-//     ctx.fillStyle = 'red';
-//     ctx.fillRect(canvasTools.lastxy.x - 4, canvasTools.lastxy.y - 4, 8, 8);
-//     // END test
     stepCounter.textContent = header.stepCount;
     antsCounter.textContent = ants.length;
     var selectedAnt = followSelector.value;
@@ -157,7 +153,8 @@ function render() {
         }
     });
     followSelector.value = ants.some(ant => ant.id === selectedAnt) ? selectedAnt : '';
-    requestAnimationFrame(render)
+    syncMediaSession();
+    requestAnimationFrame(render);
 }
 render();
 
@@ -181,6 +178,7 @@ function start() {
     }
     startStopBtn.textContent = 'Pause';
     showStatus('Running...');
+    mediaPlay();
 }
 
 /**
@@ -190,6 +188,7 @@ function stop() {
     running = false;
     startStopBtn.textContent = 'Resume';
     showStatus('Paused.');
+    mediaPause();
 }
 
 /**
@@ -244,6 +243,7 @@ function tick(force = false) {
     }
     if (autoFit.checked && running) fit();
     followAnt(followSelector.value);
+    syncMediaSession();
     if (!force) setTimeout(tick, 60000 / (header.bpm ?? 240));
 }
 
@@ -275,8 +275,12 @@ function load() {
     fit();
 
 }
-loadBtn.addEventListener('click', () => Tone.start(), { once: true });
+loadBtn.addEventListener('click', () => {
+    Tone.start();
+    forcePlayElement(); // for media session api
+}, { once: true });
 loadBtn.addEventListener('click', load);
+
 try {
     var saved = localStorage.getItem('save');
     if (saved) {
@@ -376,7 +380,7 @@ window.addEventListener('hashchange', () => {
 });
 if (location.hash !== '#') window.dispatchEvent(new Event('hashchange'));
 
-// Speed slider and box
+// Speed slider and box and media session
 function updateSpeedInputs(value) {
     value = parseInt(value);
     if (!value || value === 0) value = 240;
@@ -392,6 +396,7 @@ function updateSpeedInputs(value) {
     }
     speedBox.value = value;
     speedSlider.value = value;
+    setMediaPlaybackState(); // Media session api
 }
 speedBox.addEventListener('input', () => updateSpeedInputs(speedBox.value));
 speedSlider.addEventListener('input', () => updateSpeedInputs(speedSlider.value));
@@ -454,7 +459,7 @@ var installOption = null;
 window.addEventListener('beforeinstallprompt', e => {
     e.preventDefault();
     installPrompt = e;
-    if (installOption) return; // beforeinstallprompt event fires if user clicks cancel on the install box... wierd...
+    if (installOption) return; // beforeinstallprompt event fires if user clicks cancel on the install box... weird...
     installOption = document.createElement('option');
     installOption.value = 'install';
     installOption.textContent = 'Install Web App';
