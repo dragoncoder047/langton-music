@@ -166,7 +166,7 @@ var running = false;
 /**
  * @type {boolean}
  */
- var GLOBAL_MUTE = false;
+var GLOBAL_MUTE = false;
 
 /**
  * Starts running
@@ -275,11 +275,11 @@ function load() {
     fit();
 
 }
-loadBtn.addEventListener('click', () => {
-    Tone.start();
-    forcePlayElement(); // for media session api
-}, { once: true });
+loadBtn.addEventListener('click', () => Tone.start(), { once: true });
 loadBtn.addEventListener('click', load);
+
+// For media session api
+[loadBtn, startStopBtn, stepBtn].forEach(b => b.addEventListener('click', forcePlayElement,  { once: true }));
 
 try {
     var saved = localStorage.getItem('save');
