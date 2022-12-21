@@ -252,7 +252,7 @@ function tick(force = false) {
  */
 function load() {
     stop();
-    var s = 'Press START.'
+    var s = 'Press START.';
     header.stepCount = 0;
     showStatus('Loading...');
     try {
@@ -295,7 +295,7 @@ try {
     }
     textbox.clearSelection();
 } catch (e) {
-    /* noop */;
+    console.error(e);
 }
 
 /**
@@ -369,7 +369,7 @@ function fitace() {
 window.addEventListener('resize', fitace);
 
 window.addEventListener('hashchange', () => {
-    var where = '#statuswrapper'
+    var where = '#statuswrapper';
     if (location.hash === '#editor') {
         stop();
         dump();
@@ -450,25 +450,37 @@ actionsSelector.addEventListener('change', () => {
 
 // Register service worker
 if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/langton-music/serviceWorker.js").then(e => console.log("Service worker registered", e));
+    navigator.serviceWorker.register("serviceWorker.js").then(e => console.log("Service worker registered", e));
 }
 
-// alert user that they can now install LAM
-var installPrompt = null;
-var installOption = null;
-window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault();
-    installPrompt = e;
-    if (installOption) return; // beforeinstallprompt event fires if user clicks cancel on the install box... weird...
-    installOption = document.createElement('option');
-    installOption.value = 'install';
-    installOption.textContent = 'Install Web App';
-    actionsSelector.append(installOption);
-    showStatus("You can now install Langton's Ant music as a web app on your device! Go to the Actions menu to install.", "green");
-});
+// Dev version indicator
+if (location.host.indexOf('localhost') != -1) {
+    document.title += ' - localhost version';
+    $('main .heading').textContent += ' - localhost version';
+}
+else if (location.protocol.indexOf('file') != -1) {
+    document.title += ' - file:// version';
+    $('main .heading').textContent += ' - file:// version (some features unavailable)';
+}
+else {
+    // we are in the full web version
+    // alert user that they can now install LAM
+    var installPrompt = null;
+    var installOption = null;
+    window.addEventListener('beforeinstallprompt', e => {
+        e.preventDefault();
+        installPrompt = e;
+        if (installOption) return; // beforeinstallprompt event fires if user clicks cancel on the install box... weird...
+        installOption = document.createElement('option');
+        installOption.value = 'install';
+        installOption.textContent = 'Install Web App';
+        actionsSelector.append(installOption);
+        showStatus("You can now install Langton's Ant music as a web app on your device! Go to the Actions menu to install.", "orange");
+    });
 
-// hide alert when app is actually installed
-window.addEventListener('appinstalled', () => {
-    showStatus("Web app installed successfully.");
-    installOption.remove();
-});
+    // hide alert when app is actually installed
+    window.addEventListener('appinstalled', () => {
+        showStatus("Web app installed successfully.");
+        installOption.remove();
+    });
+}

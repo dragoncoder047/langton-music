@@ -1,19 +1,26 @@
-var smallCanvas = new OffscreenCanvas(128, 128)
+var smallCanvas = new OffscreenCanvas(128, 128);
 var audioElement = document.createElement('audio');
 audioElement.setAttribute('src', 'https://raw.githubusercontent.com/anars/blank-audio/master/45-seconds-of-silence.mp3');
 audioElement.setAttribute('style', 'position:absolute;top:150vh');
 document.body.append(audioElement);
 var smallTools = new CanvasToolsManager(smallCanvas);
 var smallCtx = smallTools.ctx;
-var throttle = 30;
 var blobURL;
 function syncMediaSession() {
-    if (throttle > 0) { throttle--; return; }
-    throttle = 30;
     // Center it on the canvas
     var bbox = world.bbox(ants);
-    var middle = vScale(vPlus(bbox.tl, bbox.br), 0.5);
-    var size = bbox.br.x - bbox.tl.x + 1 // +1 to preclude dividing by zero
+    var middle, size;
+    if (followSelector.value != '') {
+        middle = vScale(vPlus(bbox.tl, bbox.br), 0.5);
+        size = bbox.br.x - bbox.tl.x + 1; // +1 to preclude dividing by zero
+    } else {
+        middle = ants.filter(ant => ant.id = followSelector.value)[0];
+        size = 16;
+        if (!middle) {
+            middle = vScale(vPlus(bbox.tl, bbox.br), 0.5);
+            size = bbox.br.x - bbox.tl.x + 1; // +1 to preclude dividing by zero
+        }
+    }
     smallTools.zoom = smallCanvas.width / size / world.cellSize;
     smallTools.panxy = vPlus(vScale(middle, -1 * world.cellSize * smallTools.zoom), vScale({ x: smallCanvas.width, y: smallCanvas.height }, 0.5));
     // Draw
@@ -40,14 +47,17 @@ function syncMediaSession() {
 }
 
 function mediaPause() {
+    console.log('Setting media playback state to paused');
     navigator.mediaSession.playbackState = "paused";
 }
 
 function mediaPlay() {
+    console.log('Setting media playback state to playing');
     navigator.mediaSession.playbackState = "playing";
 }
 
 function setMediaPlaybackState() {
+    console.log('Setting media position state');
     navigator.mediaSession.setPositionState({
         duration: (header.stepCount ?? 0) + 150,
         playbackRate: 1,
@@ -64,21 +74,37 @@ function forcePlayElement() {
 }
 
 const handlers = {
-    play() { start(); }, pause() { stop(); },
-    stop() { stop(); forcePlayElement(); },
+    play() {
+        console.log('got play event');
+        start();
+    },
+    pause() {
+        console.log('got pause event');
+        stop();
+    },
+    stop() {
+        console.log('got stop event');
+        stop();
+        forcePlayElement();
+    },
     seekbackward(e) {
-        updateSpeedInputs(header.bpm - e.seekOffset);
+        console.log('got seekbackward event', e);
+        updateSpeedInputs(header.bpm - (e.seekOffset || 10));
     },
     seekforward(e) {
-        updateSpeedInputs(header.bpm + e.seekOffset);
+        console.log('got seekforward event', e);
+        updateSpeedInputs(header.bpm + (e.seekOffset || 10));
     },
     seekto(e) {
+        console.log('got seekto event', e);
         updateSpeedInputs(e.seekTime);
     },
     previoustrack() {
+        console.log('got previoustrack event');
         updateSpeedInputs(header.bpm - 100);
     },
     nexttrack() {
+        console.log('got nexttrack event');
         updateSpeedInputs(header.bpm + 100);
     },
 };

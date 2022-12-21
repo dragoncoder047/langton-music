@@ -106,7 +106,6 @@ class World {
             got = true;
         }
         if (!got) return { tl: { x: 0, y: 0 }, br: { x: 0, y: 0 } };
-        console.log({ tl: { x: minX, y: minY }, br: { x: maxX, y: maxY } });
         return { tl: { x: minX, y: minY }, br: { x: maxX, y: maxY } };
     }
     /**
