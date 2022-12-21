@@ -35,37 +35,9 @@ class CanvasToolsManager {
          */
         this.canvas = canvas;
         /**
-         * @type {HTMLElement}
-         */
-        this.toolContainer = toolContainer;
-        /**
-         * @type {HTMLSelectElement}
-         */
-        this.toolSelector = toolSelector;
-        /**
          * @type {CanvasRenderingContext2D}
          */
         this.ctx = canvas.getContext('2d');
-        /**
-         * @type {boolean}
-         */
-        this.mouseDown = false;
-        /**
-         * @type {number}
-         */
-        this.timeDown = 0;
-        /**
-         * @type {Vector}
-         */
-        this.panxy = { x: 0, y: 0 };
-        /**
-         * @type {Vector}
-         */
-        this.downxy = { x: 0, y: 0 };
-        /**
-         * @type {Vector}
-         */
-        this.lastxy = { x: 0, y: 0 };
         /**
          * @type {number}
          */
@@ -74,90 +46,121 @@ class CanvasToolsManager {
          * @type {boolean}
          */
         this.enabled = true;
-        /**
-         * @type {Tool[]}
-         */
-        this.tools = tools;
-        /**
-         * @type {number}
-         */
-        this.activeToolIndex = 0;
-        // attach event listeners
-        canvas.addEventListener('mousedown', e => {
-            this.mouseDown = true;
-            this.timeDown = +new Date();
-            this.downxy = getMousePos(canvas, e);
-            this.lastxy = vClone(this.downxy);
-            this.event(e, 'onMouseDown', this.downxy);
-        });
-        canvas.addEventListener('touchstart', e => {
-            this.mouseDown = true;
-            this.timeDown = +new Date();
-            this.downxy = getMousePos(canvas, e);
-            this.lastxy = vClone(this.downxy);
-            this.event(e, 'onMouseDown', this.downxy);
-        });
-        canvas.addEventListener('mouseup', e => {
+        if (toolSelector) {
+            /**
+             * @type {HTMLElement}
+             */
+            this.toolContainer = toolContainer;
+            /**
+             * @type {HTMLSelectElement}
+             */
+            this.toolSelector = toolSelector;
+
+            /**
+             * @type {boolean}
+             */
             this.mouseDown = false;
-            this.event(e, 'onMouseUp', this.lastxy);
-            if (vRelMag(this.lastxy, this.downxy) < 16 && +new Date() - this.timeDown < 250) this.event(e, 'onClick', this.downxy);
-        });
-        canvas.addEventListener('touchend', e => {
-            this.mouseDown = false;
-            this.event(e, 'onMouseUp', this.lastxy);
-            if (vRelMag(this.lastxy, this.downxy) < 16 && +new Date() - this.timeDown < 250) this.event(e, 'onClick', this.downxy);
-        });
-        canvas.addEventListener('touchmove', e => {
-            var xy = getMousePos(canvas, e);
-            if (!this.mouseDown) {
+            /**
+             * @type {number}
+             */
+            this.timeDown = 0;
+            /**
+             * @type {Vector}
+             */
+            this.panxy = { x: 0, y: 0 };
+            /**
+             * @type {Vector}
+             */
+            this.downxy = { x: 0, y: 0 };
+            /**
+             * @type {Vector}
+             */
+            this.lastxy = { x: 0, y: 0 };
+            /**
+             * @type {Tool[]}
+             */
+            this.tools = tools;
+            /**
+             * @type {number}
+             */
+            this.activeToolIndex = 0;
+            // attach event listeners
+            canvas.addEventListener('mousedown', e => {
                 this.mouseDown = true;
-                this.downxy = vClone(xy);
+                this.timeDown = +new Date();
+                this.downxy = getMousePos(canvas, e);
+                this.lastxy = vClone(this.downxy);
                 this.event(e, 'onMouseDown', this.downxy);
-            } else {
-                this.event(e, 'onDrag', vMinus(xy, this.lastxy));
+            });
+            canvas.addEventListener('touchstart', e => {
+                this.mouseDown = true;
+                this.timeDown = +new Date();
+                this.downxy = getMousePos(canvas, e);
+                this.lastxy = vClone(this.downxy);
+                this.event(e, 'onMouseDown', this.downxy);
+            });
+            canvas.addEventListener('mouseup', e => {
+                this.mouseDown = false;
+                this.event(e, 'onMouseUp', this.lastxy);
+                if (vRelMag(this.lastxy, this.downxy) < 16 && +new Date() - this.timeDown < 250) this.event(e, 'onClick', this.downxy);
+            });
+            canvas.addEventListener('touchend', e => {
+                this.mouseDown = false;
+                this.event(e, 'onMouseUp', this.lastxy);
+                if (vRelMag(this.lastxy, this.downxy) < 16 && +new Date() - this.timeDown < 250) this.event(e, 'onClick', this.downxy);
+            });
+            canvas.addEventListener('touchmove', e => {
+                var xy = getMousePos(canvas, e);
+                if (!this.mouseDown) {
+                    this.mouseDown = true;
+                    this.downxy = vClone(xy);
+                    this.event(e, 'onMouseDown', this.downxy);
+                } else {
+                    this.event(e, 'onDrag', vMinus(xy, this.lastxy));
+                }
+                this.lastxy = vClone(xy);
+            });
+            canvas.addEventListener('mousemove', e => {
+                var xy = getMousePos(canvas, e);
+                if (!this.mouseDown) {
+                    this.event(e, 'onMouseOver', xy);
+                }
+                else {
+                    this.event(e, 'onDrag', vMinus(xy, this.lastxy));
+                }
+                this.lastxy = vClone(xy);
+            });
+            canvas.addEventListener('wheel', e => {
+                this.event(e, 'onScroll', { x: e.deltaX, y: e.deltaY });
+            });
+            canvas.addEventListener('keydown', e => this.event(e, 'onKey', e.key));
+            canvas.addEventListener('keyup', e => this.event(e, 'onKeyUp', e.key));
+            // setup canvas resizing
+            var dpr = window.devicePixelRatio || 1;
+            var bsr = this.ctx.webkitBackingStorePixelRatio || this.ctx.mozBackingStorePixelRatio || this.ctx.msBackingStorePixelRatio || this.ctx.oBackingStorePixelRatio || this.ctx.backingStorePixelRatio || 1;
+            var ratio = dpr / bsr;
+            this.ctx.imageSmoothingEnabled = false;
+            window.addEventListener('resize', () => {
+                canvas.width = (canvas.parentElement.clientWidth - 10) * ratio;
+                canvas.height = (canvas.parentElement.clientHeight - 10) * ratio;
+            });
+            window.dispatchEvent(new UIEvent('resize'));
+            // autofocus
+            canvas.addEventListener('mouseover', () => canvas.focus());
+            canvas.addEventListener('mouseout', () => canvas.blur());
+            // setup tool selector
+            this.toolSelector.innerHTML = '';
+            for (var i = 0; i < this.tools.length; i++) {
+                var t = this.tools[i];
+                var e = document.createElement('option');
+                e.setAttribute('value', i);
+                e.textContent = t.constructor.displayName;
+                this.toolSelector.append(e);
             }
-            this.lastxy = vClone(xy);
-        });
-        canvas.addEventListener('mousemove', e => {
-            var xy = getMousePos(canvas, e);
-            if (!this.mouseDown) {
-                this.event(e, 'onMouseOver', xy);
-            }
-            else {
-                this.event(e, 'onDrag', vMinus(xy, this.lastxy));
-            }
-            this.lastxy = vClone(xy);
-        });
-        canvas.addEventListener('wheel', e => {
-            this.event(e, 'onScroll', { x: e.deltaX, y: e.deltaY });
-        });
-        canvas.addEventListener('keydown', e => this.event(e, 'onKey', e.key));
-        canvas.addEventListener('keyup', e => this.event(e, 'onKeyUp', e.key));
-        // setup canvas resizing
-        var dpr = window.devicePixelRatio || 1;
-        var bsr = this.ctx.webkitBackingStorePixelRatio || this.ctx.mozBackingStorePixelRatio || this.ctx.msBackingStorePixelRatio || this.ctx.oBackingStorePixelRatio || this.ctx.backingStorePixelRatio || 1;
-        var ratio = dpr / bsr;
-        this.ctx.imageSmoothingEnabled = false;
-        window.addEventListener('resize', () => {
-            canvas.width = (canvas.parentElement.clientWidth - 10) * ratio;
-            canvas.height = (canvas.parentElement.clientHeight - 10) * ratio;
-        });
-        window.dispatchEvent(new UIEvent('resize'));
-        // autofocus
-        canvas.addEventListener('mouseover', () => canvas.focus());
-        canvas.addEventListener('mouseout', () => canvas.blur());
-        // setup tool selector
-        this.toolSelector.innerHTML = '';
-        for (var i = 0; i < this.tools.length; i++) {
-            var t = this.tools[i];
-            var e = document.createElement('option');
-            e.setAttribute('value', i);
-            e.textContent = t.constructor.displayName;
-            this.toolSelector.append(e);
+            this.toolSelector.addEventListener('change', () => {
+                this.changeTool(this.toolSelector.value);
+            });
         }
-        this.toolSelector.addEventListener('change', () => {
-            this.changeTool(this.toolSelector.value);
-        });
     }
     /**
      * Saves the current canvas state and translates by x and y and zooms.
@@ -197,7 +200,7 @@ class CanvasToolsManager {
      * @param {Vector} point The detail point for the event.
      */
     event(e, name, point) {
-        if (!this.enabled) return;
+        if (!this.enabled || !this.toolSelector) return;
         var tool = this.tools[this.activeToolIndex];
         var fun = tool[name];
         var unhandled = fun.call(tool, this, point, makeModifiers(e), e);
