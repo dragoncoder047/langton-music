@@ -53,7 +53,7 @@ function mediaPlay() {
 
 function setMediaPlaybackState() {
     navigator.mediaSession.setPositionState({
-        duration: Infinity,
+        duration: (header.stepCount ?? 0) + 150,
         playbackRate: header.bpm / 240,
         position: header.stepCount ?? 0,
     });
