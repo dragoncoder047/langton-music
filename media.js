@@ -6,6 +6,7 @@ document.body.append(audioElement);
 var smallTools = new CanvasToolsManager(smallCanvas);
 var smallCtx = smallTools.ctx;
 var throttle = 30;
+var blobURL;
 function syncMediaSession() {
     if (throttle > 0) { throttle--; return; }
     throttle = 30;
@@ -23,13 +24,14 @@ function syncMediaSession() {
     });
     // Create the metadata
     smallCanvas[smallCanvas.convertToBlob ? 'convertToBlob' /* specs */ : 'toBlob' /* current Firefox */]().then(blob => {
-        const dataURL = new FileReaderSync().readAsDataURL(blob);
+        if (blobURL) URL.revokeObjectURL(blobURL);
+        blobURL = URL.createObjectURL(blob);
         navigator.mediaSession.metadata = new MediaMetadata({
             title: (header.title || 'Langton\'s Ant Music') + ' Step ' + header.stepCount,
             artist: header.author || '',
             album: header.series || '',
             artwork: [{
-                src: dataURL,
+                src: blobURL,
                 sizes: '128x128',
                 type: 'image/png'
             }],
@@ -38,19 +40,19 @@ function syncMediaSession() {
 }
 
 function mediaPause() {
-    setTimeout(() => navigator.mediaSession.playbackState = "paused", 0);
+    navigator.mediaSession.playbackState = "paused";
 }
 
 function mediaPlay() {
-    setTimeout(() => navigator.mediaSession.playbackState = "playing", 0);
+    navigator.mediaSession.playbackState = "playing";
 }
 
 function setMediaPlaybackState() {
-    setTimeout(() => navigator.mediaSession.setPositionState({
+    navigator.mediaSession.setPositionState({
         duration: (header.stepCount ?? 0) + 150,
         playbackRate: 1,
         position: header.stepCount ?? 0,
-    }), 0);
+    });
 }
 
 function forcePlayElement() {
@@ -81,6 +83,10 @@ const handlers = {
     },
 };
 
-['play', 'pause', 'stop', 'seekbackward', 'seekforward', 'seekto', 'previoustrack', 'nexttrack'].forEach(e => {
-    navigator.mediaSession.setActionHandler(e, handlers[e]);
+['play', 'pause', 'stop', 'seekbackward', 'seekforward', 'seekto', 'previoustrack', 'nexttrack'].forEach(ev => {
+    try {
+        navigator.mediaSession.setActionHandler(ev, handlers[ev]);
+    } catch (err) {
+        console.log('handler ' + ev + ' not supported');
+    }
 });
