@@ -2,7 +2,7 @@ var smallCanvas = new OffscreenCanvas(128, 128)
 var audioElement = document.createElement('audio');
 audioElement.setAttribute('src', 'https://raw.githubusercontent.com/anars/blank-audio/master/45-seconds-of-silence.mp3');
 audioElement.setAttribute('style', 'position:absolute;top:150vh');
-document.body.append(smallCanvas, audioElement);
+document.body.append(audioElement);
 var smallTools = new CanvasToolsManager(smallCanvas);
 var smallCtx = smallTools.ctx;
 var throttle = 30;
