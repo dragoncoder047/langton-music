@@ -13,19 +13,18 @@ class World {
      * @param {number} cellSize The side length of the cell at zoom=1.
      * @param {array} colors Object of colors to draw each state in.
      */
-    constructor(ctx, cellSize = 16, colors = {}) {
+    constructor(cellSize = 16, colors = {}) {
         this.cells = {};
         this.cellSize = cellSize;
-        this.ctx = ctx;
         this.stateColors = colors;
     }
     /**
      * Draws all the cells on the canvas.
      */
-    draw() {
+    draw(ctx) {
         for (var cell in this.cells) {
             var [x, y] = cell.split(',');
-            this.drawCell(parseInt(x, 16), parseInt(y, 16), this.getColor(this.cells[cell]));
+            this.drawCell(ctx, parseInt(x, 16), parseInt(y, 16), this.getColor(this.cells[cell]));
         }
     }
     /**
@@ -34,12 +33,12 @@ class World {
      * @param {number} y 
      * @param {string} color 
      */
-    drawCell(x, y, color) {
-        this.ctx.save();
-        this.ctx.fillStyle = color;
-        this.ctx.translate(x * this.cellSize, y * this.cellSize);
-        this.ctx.fillRect(-this.cellSize / 2, -this.cellSize / 2, this.cellSize, this.cellSize);
-        this.ctx.restore();
+    drawCell(ctx, x, y, color) {
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.translate(x * this.cellSize, y * this.cellSize);
+        ctx.fillRect(-this.cellSize / 2, -this.cellSize / 2, this.cellSize, this.cellSize);
+        ctx.restore();
     }
     /**
      * Creates or returns the color for this state.
