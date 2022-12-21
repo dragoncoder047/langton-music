@@ -7,6 +7,7 @@ var smallTools = new CanvasToolsManager(smallCanvas);
 var smallCtx = smallTools.ctx;
 var throttle = 30;
 function syncMediaSession() {
+    return; // For debugging
     if (throttle > 0) { throttle--; return; }
     throttle = 30;
     // Center it on the canvas
