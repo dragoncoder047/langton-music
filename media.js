@@ -7,7 +7,6 @@ var smallTools = new CanvasToolsManager(smallCanvas);
 var smallCtx = smallTools.ctx;
 var throttle = 30;
 function syncMediaSession() {
-//    return; // For debugging
     if (throttle > 0) { throttle--; return; }
     throttle = 30;
     // Center it on the canvas
@@ -15,7 +14,7 @@ function syncMediaSession() {
     var middle = vScale(vPlus(bbox.tl, bbox.br), 0.5);
     var size = bbox.br.x - bbox.tl.x + 1 // +1 to preclude dividing by zero
     smallTools.zoom = smallCanvas.width / size / world.cellSize;
-    smallTools.panxy = vPlus(vScale(cell, -1 * world.cellSize * smallTools.zoom), vScale({ x: smallCanvas.width, y: smallCanvas.height }, 0.5));
+    smallTools.panxy = vPlus(vScale(middle, -1 * world.cellSize * smallTools.zoom), vScale({ x: smallCanvas.width, y: smallCanvas.height }, 0.5));
     // Draw
     smallTools.clear();
     smallTools.drawTransformed(() => {
