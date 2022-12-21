@@ -1,17 +1,10 @@
-var smallCanvas = document.createElement('canvas');
-var nullElement = document.createElement('span');
+var smallCanvas = new OffscreenCanvas(128, 128)
 var audioElement = document.createElement('audio');
 audioElement.setAttribute('src', 'https://raw.githubusercontent.com/anars/blank-audio/master/45-seconds-of-silence.mp3');
-smallCanvas.setAttribute('width', 128);
-smallCanvas.setAttribute('height', 128);
-smallCanvas.setAttribute('style', 'position:absolute;top:150vh');
-nullElement.setAttribute('style', 'position:absolute;top:150vh');
 audioElement.setAttribute('style', 'position:absolute;top:150vh');
-smallCanvas.width = 128;
-smallCanvas.height = 128;
-document.body.append(smallCanvas, nullElement, audioElement);
-var smallTools = new CanvasToolsManager(smallCanvas, nullElement, nullElement, []);
-var smallCtx = smallCanvas.getContext('2d');
+document.body.append(smallCanvas, audioElement);
+var smallTools = new CanvasToolsManager(smallCanvas);
+var smallCtx = smallTools.ctx;
 var throttle = 30;
 function syncMediaSession() {
     if (throttle > 0) { throttle--; return; }
@@ -29,18 +22,19 @@ function syncMediaSession() {
         ants.forEach(ant => ant.draw(smallCtx));
     });
     // Create the metadata
-    setTimeout(() => {
+    smallCanvas[smallCanvas.convertToBlob ? 'convertToBlob' /* specs */ : 'toBlob' /* current Firefox */]().then(blob => {
+        const dataURL = new FileReaderSync().readAsDataURL(blob);
         navigator.mediaSession.metadata = new MediaMetadata({
             title: (header.title || 'Langton\'s Ant Music') + ' Step ' + header.stepCount,
             artist: header.author || '',
             album: header.series || '',
             artwork: [{
-                src: smallCanvas.toDataURL(),
+                src: dataURL,
                 sizes: '128x128',
                 type: 'image/png'
             }],
         });
-    }, 0);
+    });
 }
 
 function mediaPause() {
