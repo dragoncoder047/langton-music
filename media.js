@@ -49,7 +49,7 @@ function mediaPlay() {
 function setMediaPlaybackState() {
     setTimeout(() => navigator.mediaSession.setPositionState({
         duration: (header.stepCount ?? 0) + 150,
-        playbackRate: header.bpm / 240,
+        playbackRate: 1,
         position: header.stepCount ?? 0,
     }), 0);
 }
