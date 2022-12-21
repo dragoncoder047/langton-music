@@ -19,10 +19,8 @@ function syncMediaSession() {
     // Center it on the canvas
     var bbox = world.bbox(ants);
     var middle = vScale(vPlus(bbox.tl, bbox.br), 0.5);
-    var dimensions = vPlus({ x: 1, y: 1 }, vMinus(bbox.br, bbox.tl)); // +1 to preclude dividing by zero
-    var leftRightZoom = smallCanvas.width / dimensions.x / world.cellSize;
-    var upDownZoom = smallCanvas.height / dimensions.y / world.cellSize;
-    smallTools.zoom = Math.min(upDownZoom, leftRightZoom);
+    var size = bbox.br.x - bbox.tl.x + 1 // +1 to preclude dividing by zero
+    smallTools.zoom = smallCanvas.width / size / world.cellSize;
     smallTools.panxy = vPlus(vScale(cell, -1 * world.cellSize * smallTools.zoom), vScale({ x: smallCanvas.width, y: smallCanvas.height }, 0.5));
     // Draw
     smallTools.clear();
@@ -31,16 +29,18 @@ function syncMediaSession() {
         ants.forEach(ant => ant.draw(smallCtx));
     });
     // Create the metadata
-    navigator.mediaSession.metadata = new MediaMetadata({
-        title: (header.title || 'Langton\'s Ant Music') + ' Step ' + header.stepCount,
-        artist: header.author || '',
-        album: header.series || '',
-        artwork: [{
-            src: smallCanvas.toDataURL(),
-            sizes: '128x128',
-            type: 'image/png'
-        }],
-    });
+    setTimeout(() => {
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: (header.title || 'Langton\'s Ant Music') + ' Step ' + header.stepCount,
+            artist: header.author || '',
+            album: header.series || '',
+            artwork: [{
+                src: smallCanvas.toDataURL(),
+                sizes: '128x128',
+                type: 'image/png'
+            }],
+        });
+    }, 0);
 }
 
 function mediaPause() {
