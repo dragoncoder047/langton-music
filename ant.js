@@ -121,10 +121,6 @@ class Ant {
          */
         this.breed = breed;
         /**
-         * @type {CanvasRenderingContext2D}
-         */
-        this.ctx = world.ctx;
-        /**
          * @type {World}
          */
         this.world = world;
@@ -213,38 +209,38 @@ class Ant {
     /**
      * Draws the ant on the context.
      */
-    draw() {
-        this.ctx.save();
-        this.ctx.translate(this.world.cellSize * this.x, this.world.cellSize * this.y);
-        this.ctx.scale(this.world.cellSize / 16, this.world.cellSize / 16);
-        this.ctx.rotate(Math.PI * this.dir / 2);
-        //antennae
-        this.ctx.fillStyle = this.world.getColor(this.state);
-        this.ctx.strokeStyle = 'black';
-        this.ctx.lineWidth = 0.2;
-        this.ctx.beginPath();
-        this.ctx.moveTo(-4, -7);
-        this.ctx.lineTo(0, -3);
-        this.ctx.lineTo(4, -7);
-        this.ctx.stroke();
-        //3 circles
-        this.ctx.beginPath(); this.ctx.arc(0, -3, 2, 0, 2 * Math.PI); this.ctx.fill();
-        this.ctx.beginPath(); this.ctx.arc(0, 1, 2, 0, 2 * Math.PI); this.ctx.fill();
-        this.ctx.beginPath(); this.ctx.arc(0, 5, 2, 0, 2 * Math.PI); this.ctx.fill();
-        this.ctx.beginPath(); this.ctx.arc(0, -3, 2, 0, 2 * Math.PI); this.ctx.stroke();
-        this.ctx.beginPath(); this.ctx.arc(0, 1, 2, 0, 2 * Math.PI); this.ctx.stroke();
-        this.ctx.beginPath(); this.ctx.arc(0, 5, 2, 0, 2 * Math.PI); this.ctx.stroke();
-        //eyes
-        this.ctx.fillStyle = 'white';
-        this.ctx.beginPath(); this.ctx.arc(1, -4, 1, 0, 2 * Math.PI); this.ctx.fill();
-        this.ctx.beginPath(); this.ctx.arc(-1, -4, 1, 0, 2 * Math.PI); this.ctx.fill();
-        this.ctx.beginPath(); this.ctx.arc(1, -4, 1, 0, 2 * Math.PI); this.ctx.stroke();
-        this.ctx.beginPath(); this.ctx.arc(-1, -4, 1, 0, 2 * Math.PI); this.ctx.stroke();
-        //pupils
-        this.ctx.fillStyle = 'black';
-        this.ctx.beginPath(); this.ctx.arc(1, -4.5, 0.5, 0, 2 * Math.PI); this.ctx.fill();
-        this.ctx.beginPath(); this.ctx.arc(-1, -4.5, 0.5, 0, 2 * Math.PI); this.ctx.fill();
-        this.ctx.restore();
+    draw(ctx) {
+        ctx.save();
+        ctx.translate(this.world.cellSize * this.x, this.world.cellSize * this.y);
+        ctx.scale(this.world.cellSize / 16, this.world.cellSize / 16);
+        ctx.rotate(Math.PI * this.dir / 2);
+        // antennae
+        ctx.fillStyle = this.world.getColor(this.state);
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 0.2;
+        ctx.beginPath();
+        ctx.moveTo(-4, -7);
+        ctx.lineTo(0, -3);
+        ctx.lineTo(4, -7);
+        ctx.stroke();
+        // 3 circles
+        ctx.beginPath(); ctx.arc(0, -3, 2, 0, 2 * Math.PI); ctx.fill();
+        ctx.beginPath(); ctx.arc(0, 1, 2, 0, 2 * Math.PI); ctx.fill();
+        ctx.beginPath(); ctx.arc(0, 5, 2, 0, 2 * Math.PI); ctx.fill();
+        ctx.beginPath(); ctx.arc(0, -3, 2, 0, 2 * Math.PI); ctx.stroke();
+        ctx.beginPath(); ctx.arc(0, 1, 2, 0, 2 * Math.PI); ctx.stroke();
+        ctx.beginPath(); ctx.arc(0, 5, 2, 0, 2 * Math.PI); ctx.stroke();
+        // eyes
+        ctx.fillStyle = 'white';
+        ctx.beginPath(); ctx.arc(1, -4, 1, 0, 2 * Math.PI); ctx.fill();
+        ctx.beginPath(); ctx.arc(-1, -4, 1, 0, 2 * Math.PI); ctx.fill();
+        ctx.beginPath(); ctx.arc(1, -4, 1, 0, 2 * Math.PI); ctx.stroke();
+        ctx.beginPath(); ctx.arc(-1, -4, 1, 0, 2 * Math.PI); ctx.stroke();
+        // pupils
+        ctx.fillStyle = 'black';
+        ctx.beginPath(); ctx.arc(1, -4.5, 0.5, 0, 2 * Math.PI); ctx.fill();
+        ctx.beginPath(); ctx.arc(-1, -4.5, 0.5, 0, 2 * Math.PI); ctx.fill();
+        ctx.restore();
     }
     /**
      * Checks the argument is a number, and returns it.
