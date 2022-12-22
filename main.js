@@ -65,10 +65,18 @@ const followSelector = $('#follow');
  * @type {HTMLSelectElement}
  */
 const actionsSelector = $('#actions');
+/**
+ * @type {HTMLDivElement}
+ */
+const debugBar = $('#debugbar');
 
 ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.10.0/src-noconflict/');
 const textbox = ace.edit('textbox', { mode: 'ace/mode/xml' });
 textbox.setTheme('ace/theme/chrome');
+
+function debug(message) {
+    debugBar.textContent = message || '';
+}
 
 /**
  * @type {Ant[]}
