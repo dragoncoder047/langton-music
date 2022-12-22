@@ -8,6 +8,7 @@ var smallCtx = smallTools.ctx;
 var blobURL;
 function syncMediaSession() {
     // Center it on the canvas
+    debug('syncMediaSession enter');
     var bbox = world.bbox(ants);
     var middle, size;
     if (followSelector.value != '') {
@@ -29,8 +30,11 @@ function syncMediaSession() {
         world.draw(smallCtx);
         ants.forEach(ant => ant.draw(smallCtx));
     });
+    debug('syncMediaSession done drawing');
+
     // Create the metadata
     smallCanvas[smallCanvas.convertToBlob ? 'convertToBlob' /* specs */ : 'toBlob' /* current Firefox */]().then(blob => {
+        debug('syncMediaSession created blob');
         if (blobURL) URL.revokeObjectURL(blobURL);
         blobURL = URL.createObjectURL(blob);
         navigator.mediaSession.metadata = new MediaMetadata({
@@ -43,68 +47,74 @@ function syncMediaSession() {
                 type: 'image/png'
             }],
         });
+        debug('syncMediaSession set metadata');
     });
 }
 
 function mediaPause() {
-    console.log('Setting media playback state to paused');
+    debug('mediaPause');
     navigator.mediaSession.playbackState = "paused";
+    debug('mediaPause done');
 }
 
 function mediaPlay() {
-    console.log('Setting media playback state to playing');
+    debug('mediaPlay');
     navigator.mediaSession.playbackState = "playing";
+    debug('mediaPlay done');
 }
 
 function setMediaPlaybackState() {
-    console.log('Setting media position state');
+    debug('setMediaPlaybackState');
     navigator.mediaSession.setPositionState({
         duration: (header.stepCount ?? 0) + 150,
         playbackRate: 1,
         position: header.stepCount ?? 0,
     });
+    debug('setMediaPlaybackState done');
 }
 
 function forcePlayElement() {
+    debug('forcePlayElement');
     var interval;
     interval = setInterval(() => audioElement.play().then(() => {
         clearInterval(interval);
         audioElement.pause();
+        debug('forcePlayElement done paused');
     }), 100);
 }
 
 const handlers = {
     play() {
-        console.log('got play event');
+        debug('got play event');
         start();
     },
     pause() {
-        console.log('got pause event');
+        debug('got pause event');
         stop();
     },
     stop() {
-        console.log('got stop event');
+        debug('got stop event');
         stop();
         forcePlayElement();
     },
     seekbackward(e) {
-        console.log('got seekbackward event', e);
+        debug('got seekbackward event', e);
         updateSpeedInputs(header.bpm - (e.seekOffset || 10));
     },
     seekforward(e) {
-        console.log('got seekforward event', e);
+        debug('got seekforward event', e);
         updateSpeedInputs(header.bpm + (e.seekOffset || 10));
     },
     seekto(e) {
-        console.log('got seekto event', e);
+        debug('got seekto event', e);
         updateSpeedInputs(e.seekTime);
     },
     previoustrack() {
-        console.log('got previoustrack event');
+        debug('got previoustrack event');
         updateSpeedInputs(header.bpm - 100);
     },
     nexttrack() {
-        console.log('got nexttrack event');
+        debug('got nexttrack event');
         updateSpeedInputs(header.bpm + 100);
     },
 };
@@ -113,6 +123,6 @@ const handlers = {
     try {
         navigator.mediaSession.setActionHandler(ev, handlers[ev]);
     } catch (err) {
-        console.log('handler ' + ev + ' not supported');
+        debug('handler ' + ev + ' not supported');
     }
 });
