@@ -162,7 +162,6 @@ function render() {
         }
     });
     followSelector.value = ants.some(ant => ant.id === selectedAnt) ? selectedAnt : '';
-    syncMediaSession();
     requestAnimationFrame(render);
 }
 render();
