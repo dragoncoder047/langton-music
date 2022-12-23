@@ -76,7 +76,7 @@ textbox.setTheme('ace/theme/chrome');
 
 function debug(message) {
     debugBar.textContent = message || '';
-    console.debug(message);
+    console.log(message);
 }
 
 /**

@@ -8,7 +8,6 @@ var smallCtx = smallTools.ctx;
 var blobURL;
 function syncMediaSession() {
     // Center it on the canvas
-    debug('syncMediaSession enter');
     var bbox = world.bbox(ants);
     var middle, size;
     if (followSelector.value != '') {
@@ -30,15 +29,12 @@ function syncMediaSession() {
         world.draw(smallCtx);
         ants.forEach(ant => ant.draw(smallCtx));
     });
-    debug('syncMediaSession done drawing');
-
     // Create the metadata
     smallCanvas[smallCanvas.convertToBlob ? 'convertToBlob' /* specs */ : 'toBlob' /* current Firefox */]().then(blob => {
-        debug('syncMediaSession created blob');
-        if (blobURL) URL.revokeObjectURL(blobURL);
+        // if (blobURL) URL.revokeObjectURL(blobURL);
         blobURL = URL.createObjectURL(blob);
         navigator.mediaSession.metadata = new MediaMetadata({
-            title: (header.title || 'Langton\'s Ant Music') + ' Step ' + header.stepCount,
+            title: (header.title || 'Langton\'s Ant Music') + ' | ' + header.stepCount,
             artist: header.author || '',
             album: header.series || '',
             artwork: [{
@@ -47,7 +43,6 @@ function syncMediaSession() {
                 type: 'image/png'
             }],
         });
-        debug('syncMediaSession set metadata');
     });
 }
 
