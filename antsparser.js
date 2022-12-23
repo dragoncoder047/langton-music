@@ -59,6 +59,7 @@ function loadWorld(text, antSpecies, world, breeder, ants) {
     if (foundAntBreeds === 0) throw 'There are no ant breeds.';
     ants.length = 0;
     for (var a of xml.querySelectorAll('ant')) {
+        console.log(a);
         var breed = checkattr(a, 'breed');
         var id = checkattr(a, 'id', undefined, false);
         var dir = checkint(a, 'dir');

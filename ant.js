@@ -159,7 +159,7 @@ class Ant {
         /**
          * @type {string}
          */
-        this.id = id || `${this.breed}-${randuuid()}`;
+        this.id = !!id ? id : `${this.breed}-${randuuid()}`;
     }
     /**
      * Processes `#name` substitutions and `#exp;` interpolations for this ant.

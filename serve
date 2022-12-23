@@ -1,2 +1,4 @@
 #! /bin/bash
-sudo python3 -m http.server -b localhost 80
+PORT=$1
+if [ -n $PORT ]; then PORT=8888; fi
+sudo python3 -m http.server -b localhost $PORT

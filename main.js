@@ -75,7 +75,9 @@ const textbox = ace.edit('textbox', { mode: 'ace/mode/xml' });
 textbox.setTheme('ace/theme/chrome');
 
 function debug(message) {
-    debugBar.textContent = message || '';
+    try {
+        debugBar.textContent = message || '';
+    } catch (e) { }
     console.log(message);
 }
 
@@ -149,14 +151,15 @@ function render() {
     antsCounter.textContent = ants.length;
     var selectedAnt = followSelector.value;
     followSelector.childNodes.forEach(node => {
-        if (node.value === '') return;
-        if (!ants.some(ant => ant.id === node.textContent))
+        if (node.value === '' && node.textContent === 'NONE') return;
+        if (!ants.some(ant => ant.id === node.value))
             node.remove();
     });
     ants.forEach(ant => {
         if (![].some.call(followSelector.childNodes, node => node.textContent === ant.id)) {
             var n = document.createElement('option');
             n.textContent = ant.id;
+            n.setAttribute('value', ant.id);
             followSelector.append(n);
             runEnable(true);
         }
@@ -187,6 +190,7 @@ function start() {
     startStopBtn.textContent = 'Pause';
     showStatus('Running...');
     mediaPlay();
+    syncMediaSession();
 }
 
 /**
@@ -197,6 +201,7 @@ function stop() {
     startStopBtn.textContent = 'Resume';
     showStatus('Paused.');
     mediaPause();
+    syncMediaSession();
 }
 
 /**
@@ -281,13 +286,14 @@ function load() {
     showStatus(s);
     runEnable(true);
     fit();
+    syncMediaSession();
 
 }
 loadBtn.addEventListener('click', () => Tone.start(), { once: true });
 loadBtn.addEventListener('click', load);
 
 // For media session api
-[loadBtn, startStopBtn, stepBtn].forEach(b => b.addEventListener('click', forcePlayElement,  { once: true }));
+[loadBtn, startStopBtn, stepBtn].forEach(b => b.addEventListener('click', forcePlayElement, { once: true }));
 
 try {
     var saved = localStorage.getItem('save');
@@ -405,6 +411,7 @@ function updateSpeedInputs(value) {
     speedBox.value = value;
     speedSlider.value = value;
     setMediaPlaybackState(); // Media session api
+    syncMediaSession();
 }
 speedBox.addEventListener('input', () => updateSpeedInputs(speedBox.value));
 speedSlider.addEventListener('input', () => updateSpeedInputs(speedSlider.value));
