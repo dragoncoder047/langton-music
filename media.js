@@ -43,7 +43,7 @@ function syncMediaSession() {
                 type: 'image/png'
             }],
         });
-        console.log('syncMediaSession done', blobURL);
+        debug('syncMediaSession done ' + blobURL);
     });
 }
 

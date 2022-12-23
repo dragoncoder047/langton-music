@@ -78,7 +78,7 @@ function debug(message) {
     try {
         debugBar.textContent = message || '';
     } catch (e) { }
-    console.log(message);
+    console.trace(message);
 }
 
 /**
