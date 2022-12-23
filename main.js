@@ -147,24 +147,6 @@ function render() {
         world.draw(mainCtx);
         ants.forEach(ant => ant.draw(mainCtx));
     });
-    stepCounter.textContent = header.stepCount;
-    antsCounter.textContent = ants.length;
-    var selectedAnt = followSelector.value;
-    followSelector.childNodes.forEach(node => {
-        if (node.value === '' && node.textContent === 'NONE') return;
-        if (!ants.some(ant => ant.id === node.value))
-            node.remove();
-    });
-    ants.forEach(ant => {
-        if (![].some.call(followSelector.childNodes, node => node.textContent === ant.id)) {
-            var n = document.createElement('option');
-            n.textContent = ant.id;
-            n.setAttribute('value', ant.id);
-            followSelector.append(n);
-            runEnable(true);
-        }
-    });
-    followSelector.value = ants.some(ant => ant.id === selectedAnt) ? selectedAnt : '';
     requestAnimationFrame(render);
 }
 render();
@@ -229,6 +211,8 @@ stepBtn.addEventListener('click', step);
  */
 function tick(force = false) {
     if (!running && !force) return;
+    syncMediaSession();
+    setMediaPlaybackState();
     try {
         ants.slice().forEach(ant => ant.tick());
         header.stepCount++;
@@ -254,10 +238,25 @@ function tick(force = false) {
         showStatus('All ants are dead.', 'blue');
         return;
     }
+    stepCounter.textContent = header.stepCount;
+    antsCounter.textContent = ants.length;
+    var selectedAnt = followSelector.value;
+    followSelector.childNodes.forEach(node => {
+        if (node.value === '') return;
+        if (!ants.some(ant => ant.id === node.textContent))
+            node.remove();
+    });
+    ants.forEach(ant => {
+        if (![].some.call(followSelector.childNodes, node => node.textContent === ant.id)) {
+            var n = document.createElement('option');
+            n.textContent = n.value = ant.id;
+            followSelector.append(n);
+            runEnable(true);
+        }
+    });
+    followSelector.value = ants.some(ant => ant.id === selectedAnt) ? selectedAnt : '';
     if (autoFit.checked && running) fit();
     followAnt(followSelector.value);
-    syncMediaSession();
-    setMediaPlaybackState();
     if (!force) setTimeout(tick, 60000 / (header.bpm ?? 240));
 }
 
