@@ -43,6 +43,7 @@ function syncMediaSession() {
                 type: 'image/png'
             }],
         });
+        console.log('syncMediaSession done', blobURL);
     });
 }
 
@@ -74,6 +75,7 @@ function forcePlayElement() {
     interval = setInterval(() => audioElement.play().then(() => {
         clearInterval(interval);
         audioElement.pause();
+        updateActionHandlers();
         debug('forcePlayElement done paused');
     }), 100);
 }
@@ -114,10 +116,13 @@ const handlers = {
     },
 };
 
-['play', 'pause', 'stop', 'seekbackward', 'seekforward', 'seekto', 'previoustrack', 'nexttrack'].forEach(ev => {
-    try {
-        navigator.mediaSession.setActionHandler(ev, handlers[ev]);
-    } catch (err) {
-        debug('handler ' + ev + ' not supported');
-    }
-});
+function updateActionHandlers() {
+    ['play', 'pause', 'stop', 'seekbackward', 'seekforward', 'seekto', 'previoustrack', 'nexttrack'].forEach(ev => {
+        try {
+            navigator.mediaSession.setActionHandler(ev, handlers[ev]);
+        } catch (err) {
+            debug('handler ' + ev + ' not supported');
+        }
+    });
+}
+updateActionHandlers();

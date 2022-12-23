@@ -257,6 +257,7 @@ function tick(force = false) {
     if (autoFit.checked && running) fit();
     followAnt(followSelector.value);
     syncMediaSession();
+    setMediaPlaybackState();
     if (!force) setTimeout(tick, 60000 / (header.bpm ?? 240));
 }
 
@@ -287,6 +288,7 @@ function load() {
     runEnable(true);
     fit();
     syncMediaSession();
+    setMediaPlaybackState();
 
 }
 loadBtn.addEventListener('click', () => Tone.start(), { once: true });

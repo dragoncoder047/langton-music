@@ -67,7 +67,7 @@ class World {
      */
     setCell(x, y, state) {
         var coords = `${x.toString(16)},${y.toString(16)}`;
-        if (state == 0) delete this.cells[coords];
+        if (state === 0) delete this.cells[coords];
         else this.cells[coords] = state;
     }
     /**
@@ -180,7 +180,7 @@ function rleUncompress(text) {
  * @returns {number}
  */
 function lettersToStateNum(letters) {
-    if (letters.length == 1) return '.ABCDEFGHIJKLMNOPQRSTUVWX'.indexOf(letters);
+    if (letters.length === 1) return '.ABCDEFGHIJKLMNOPQRSTUVWX'.indexOf(letters);
     return lettersToStateNum(letters.slice(1)) + (24 * ('pqrstuvwx'.indexOf(letters[0]) + 1));
 }
 
@@ -191,7 +191,7 @@ function lettersToStateNum(letters) {
  */
 function stateNumToLetters(state) {
     if (state === undefined) return '';
-    if (state == 0) return '.';
+    if (state === 0) return '.';
     var out = '';
     if (state > 24) {
         var hi = (state - 25) / 24;
