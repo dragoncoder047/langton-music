@@ -1,10 +1,8 @@
-var smallCanvas = new OffscreenCanvas(128, 128);
-var audioElement = document.createElement('audio');
-audioElement.setAttribute('src', 'https://raw.githubusercontent.com/anars/blank-audio/master/45-seconds-of-silence.mp3');
-audioElement.setAttribute('style', 'position:absolute;top:150vh');
-document.body.append(audioElement);
-var smallTools = new CanvasToolsManager(smallCanvas);
-var smallCtx = smallTools.ctx;
+const smallCanvas = new OffscreenCanvas(128, 128);
+const audioElement = new Audio('https://raw.githubusercontent.com/anars/blank-audio/master/45-seconds-of-silence.mp3');
+audioElement.loop = true;
+const smallTools = new CanvasToolsManager(smallCanvas);
+const smallCtx = smallTools.ctx;
 var blobURL;
 function syncMediaSession() {
     // Center it on the canvas
@@ -50,12 +48,14 @@ function syncMediaSession() {
 function mediaPause() {
     debug('mediaPause');
     navigator.mediaSession.playbackState = "paused";
+    audioElement.pause();
     debug('mediaPause done');
 }
 
 function mediaPlay() {
     debug('mediaPlay');
     navigator.mediaSession.playbackState = "playing";
+    audioElement.play();
     debug('mediaPlay done');
 }
 
@@ -74,7 +74,6 @@ function forcePlayElement() {
     var interval;
     interval = setInterval(() => audioElement.play().then(() => {
         clearInterval(interval);
-        audioElement.pause();
         updateActionHandlers();
         debug('forcePlayElement done paused');
     }), 100);
