@@ -12,3 +12,15 @@
 * All-in-one documentation and help included.
 * Simple XML-based format.
 * Integrates with the [MediaSession API](https://developer.mozilla.org/en-US/docs/Web/API/MediaSession) to allow control with the tab in the background.
+
+## Contribution workflow 
+
+1. `git clone` this repo locally
+2. Go to `chrome://flags` or such and make sure your browser trusts `localhost` as secure.
+3. Do some edits
+4. `./serve` (`sudo` or enter password if necessary) -- you will need python 3
+5. Open `https://localhost/` in your browser
+6. Try the new feature you added
+7. Go back to 3 if needed
+8. Commit your changes
+9. Send me a PR
