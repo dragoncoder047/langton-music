@@ -17,6 +17,7 @@ class World {
         this.cells = {};
         this.cellSize = cellSize;
         this.stateColors = colors;
+        this.rng = Math.random;
     }
     /**
      * Draws all the cells on the canvas.
@@ -47,7 +48,7 @@ class World {
      */
     getColor(state) {
         if (!(state in this.stateColors))
-            this.stateColors[state] = `rgb(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255})`;
+            this.stateColors[state] = `rgb(${this.rng() * 255},${this.rng() * 255},${this.rng() * 255})`;
         return this.stateColors[state];
     }
     /**
