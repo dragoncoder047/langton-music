@@ -9,8 +9,8 @@
         <meta property="og:description" content="Langton's Ant plays the drums!" />
         <meta property="og:image" content="langton-150-icon.png" />
         <meta property="og:type" content="page" />
-        <meta property="og:url" content="https://dragoncoder047.github.io/pages/index.html" />
-        <meta property="og:locale" content="['']" />
+        <meta property="og:url" content="https://dragoncoder047.github.io/langton-music/index.html" />
+        <meta property="og:locale" content="America" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Langton's Ant Music" />
         <meta name="twitter:description" content="Langton's Ant plays the drums!" />
@@ -21,6 +21,7 @@
         <link rel="icon" href="langton-150-icon.png">
         <script src="https://cdn.jsdelivr.net/npm/tone@14.7.77/build/Tone.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.10.0/src-noconflict/ace.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/seedrandom@3.0.5/seedrandom.min.js"></script>
     </head>
 
     <body>
@@ -102,7 +103,7 @@
                     <p>The entire document is enclosed in <code>&lt;langton&gt;</code> tags.</p>
                     <p>Then there can be 4 things inside that:</p>
                     <ul>
-                        <li><code>&lt;config&gt;</code> tags: for header configuration values</li>
+                        <li><code>&lt;config&gt;</code> tags: for metadata/configuration values</li>
                         <li><code>&lt;breed&gt;</code> tags: Defining the ant breeds</li>
                         <li><code>&lt;ant&gt;</code> tags: instantiating (using) the ant</li>
                         <li><code>&lt;rle&gt;</code> tags: RLE data to specify the cells on the grid.</li>
@@ -130,11 +131,24 @@
                             <tr>
                                 <td style="text-align:center"><code>stepCount</code></td>
                                 <td style="text-align:left">Doesn't really do anything, it just changes the initial
-                                    step number from the default zero when you press LOAD. Useful for
-                                    restoring from a dump.</td>
+                                    step number from the default (zero) when you press LOAD. Useful for
+                                    restoring from a dump or save.</td>
                             </tr>
                             <tr>
-                                <td style="text-align:center"><code>#blah</code></td>
+                                <td style="text-align:center"><code>color<em>NN</em></code></td>
+                                <td style="text-align:left">Fixes the color of the state <code><em>NN</em></code>
+                                    to be the color specified, and not use the random number generator
+                                    (although as of 2023-01-19 LAM uses a fixed seed so the colors should be
+                                    relatively predictable).</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>color_seed</code></td>
+                                <td style="text-align:left">Seeds the random number generator to generate a
+                                    different sequence of colors for those not defined by <code><em>colorNN</em></code>
+                                    config tags.</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>#<em>(some name)</em></code></td>
                                 <td style="text-align:left">An arbitrary interpolation value (see below).</td>
                             </tr>
                         </tbody>
