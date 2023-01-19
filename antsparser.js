@@ -43,7 +43,16 @@ function loadWorld(text, antSpecies, world, breeder, ants) {
     console.log(xml);
     var header = {};
     for (var c of xml.querySelectorAll('config')) {
-        header[checkattr(c, 'name')] = c.textContent;
+        var nn = checkattr(c, 'name'), m;
+        if ((m = /^color(\d+)/.exec(nn))) {
+            console.log('State color', +m[1], c.textContent);
+            world.stateColors[m[1]] = c.textContent;
+        } else if (nn == 'color_seed' && 'seedrandom' in Math) {
+            console.log('Got random seed', c.textContent);
+            world.rng = new Math.seedrandom(c.textContent);
+        } else {
+            header[nn] = c.textContent;
+        }
     }
     console.log('Parsed header:', header);
     breeder.empty();
