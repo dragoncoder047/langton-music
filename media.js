@@ -1,8 +1,16 @@
-const smallCanvas = new OffscreenCanvas(128, 128);
-const audioElement = new Audio('https://raw.githubusercontent.com/anars/blank-audio/master/45-seconds-of-silence.mp3');
+var smallCanvas, hasOffscreen = true;
+if ('OffscreenCanvas' in window) smallCanvas = new OffscreenCanvas(128, 128);
+else {
+    smallCanvas = document.createElement('canvas');
+    smallCanvas.width = smallCanvas.height = 128;
+    smallCanvas.setAttribute('style', 'width:128;height:128;position:absolute;top:-1000px');
+    document.body.appendChild(smallCanvas);
+    hasOffscreen = false;
+}
+var audioElement = new Audio('https://raw.githubusercontent.com/anars/blank-audio/master/45-seconds-of-silence.mp3');
 audioElement.loop = true;
-const smallTools = new CanvasToolsManager(smallCanvas);
-const smallCtx = smallTools.ctx;
+var smallTools = new CanvasToolsManager(smallCanvas);
+var smallCtx = smallTools.ctx;
 var blobURL;
 function syncMediaSession() {
     // Center it on the canvas
@@ -28,21 +36,28 @@ function syncMediaSession() {
         ants.forEach(ant => ant.draw(smallCtx));
     });
     // Create the metadata
-    smallCanvas[smallCanvas.convertToBlob ? 'convertToBlob' /* specs */ : 'toBlob' /* current Firefox */]().then(blob => {
-        // if (blobURL) URL.revokeObjectURL(blobURL);
-        blobURL = URL.createObjectURL(blob);
-        navigator.mediaSession.metadata = new MediaMetadata({
-            title: (header.title || 'Langton\'s Ant Music') + ' | ' + header.stepCount,
-            artist: header.author || '',
-            album: header.series || '',
-            artwork: [{
-                src: blobURL,
-                sizes: '128x128',
-                type: 'image/png'
-            }],
-        });
-        debug('syncMediaSession done ' + blobURL);
+    try {
+        if (hasOffscreen) smallCanvas.convertToBlob().then(gotCanvasBlob);
+        else smallCanvas.toBlob(gotCanvasBlob);
+    } catch(e) {
+        console.error(e);
+    }
+}
+
+function gotCanvasBlob(blob) {
+    // if (blobURL) URL.revokeObjectURL(blobURL);
+    blobURL = URL.createObjectURL(blob);
+    navigator.mediaSession.metadata = new MediaMetadata({
+        title: (header.title || 'Langton\'s Ant Music') + ' | ' + header.stepCount,
+        artist: header.author || '',
+        album: header.series || '',
+        artwork: [{
+            src: blobURL,
+            sizes: '128x128',
+            type: 'image/png'
+        }],
     });
+    debug('gotCanvasBlob done ' + blobURL);
 }
 
 function mediaPause() {
@@ -122,6 +137,9 @@ function updateActionHandlers() {
         } catch (err) {
             debug('handler ' + ev + ' not supported');
         }
+    });
+    audioElement.addEventListener('pause', () => {
+        handlers.pause();
     });
 }
 updateActionHandlers();
