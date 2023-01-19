@@ -17,7 +17,7 @@ class World {
         this.cells = {};
         this.cellSize = cellSize;
         this.stateColors = colors;
-        this.rng = Math.random;
+        this.rng = 'seedrandom' in Math ? new Math.seedrandom('yes') : Math.random;
     }
     /**
      * Draws all the cells on the canvas.
