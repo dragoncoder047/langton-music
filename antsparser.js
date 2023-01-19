@@ -6,7 +6,7 @@
  * @param {boolean} [required=true] Whether the attribute is required.
  * @returns {string|null}
  */
-function checkattr(node, attr, fallback = null, required = true) {
+function checkattr(node, attr, fallback = undefined, required = true) {
     if (required && (!node.hasAttribute(attr) || node.getAttribute(attr) === '')) throw `Need attribute ${attr} on <${node.nodeName.toLowerCase()}>`;
     return node.getAttribute(attr) ?? fallback;
 }
