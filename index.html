@@ -151,6 +151,22 @@
                                 <td style="text-align:center"><code>#<em>(some name)</em></code></td>
                                 <td style="text-align:left">An arbitrary interpolation value (see below).</td>
                             </tr>
+                            <tr>
+                                <td style="text-align:center"><code>title</code></td>
+                                <td style="text-align:left">The name of the pattern (used in the media controls box).
+                                    If omitted it defaults to "Langton's Ant Music".</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>author</code></td>
+                                <td style="text-align:left">The name of the person that created the pattern.
+                                    (Used to populate the "artist" field in the media controls.)</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>series</code></td>
+                                <td style="text-align:left">A name for the "series" the pattern is in, maybe like
+                                    the type of ant or something. (Used to populate the "album" field in the
+                                    media controls.)</td>
+                            </tr>
                         </tbody>
                     </table>
                     <h2>Ant Breeds - <code>&lt;breed&gt;</code> tag</h2>
@@ -224,9 +240,9 @@
                                 <td style="text-align:left">Whatever state the ant is in.</td>
                             </tr>
                             <tr>
-                                <td style="text-align:center"><code>blah</code></td>
-                                <td style="text-align:left">Whatever value <code>#blah</code> is set to in a
-                                    <code>&lt;config&gt;</code>. (<code>blah</code> can be anything.)
+                                <td style="text-align:center"><code><em>blah</em></code></td>
+                                <td style="text-align:left">Whatever value <code>#<em>blah</em></code> is set to in a
+                                    <code>&lt;config&gt;</code>. (<code><em>blah</em></code> can be anything.)
                                 </td>
                             </tr>
                         </tbody>
