@@ -31,8 +31,8 @@ function checkint(node, attr, fallback = null, required = true) {
  */
 class LM_XMLError extends SyntaxError {
     constructor(message, line, col) {
+        super(message);
         this.name = "LM_XMLError";
-        this.message = message;
         this.line = line;
         this.col = col;
     }
