@@ -280,6 +280,15 @@ function load() {
         stop();
         runEnable(false);
         showStatus('Error: ' + e.toString(), 'red');
+        if (e instanceof LM_XMLError) {
+            var { line, col, message } = e;
+            textbox.setAnnotations([{
+                row: line,
+                column: col,
+                text: message,
+                type: "error",
+            }]);
+        }
         throw e;
     }
     startStopBtn.textContent = 'Start';
