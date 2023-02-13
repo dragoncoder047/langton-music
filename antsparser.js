@@ -29,7 +29,14 @@ function checkint(node, attr, fallback = null, required = true) {
 /**
  * A custom error thrown to contain the extracted line/col information of the XML error.
  */
-class LM_XMLError extends SyntaxError {}
+class LM_XMLError extends SyntaxError {
+    constructor(message, line, col) {
+        this.name = "LM_XMLError";
+        this.message = message;
+        this.line = line;
+        this.col = col;
+    }
+}
 
 /**
  * Extract the error details from the <parsererror> element
@@ -49,11 +56,7 @@ function extractErrorDetails(err) {
     var message = /error(?!s).*?:(.*)$/im.exec(text);
     if (message) message = message[1];
     else message = "XML parse error: " + text;
-    var eobj = new LM_XMLError();
-    eobj.message = message.trim();
-    eobj.line = line;
-    eobj.col = col;
-    return eobj;
+    return new LM_XMLError(message.trim(), line, col);
 }
 
 /**
