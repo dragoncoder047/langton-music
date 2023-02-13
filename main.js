@@ -279,8 +279,8 @@ function load() {
     } catch (e) {
         stop();
         runEnable(false);
-        showStatus('Error: ' + e.toString(), 'red');
-        if (e instanceof LM_XMLError) {
+        showStatus('Error: ' + e.message, 'red');
+        if ('line' in e && 'col' in e) {
             var { line, col, message } = e;
             textbox.setAnnotations([{
                 row: line,
