@@ -283,7 +283,7 @@ function load() {
         if ('line' in e && 'col' in e) {
             var { line, col, message } = e;
             textbox.getSession().setAnnotations([{
-                row: line,
+                row: line - 1, // Ace uses line 1 as row 0
                 column: col,
                 text: message,
                 type: "error",
@@ -402,7 +402,7 @@ window.addEventListener('hashchange', () => {
     $(where).append(statusBar);
     fitace();
 });
-if (location.hash !== '#') window.dispatchEvent(new Event('hashchange'));
+location.hash = "#"; // Don't have editor open by default
 
 // Speed slider and box and media session
 function updateSpeedInputs(value) {
@@ -500,7 +500,7 @@ else {
         installOption.value = 'install';
         installOption.textContent = 'Install Web App';
         actionsSelector.append(installOption);
-        showStatus("You can now install Langton's Ant music as a web app on your device! Go to the Actions menu to install.", "orange");
+        showStatus("You can now install Langton's Ant music as a web app on your device! Go to the Actions menu to install.", "blue");
     });
 
     // hide alert when app is actually installed
