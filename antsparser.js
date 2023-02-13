@@ -27,6 +27,36 @@ function checkint(node, attr, fallback = null, required = true) {
 }
 
 /**
+ * A custom error thrown to contain the extracted line/col information of the XML error.
+ */
+class LM_XMLError extends SyntaxError {}
+
+/**
+ * Extract the error details from the <parsererror> element
+ * and returns the resultant error details.
+ * @param {XMLElement} err
+ * @returns {LM_XMLError}
+ */
+function extractErrorDetails(err) {
+    // See: https://stackoverflow.com/questions/11563554/how-do-i-detect-xml-parsing-errors-when-using-javascripts-domparser-in-a-cross
+    var text = err.textContent;
+    var line = /line\D+(\d+)/i.exec(text);
+    if (line) line = parseInt(line[1]);
+    else line = 0;
+    var col = /column\D+(\d+)/i.exec(text);
+    if (col) col = parseInt(col[1]);
+    else col = undefined;
+    var message = /error(?!s).*?:(.*)$/im.exec(text);
+    if (message) message = message[1];
+    else message = "XML parse error: " + text;
+    var eobj = new LM_XMLError();
+    eobj.message = message.trim();
+    eobj.line = line;
+    eobj.col = col;
+    return eobj;
+}
+
+/**
  * Parses the world and creates the ants.
  * @param {string} text Raw unparsed XML.
  * @param {object<string, Function>} antSpecies The breeds of ants available.
@@ -37,8 +67,8 @@ function checkint(node, attr, fallback = null, required = true) {
  */
 function loadWorld(text, antSpecies, world, breeder, ants) {
     var xml = (new DOMParser()).parseFromString(text, 'application/xml');
-    for (var err of xml.querySelectorAll('parsererror div')) {
-        throw err.textContent;
+    for (var err of xml.querySelectorAll('parsererror')) {
+        throw extractErrorDetails(err);
     }
     console.log(xml);
     var header = {};
