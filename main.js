@@ -282,7 +282,7 @@ function load() {
         showStatus('Error: ' + e.message, 'red');
         if ('line' in e && 'col' in e) {
             var { line, col, message } = e;
-            textbox.setAnnotations([{
+            textbox.getSession().setAnnotations([{
                 row: line,
                 column: col,
                 text: message,
