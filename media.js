@@ -28,7 +28,7 @@ function syncMediaSession() {
         }
     }
     smallTools.zoom = smallCanvas.width / size / world.cellSize;
-    smallTools.panxy = vPlus(vScale(middle, -1 * world.cellSize * smallTools.zoom), vScale({ x: smallCanvas.width, y: smallCanvas.height }, 0.5));
+    smallTools.panxy = vPlus(vScale(middle, -1 * world.cellSize * smallTools.zoom), { x: smallCanvas.width / 2, y: smallCanvas.height / 2 });
     // Draw
     smallTools.clear();
     smallTools.drawTransformed(() => {
@@ -47,6 +47,7 @@ function syncMediaSession() {
 function gotCanvasBlob(blob) {
     // if (blobURL) URL.revokeObjectURL(blobURL);
     blobURL = URL.createObjectURL(blob);
+    if (!('mediaSession' in navigator)) return;
     navigator.mediaSession.metadata = new MediaMetadata({
         title: (header.title || 'Langton\'s Ant Music') + ' | ' + header.stepCount,
         artist: header.author || '',
@@ -57,85 +58,91 @@ function gotCanvasBlob(blob) {
             type: 'image/png'
         }],
     });
-    debug('gotCanvasBlob done ' + blobURL);
+    if (debug) debug('gotCanvasBlob done ' + blobURL);
 }
 
 function mediaPause() {
-    debug('mediaPause');
+    if (debug) debug('mediaPause');
+    if (!('mediaSession' in navigator)) return;
     navigator.mediaSession.playbackState = "paused";
     audioElement.pause();
-    debug('mediaPause done');
+    if (debug) debug('mediaPause done');
 }
 
 function mediaPlay() {
-    debug('mediaPlay');
+    if (debug) debug('mediaPlay');
+    if (!('mediaSession' in navigator)) return;
     navigator.mediaSession.playbackState = "playing";
     audioElement.play();
-    debug('mediaPlay done');
+    if (debug) debug('mediaPlay done');
 }
 
 function setMediaPlaybackState() {
-    debug('setMediaPlaybackState');
+    if (debug) debug('setMediaPlaybackState');
+    if (!('mediaSession' in navigator)) return;
     navigator.mediaSession.setPositionState({
         duration: (header.stepCount ?? 0) + 150,
         playbackRate: 1,
         position: header.stepCount ?? 0,
     });
-    debug('setMediaPlaybackState done');
+    if (debug) debug('setMediaPlaybackState done');
 }
 
 function forcePlayElement() {
-    debug('forcePlayElement');
+    if (debug) debug('forcePlayElement');
+    if (!('mediaSession' in navigator)) return;
     var interval;
     interval = setInterval(() => audioElement.play().then(() => {
         clearInterval(interval);
+        audioElement.pause();
         updateActionHandlers();
-        debug('forcePlayElement done paused');
+        if (debug) debug('forcePlayElement done paused');
     }), 100);
 }
 
 const handlers = {
     play() {
-        debug('got play event');
+        if (debug) debug('got play event');
         start();
     },
     pause() {
-        debug('got pause event');
+        if (debug) debug('got pause event');
         stop();
     },
     stop() {
-        debug('got stop event');
+        if (debug) debug('got stop event');
         stop();
         forcePlayElement();
     },
     seekbackward(e) {
-        debug('got seekbackward event', e);
+        if (debug) debug('got seekbackward event', e);
         updateSpeedInputs(header.bpm - (e.seekOffset || 10));
     },
     seekforward(e) {
-        debug('got seekforward event', e);
+        if (debug) debug('got seekforward event', e);
         updateSpeedInputs(header.bpm + (e.seekOffset || 10));
     },
     seekto(e) {
-        debug('got seekto event', e);
+        if (debug) debug('got seekto event', e);
         updateSpeedInputs(e.seekTime);
     },
     previoustrack() {
-        debug('got previoustrack event');
+        if (debug) debug('got previoustrack event');
         updateSpeedInputs(header.bpm - 100);
     },
     nexttrack() {
-        debug('got nexttrack event');
+        if (debug) debug('got nexttrack event');
         updateSpeedInputs(header.bpm + 100);
     },
 };
 
 function updateActionHandlers() {
+    if (!('mediaSession' in navigator)) return;
     ['play', 'pause', 'stop', 'seekbackward', 'seekforward', 'seekto', 'previoustrack', 'nexttrack'].forEach(ev => {
         try {
             navigator.mediaSession.setActionHandler(ev, handlers[ev]);
         } catch (err) {
-            debug('handler ' + ev + ' not supported');
+            if (debug) debug('handler ' + ev + ' not supported');
         }
     });
     audioElement.addEventListener('pause', () => {
