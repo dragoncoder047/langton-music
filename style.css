@@ -113,6 +113,7 @@ button {
     margin: 1px;
     background: var(--button-color);
     color: var(--white);
+    font-family: monospace;
 }
 
 button:hover {
