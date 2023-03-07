@@ -159,7 +159,7 @@ class Ant {
         /**
          * @type {string}
          */
-        this.id = "" + id != "" ? id : `${this.breed}-${randuuid()}`;
+        this.id = id != undefined ? id : `${this.breed}-${randuuid()}`;
         alert(this.id);
     }
     /**
