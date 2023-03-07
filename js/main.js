@@ -119,9 +119,9 @@ var interpolations = [];
  * @param {string} text Text to show
  * @param {string} [color='black'] Color; default is black
  */
-function showStatus(text, color = DARK_MODE ? 'black' : 'white') {
+function showStatus(text, color) {
     statusBar.value = text;
-    statusBar.style.color = color;
+    statusBar.style.color = color || (DARK_MODE ? 'white' : 'black');
 }
 
 /**
