@@ -146,6 +146,7 @@ input[type="text"]:focus {
 input[type="checkbox"] {
     visibility: hidden;
     width: 3ch;
+    margin: 0.3em;
 }
 
 input[type="checkbox"]::before {
