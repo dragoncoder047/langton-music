@@ -7,7 +7,7 @@
 
 body {
     background-color: var(--background-color);
-    color: var(--white);
+    color: var(--black);
     font-family: monospace;
 }
 
@@ -107,6 +107,7 @@ th {
 
 button {
     border: none;
+    margin: 1px;
     background: var(--button-color);
     color: var(--white);
 }
