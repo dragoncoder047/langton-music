@@ -11,6 +11,7 @@ body {
     background-color: var(--background-color);
     color: var(--black);
     font-family: monospace;
+    vertical-align: middle;
 }
 
 .heading {
