@@ -144,6 +144,7 @@ input[type="text"]:focus {
 
 input[type="checkbox"] {
     visibility: hidden;
+    width: 3ch;
 }
 
 input[type="checkbox"]::before {
@@ -151,9 +152,7 @@ input[type="checkbox"]::before {
     display: inline-block;
     font-family: monospace;
     content: '[ ]';
-    width: 3ch;
     padding: 1px;
-    margin-right: 2em; /* weird */
     white-space: nowrap;
     color: var(--black);
     background: var(--background-color);

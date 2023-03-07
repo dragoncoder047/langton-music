@@ -75,6 +75,7 @@ const textbox = ace.edit('textbox', { mode: 'ace/mode/xml' });
 textbox.setTheme('ace/theme/chrome');
 
 function debug(message) {
+    return;
     try {
         debugBar.textContent = message || '';
     } catch (e) { }
