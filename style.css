@@ -4,7 +4,7 @@
     --background-color: skyblue;
     --button-color: purple;
     --link-color: darkblue;
-    --link-visited: darkred;
+    --link-visited: purple;
 }
 
 body {
@@ -150,16 +150,17 @@ input[type="checkbox"]::before {
     display: inline-block;
     font-family: monospace;
     content: '[ ]';
-    width: 3ch;
+    width: 2em;
     white-space: nowrap;
     color: var(--black);
     background: var(--background-color);
+    border-bottom: 1px solid transparent;
 }
 
 input[type="checkbox"]:checked::before {
     content: '[X]';
     background: var(--black);
-    color: var(--background-color);
+    border-bottom: 1px solid var(--black);
 }
 
 a {
@@ -195,6 +196,41 @@ select option:hover {
     color: var(--black);
 }
 
+input[type="range"] {
+    appearance: none;
+    background: #7774;
+    -webkit-appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--button-color);
+    height: 1em;
+    width: 2px;
+}
+
+input[type="range"]::-moz-range-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--button-color);
+    height: 1em;
+    width: 2px;
+}
+
+input[type="range"]:hover::-webkit-slider-thumb {
+    width: 4px;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 4px;
+}
+
+input[type="range"]::-moz-range-progress {
+    height: 0.3em;
+    border-top: 1px solid var(--black);
+    border-bottom: 1px solid var(--black);
+}
 
 @media screen and (prefers-color-scheme: dark) {
     :root {
@@ -203,6 +239,6 @@ select option:hover {
         --background-color: #004;
         --button-color: magenta;
         --link-color: blue;
-        --link-visited: darkred;
+        --link-visited: purple;
     }
 }

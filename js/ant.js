@@ -1,11 +1,3 @@
-var darkMode = false;
-(function() {
-    if (!window.matchMedia) return;
-    var mm = window.matchMedia("(prefers-color-scheme: dark)");
-    darkMode = mm.matches;
-    mm.addEventListener('change', () => darkMode = mm.matches);
-})()
-
 /**
  * Checks to make sure the node nesting is correct.
  * @param {HTMLElement} node The XML node to be checked for validity.
@@ -224,7 +216,7 @@ class Ant {
         ctx.rotate(Math.PI * this.dir / 2);
         // antennae
         ctx.fillStyle = this.world.getColor(this.state);
-        ctx.strokeStyle = darkMode ? "white" : "black";
+        ctx.strokeStyle = DARK_MODE ? "white" : "black";
         ctx.lineWidth = 0.2;
         ctx.beginPath();
         ctx.moveTo(-4, -7);
@@ -239,7 +231,7 @@ class Ant {
         ctx.beginPath(); ctx.arc(0, 1, 2, 0, 2 * Math.PI); ctx.stroke();
         ctx.beginPath(); ctx.arc(0, 5, 2, 0, 2 * Math.PI); ctx.stroke();
         // eyes
-        ctx.strokeStyle = darkMode ? "gray" : "black";
+        ctx.strokeStyle = DARK_MODE ? "gray" : "black";
         ctx.fillStyle = "white";
         ctx.beginPath(); ctx.arc(1, -4, 1, 0, 2 * Math.PI); ctx.fill();
         ctx.beginPath(); ctx.arc(-1, -4, 1, 0, 2 * Math.PI); ctx.fill();
