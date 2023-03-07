@@ -162,7 +162,15 @@ input[type="checkbox"]::before {
 
 input[type="checkbox"]:checked::before {
     content: '[#]';
+}
+
+input[type="checkbox"]:not(:disabled):checked::before {
     border-bottom: 1px solid var(--black);
+}
+
+input[type="checkbox"]:disabled::before {
+    background: #777;
+    opacity: 50%;
 }
 
 a {
