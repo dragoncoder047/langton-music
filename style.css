@@ -151,7 +151,9 @@ input[type="checkbox"]::before {
     display: inline-block;
     font-family: monospace;
     content: '[ ]';
-    width: 2em;
+    width: 3ch;
+    padding: 1px;
+    margin: 2px;
     white-space: nowrap;
     color: var(--black);
     background: var(--background-color);
@@ -160,7 +162,6 @@ input[type="checkbox"]::before {
 
 input[type="checkbox"]:checked::before {
     content: '[X]';
-    background: var(--black);
     border-bottom: 1px solid var(--black);
 }
 
