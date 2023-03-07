@@ -475,7 +475,7 @@ actionsSelector.addEventListener('change', () => {
 
 // Register service worker
 if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("js/serviceWorker.js").then(e => console.log("Service worker registered", e));
+    navigator.serviceWorker.register("serviceWorker.js").then(e => console.log("Service worker registered", e));
 }
 
 // Dev version indicator
