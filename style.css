@@ -10,7 +10,7 @@
 body {
     background-color: var(--background-color);
     color: var(--black);
-    font-family: monospace;
+    font-family: sans-serif;
     vertical-align: middle;
 }
 
@@ -113,7 +113,7 @@ button {
     margin: 1px;
     background: var(--button-color);
     color: var(--white);
-    font-family: monospace;
+    font-family: sans-serif;
 }
 
 button:hover {
@@ -128,7 +128,7 @@ button:active {
 input[type="number"],
 input[type="text"] {
     appearance: none;
-    font-family: monospace;
+    font-family: sans-serif;
     border: none;
     outline: none;
     border-bottom: 1px solid var(--black);
@@ -185,7 +185,7 @@ a:visited {
 select {
     outline: none;
     border: none;
-    font-family: monospace;
+    font-family: sans-serif;
     padding: 2px;
     background: #7774;
     color: var(--black);
