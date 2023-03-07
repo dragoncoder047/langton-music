@@ -131,11 +131,12 @@ input[type="text"] {
     outline: none;
     border-bottom: 1px solid var(--black);
     background: transparent;
+    color: var(--black);
 }
 
 input[type="number"]:focus,
 input[type="text"]:focus {
-    border: none;
+    border-bottom: 1px solid var(--black);
     outline: none;
     background: #7774;
 }
@@ -163,6 +164,24 @@ a {
 
 a:visited {
     color: var(--link-visited);
+}
+
+select {
+    outline: none;
+    border: none;
+    font-family: monospace;
+    padding: 1px;
+    background: #7774;
+}
+
+select:focus {
+    outline: none;
+    border: none;
+}
+
+select option {
+    background: var(--background-color);
+    color: var(--black);
 }
 
 
