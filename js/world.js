@@ -153,13 +153,20 @@ class World {
  * @returns {string}
  */
 function rleCompress(text) {
-    return text.replaceAll(/(([p-x]?[A-X]|[$.])+)\1+/g, function (all, one) {
+    var out = text.replaceAll(/(([p-x]?[A-X]|[$.])+)\1+/g, function (all, one) {
         return (all.length / one.length) + '(' + one + ')';
     }).replaceAll(/([p-x]?[A-X]|\.|\$)\1+/g, function (all, one) {
         return (all.length / one.length) + one;
     }).replaceAll(/(\d)+(?:\(([p-x]?[A-X]|[$.])\))/g, function (all, num, t) {
         return num + t;
     });
+    var out2 = "";
+    while (out) {
+        out2 += out.slice(0, 70);
+        out = out.slice(70);
+        out2 += "\n";
+    }
+    return out2;
 }
 
 /**
@@ -168,7 +175,7 @@ function rleCompress(text) {
  * @returns {string}
  */
 function rleUncompress(text) {
-    return text.replaceAll(/(\d+)\(([^\)]+)\)/g, function (_, times, what) {
+    return text.replaceAll(/\s+/g, "").replaceAll(/(\d+)\(([^\)]+)\)/g, function (_, times, what) {
         return what.repeat(parseInt(times));
     }).replaceAll(/(\d+)([p-x]?[A-X]|\.|\$)/g, function (_, times, what) {
         return what.repeat(parseInt(times));
