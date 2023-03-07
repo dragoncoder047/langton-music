@@ -244,7 +244,7 @@ function tick(force = false) {
     var selectedAnt = followSelector.value;
     var nixed = false;
     [].forEach.call(followSelector.childNodes, node => {
-        if (node.value === '') node.remove();
+        if (node.value === '') return; // Don't nix the NONE node
         else if (!ants.some(ant => ant.id === node.textContent)) {
             node.remove();
             nixed = true;
