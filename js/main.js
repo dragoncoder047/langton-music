@@ -242,7 +242,6 @@ function tick(force = false) {
     stepCounter.textContent = header.stepCount;
     antsCounter.textContent = ants.length;
     var selectedAnt = followSelector.value;
-    var nixed = false;
     [].forEach.call(followSelector.childNodes, node => {
         if (node.value == '') return; // Don't nix the NONE node
         if (node.textContent == '') node.remove(); // Nix it if it is actually empty
@@ -401,6 +400,7 @@ window.addEventListener('hashchange', () => {
         stop();
         dump();
         where = '#dumpstatuswrapper';
+        textbox.setTheme(DARK_MODE ? 'ace/theme/chrome' : 'ace/theme/pastel_on_dark');
     }
     $(where).append(statusBar);
     fitace();
