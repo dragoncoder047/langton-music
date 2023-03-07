@@ -72,7 +72,6 @@ const debugBar = $('#debugbar');
 
 ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.10.0/src-noconflict/');
 const textbox = ace.edit('textbox', { mode: 'ace/mode/xml' });
-textbox.setTheme('ace/theme/chrome');
 
 function debug(message) {
     return;
@@ -400,7 +399,7 @@ window.addEventListener('hashchange', () => {
         stop();
         dump();
         where = '#dumpstatuswrapper';
-        textbox.setTheme(DARK_MODE ? 'ace/theme/chrome' : 'ace/theme/pastel_on_dark');
+        textbox.setTheme(DARK_MODE ? 'ace/theme/pastel_on_dark' : 'ace/theme/chrome');
     }
     $(where).append(statusBar);
     fitace();
