@@ -216,7 +216,7 @@ class Ant {
         ctx.rotate(Math.PI * this.dir / 2);
         // antennae
         ctx.fillStyle = this.world.getColor(this.state);
-        ctx.strokeStyle = 'black';
+        ctx.strokeStyle = 'var(--black)';
         ctx.lineWidth = 0.2;
         ctx.beginPath();
         ctx.moveTo(-4, -7);
@@ -231,13 +231,13 @@ class Ant {
         ctx.beginPath(); ctx.arc(0, 1, 2, 0, 2 * Math.PI); ctx.stroke();
         ctx.beginPath(); ctx.arc(0, 5, 2, 0, 2 * Math.PI); ctx.stroke();
         // eyes
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = 'var(--black)';
         ctx.beginPath(); ctx.arc(1, -4, 1, 0, 2 * Math.PI); ctx.fill();
         ctx.beginPath(); ctx.arc(-1, -4, 1, 0, 2 * Math.PI); ctx.fill();
         ctx.beginPath(); ctx.arc(1, -4, 1, 0, 2 * Math.PI); ctx.stroke();
         ctx.beginPath(); ctx.arc(-1, -4, 1, 0, 2 * Math.PI); ctx.stroke();
         // pupils
-        ctx.fillStyle = 'black';
+        ctx.fillStyle = 'var(--white)';
         ctx.beginPath(); ctx.arc(1, -4.5, 0.5, 0, 2 * Math.PI); ctx.fill();
         ctx.beginPath(); ctx.arc(-1, -4.5, 0.5, 0, 2 * Math.PI); ctx.fill();
         ctx.restore();

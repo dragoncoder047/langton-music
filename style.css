@@ -1,10 +1,24 @@
+:root {
+    --black: black;
+    --white: white;
+    --background-color: skyblue;
+    --button-color: purple;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--white);
+    font-family: monospace;
+}
+
 .heading {
     font-size: 1.2em;
     font-weight: bold;
 }
 
 canvas {
-    border: 1px solid black;
+    border: 1px solid var(--black);
+    background: var(--white);
 }
 
 label {
@@ -12,7 +26,7 @@ label {
 }
 
 .popover {
-    background: rgba(0, 0, 0, 50%);
+    background: #7777;
     z-index: 999999;
     position: absolute;
     top: 150vh;
@@ -25,10 +39,10 @@ label {
 }
 
 .popover>div {
-    background: white;
+    background: var(--white);
     width: 80%;
     height: 80%;
-    border: 3px solid black;
+    border: 3px solid var(--black);
     padding: 1em;
 }
 
@@ -79,7 +93,7 @@ body {
 
 .scroller {
     overflow: auto;
-    border: 1px solid black;
+    border: 1px solid var(--black);
     padding: 1em;
 }
 
@@ -87,6 +101,61 @@ table,
 td,
 th {
     padding: 0.4em;
-    border: 1px solid black;
+    border: 1px solid var(--black);
     border-collapse: collapse;
+}
+
+button {
+    border: none;
+    background: var(--button-color);
+    color: var(--white);
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(2px);
+}
+
+input[type="text"] {
+    appearance: none;
+    background: var(--white);
+    font-family: monospace;
+}
+
+input[type="text"]:focus {
+    text-decoration: underline;
+}
+
+input[type="text"]::before {
+    content: '[';
+}
+
+input[type="text"]::before {
+    content: ']';
+}
+
+input[type="checkbox"] {
+    display: none;
+}
+
+input[type="checkbox"]::before {
+    display: inline-block;
+    font-family: monospace;
+    content: '[ ]';
+}
+
+input[type="checkbox"]:checked::before {
+    content: '[X]';
+}
+
+@media screen and (prefers-color-scheme: dark) {
+    :root {
+        --black: white;
+        --white: black;
+        --background-color: #004;
+        --button-color: magenta;
+    }
 }
