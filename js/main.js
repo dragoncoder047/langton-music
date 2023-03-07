@@ -242,10 +242,13 @@ function tick(force = false) {
     stepCounter.textContent = header.stepCount;
     antsCounter.textContent = ants.length;
     var selectedAnt = followSelector.value;
-    followSelector.childNodes.forEach(node => {
-        if (node.value === '') return;
-        if (!ants.some(ant => ant.id === node.textContent))
+    var nixed = false;
+    [].forEach.call(followSelector.childNodes, node => {
+        if (node.value === '') node.remove();
+        else if (!ants.some(ant => ant.id === node.textContent)) {
             node.remove();
+            nixed = true;
+        }
     });
     ants.forEach(ant => {
         if (![].some.call(followSelector.childNodes, node => node.textContent === ant.id)) {
@@ -255,7 +258,7 @@ function tick(force = false) {
             runEnable(true);
         }
     });
-    followSelector.value = ants.some(ant => ant.id === selectedAnt) ? selectedAnt : '';
+    followSelector.value = nixed ? '' : selectedAnt;
     if (autoFit.checked && running) fit();
     followAnt(followSelector.value);
     if (!force) setTimeout(tick, 60000 / (header.bpm ?? 240));
