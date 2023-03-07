@@ -150,11 +150,16 @@ input[type="checkbox"]::before {
     display: inline-block;
     font-family: monospace;
     content: '[ ]';
+    width: 3ch;
     white-space: nowrap;
+    color: var(--black);
+    background: var(--background-color);
 }
 
 input[type="checkbox"]:checked::before {
     content: '[X]';
+    background: var(--black);
+    color: var(--background-color);
 }
 
 a {
@@ -170,8 +175,9 @@ select {
     outline: none;
     border: none;
     font-family: monospace;
-    padding: 1px;
+    padding: 2px;
     background: #7774;
+    color: var(--black);
 }
 
 select:focus {
@@ -180,6 +186,11 @@ select:focus {
 }
 
 select option {
+    background: var(--background-color);
+    color: var(--black);
+}
+
+select option:hover {
     background: var(--background-color);
     color: var(--black);
 }
