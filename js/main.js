@@ -244,21 +244,20 @@ function tick(force = false) {
     var selectedAnt = followSelector.value;
     var nixed = false;
     [].forEach.call(followSelector.childNodes, node => {
-        if (node.value === '') return; // Don't nix the NONE node
-        else if (!ants.some(ant => ant.id === node.textContent)) {
+        if (node.value == '') return; // Don't nix the NONE node
+        if (node.textContent == '') node.remove(); // Nix it if it is actually empty
+        else if (!ants.some(ant => ant.id == node.textContent))
             node.remove();
-            nixed = true;
-        }
     });
     ants.forEach(ant => {
-        if (![].some.call(followSelector.childNodes, node => node.textContent === ant.id)) {
+        if (![].some.call(followSelector.childNodes, node => node.textContent == ant.id)) {
             var n = document.createElement('option');
             n.textContent = n.value = ant.id;
             followSelector.append(n);
             runEnable(true);
         }
     });
-    followSelector.value = nixed ? '' : selectedAnt;
+    followSelector.value = ants.some(ant => ant.id === selectedAnt) ? selectedAnt : "";
     if (autoFit.checked && running) fit();
     followAnt(followSelector.value);
     if (!force) setTimeout(tick, 60000 / (header.bpm ?? 240));
