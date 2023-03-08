@@ -104,7 +104,7 @@ function forcePlayElement() {
 const handlers = {
     play() {
         if (debug) debug('got play event');
-        actions.trigger('play');
+        actions.trigger('start');
     },
     pause() {
         if (debug) debug('got pause event');
