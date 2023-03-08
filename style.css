@@ -124,6 +124,19 @@ button:active {
     transform: translateY(2px);
 }
 
+a {
+    color: var(--link-color);
+    appearance: none;
+}
+
+a:visited {
+    color: var(--link-visited);
+}
+
+code {
+    background: var(--black);
+    opacity: 40%;
+}
 
 input[type="number"],
 input[type="text"] {
@@ -140,7 +153,7 @@ input[type="number"]:focus,
 input[type="text"]:focus {
     border-bottom: 1px solid var(--black);
     outline: none;
-    background: #7774;
+    background: #7775;
 }
 
 input[type="checkbox"] {
@@ -174,21 +187,12 @@ input[type="checkbox"]:disabled::before {
     opacity: 50%;
 }
 
-a {
-    color: var(--link-color);
-    appearance: none;
-}
-
-a:visited {
-    color: var(--link-visited);
-}
-
 select {
     outline: none;
     border: none;
     font-family: sans-serif;
     padding: 2px;
-    background: #7774;
+    background: #7775;
     color: var(--black);
 }
 
@@ -208,9 +212,10 @@ select option:hover {
 }
 
 input[type="range"] {
-    appearance: none;
-    background: #7774;
     -webkit-appearance: none;
+    appearance: none;
+    background: #777;
+    opacity: 40%;
 }
 
 input[type="range"]::-webkit-slider-thumb {

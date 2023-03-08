@@ -4,7 +4,7 @@
 function savelocal() {
     try {
         showStatus('Saving...');
-        dump();
+        actions.trigger('dump');
         localStorage.setItem('save', textbox.getValue());
         showStatus('Saved to localStorage.', 'green');
     } catch (e) {
@@ -25,7 +25,7 @@ function share() {
         return;
     }
     try {
-        dump();
+        actions.trigger('dump');
         var text = textbox.getValue();
         navigator.share({ url: window.location, text, title: 'Langton\'s Ant Music' })
             .catch(e => showStatus('Error sharing: ' + e, 'red'))
@@ -49,7 +49,7 @@ function copy(bbcode) {
         return;
     }
     try {
-        dump();
+        actions.trigger('dump');
         var text = textbox.getValue();
         if (bbcode) text = '[code]\n' + text + '\n[/code]\n';
         navigator.clipboard.writeText(text)
@@ -75,8 +75,7 @@ function openclip() {
     try {
         navigator.clipboard.readText()
             .then(clip => {
-                textbox.setValue(clip);
-                load();
+                actions.trigger('load', clip);
                 showStatus('Loaded clipboard.', 'green');
             })
             .catch(e => {

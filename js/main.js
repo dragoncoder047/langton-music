@@ -115,6 +115,11 @@ var header = { stepCount: 0 };
 var interpolations = [];
 
 /**
+ * @type {ActionManager}
+ */
+var actions = new ActionManager();
+
+/**
  * Shows the text in the status bar.
  * @param {string} text Text to show
  * @param {string} [color='black'] Color; default is black
@@ -161,10 +166,7 @@ var running = false;
  */
 var GLOBAL_MUTE = false;
 
-/**
- * Starts running
- */
-function start() {
+actions.action('start', () => {
     if (!running) {
         running = true;
         tick();
@@ -173,37 +175,27 @@ function start() {
     showStatus('Running...');
     mediaPlay();
     syncMediaSession();
-}
+});
 
-/**
- * Pauses running.
- */
-function stop() {
+actoins.action('stop', () => {
     running = false;
     startStopBtn.textContent = 'Resume';
     showStatus('Paused.');
     mediaPause();
     syncMediaSession();
-}
+});
 
-/**
- * Stops, and then runs one tick.
- */
-function step() {
-    stop();
+actions.action('step', () => {
+    actions.trigger('stop');
     tick(true);
-}
+});
 
-/**
- * Toggles play/pause.
- */
-function togglePlayPause() {
-    if (running) stop();
-    else start();
-}
+actions.action('playpause', () => {
+    actions.trigger(running ? 'stop' : 'start');
+});
 
-startStopBtn.addEventListener('click', togglePlayPause);
-stepBtn.addEventListener('click', step);
+startStopBtn.addEventListener('click', () => actions.trigger('playpause'));
+stepBtn.addEventListener('click', () => actions.trigger('step'));
 
 /**
  * Runs the world one tick.
@@ -264,21 +256,20 @@ function tick(force = false) {
 /**
  * Loads the text from the text box and updates the world.
  */
-function load() {
-    stop();
-    var s = 'Press START.';
+actions.action('load', (value) => {
+    actions.trigger('stop');
     header.stepCount = 0;
     showStatus('Loading...');
+    if (value) textbox.setValue(value);
     try {
-        header = loadWorld(textbox.getValue(), { Ant, Beetle, Cricket }, world, breeder, ants);
+        header = loadWorld(value || textbox.getValue(), { Ant, Beetle, Cricket }, world, breeder, ants);
         interpolations = [];
         for (var prop of Object.getOwnPropertyNames(header)) {
             if (prop.startsWith('#')) interpolations.push([prop.slice(1), header[prop]]);
         }
-        header.stepCount = header.stepCount ?? 0;
-        updateSpeedInputs(header.bpm);
+        header.stepCount = header.stepCount || 0;
+        actions.trigger('speedchange', header.bpm);
     } catch (e) {
-        stop();
         runEnable(false);
         showStatus('Error: ' + e.message, 'red');
         if ('line' in e && 'col' in e) {
@@ -293,15 +284,16 @@ function load() {
         throw e;
     }
     startStopBtn.textContent = 'Start';
-    showStatus(s);
+    showStatus('Press START.');
     runEnable(true);
     fit();
     syncMediaSession();
     setMediaPlaybackState();
 
-}
+});
+
 loadBtn.addEventListener('click', () => Tone.start(), { once: true });
-loadBtn.addEventListener('click', load);
+loadBtn.addEventListener('click', () => actions.trigger('load'));
 
 // For media session api
 [loadBtn, startStopBtn, stepBtn].forEach(b => b.addEventListener('click', forcePlayElement, { once: true }));
@@ -309,14 +301,12 @@ loadBtn.addEventListener('click', load);
 try {
     var saved = localStorage.getItem('save');
     if (saved) {
-        textbox.setValue(saved);
-        load();
+        actions.trigger('load', saved);
         showStatus('Loaded from localStorage.', DARK_MODE ? 'lime' : 'green');
     } else {
-        textbox.setValue(`
+        actions.trigger('load', `
 <langton><config name="author">Christopher Langton</config><config name="title">Langton Drums</config><config name="series">Default Drums</config><breed species="Beetle" name="langton"><case cell="0"><action><command name="put">1</command><command name="rt"></command><command name="fd"></command><command name="play">C2:##dir'2*3/1-;</command></action></case><case cell="1"><action><command name="put">0</command><command name="lt"></command><command name="fd"></command><command name="play">G2:##dir'2*3/1-;</command></action></case></breed><ant breed="langton" x="0" y="0" dir="1"></ant></langton>
 `);
-        load();
     }
     textbox.clearSelection();
 } catch (e) {
@@ -331,10 +321,7 @@ function center(cell) {
     canvasTools.panxy = vPlus(vScale(cell, -1 * world.cellSize * canvasTools.zoom), vScale({ x: playfield.width, y: playfield.height }, 0.5));
 }
 
-/**
- * Fits the entire world in the viewport.
- */
-function fit() {
+actions.action('fit', () => {
     var bbox = world.bbox(ants);
     var middle = vScale(vPlus(bbox.tl, bbox.br), 0.5);
     var dimensions = vPlus({ x: 1, y: 1 }, vMinus(bbox.br, bbox.tl)); // +1 to preclude dividing by zero
@@ -342,9 +329,9 @@ function fit() {
     var upDownZoom = playfield.height / dimensions.y / world.cellSize;
     canvasTools.zoom = Math.min(upDownZoom, leftRightZoom);
     center(middle);
-}
-fitBtn.addEventListener('click', fit);
-fit();
+});
+fitBtn.addEventListener('click', () => actions.trigger('fit'));
+actions.trigger('fit');
 
 /**
  * Centers the requested ant in the viewport, if it exists.
@@ -359,10 +346,7 @@ function followAnt(antID) {
     }
 }
 
-/**
- * Serializes the entire world state to XML and puts it in the text box.
- */
-function dump() {
+actions.action('dump', () => {
     try {
         var oldRunning = running;
         stop();
@@ -377,8 +361,8 @@ function dump() {
         showStatus('Error: ' + e.toString(), 'red');
         throw e;
     }
-}
-dumpBtn.addEventListener('click', dump);
+})
+dumpBtn.addEventListener('click', () => actions.trigger('dump'));
 
 /**
  * Fits the ace code editor to the box it's in when the box changes size.
@@ -396,8 +380,8 @@ window.addEventListener('resize', fitace);
 window.addEventListener('hashchange', () => {
     var where = '#statuswrapper';
     if (location.hash === '#editor') {
-        stop();
-        dump();
+        actions.trigger('stop');
+        actions.trigger('dump');
         where = '#dumpstatuswrapper';
         textbox.setTheme(DARK_MODE ? 'ace/theme/pastel_on_dark' : 'ace/theme/chrome');
     }
@@ -406,8 +390,7 @@ window.addEventListener('hashchange', () => {
 });
 location.hash = "#"; // Don't have editor open by default
 
-// Speed slider and box and media session
-function updateSpeedInputs(value) {
+actions.action('speedchange', (value) => {
     value = parseInt(value);
     if (!value || value === 0) value = 240;
     header.bpm = value;
@@ -424,9 +407,9 @@ function updateSpeedInputs(value) {
     speedSlider.value = value;
     setMediaPlaybackState(); // Media session api
     syncMediaSession();
-}
-speedBox.addEventListener('input', () => updateSpeedInputs(speedBox.value));
-speedSlider.addEventListener('input', () => updateSpeedInputs(speedSlider.value));
+});
+speedBox.addEventListener('input', () => actions.trigger('speedchange', speedBox.value));
+speedSlider.addEventListener('input', () => actions.trigger('speedchange', speedSlider.value));
 
 // Mute/unmute
 function enableMute(enabled) {
@@ -437,43 +420,27 @@ function enableMute(enabled) {
         GLOBAL_MUTE = true;
     }
 }
-function updateMute() {
+
+actions.action('mute', (mute) => {
     if (muteCheckbox.hasAttribute("disabled")) GLOBAL_MUTE = true;
-    else GLOBAL_MUTE = muteCheckbox.checked;
+    else GLOBAL_MUTE = mute;
     showStatus("Sound is " + (GLOBAL_MUTE ? "disabled" : "enabled") + ".");
-}
-muteCheckbox.addEventListener('change', updateMute);
+});
+muteCheckbox.addEventListener('change', actions.trigger('mute', muteCheckbox.checked));
 
 actionsSelector.addEventListener('change', () => {
     var action = actionsSelector.value;
     actionsSelector.value = '';
-    switch (action) {
-        case 'openclip':
-            openclip();
-            break;
-        case 'savelocal':
-            savelocal();
-            break;
-        case 'share':
-            share();
-            break;
-        case 'copy':
-            copy(false);
-            break;
-        case 'bbcode':
-            copy(true);
-            break;
-        case 'scrot':
-            savescreenshot();
-            break;
-        case 'install':
-            if (installPrompt) installPrompt.prompt();
-            else showStatus('Oops! You should not see that option!', 'red');
-            break;
-        default:
-            showStatus('Oops! action ' + action + ' is not implemented', 'red');
-    }
+    actions.trigger(action);
 });
+
+actions.action('openclip', openclip);
+actions.action('savelocal', savelocal);
+actions.action('share', share);
+actions.action('copy', () => copy(false));
+actions.action('bbcode', () => copy(true));
+actions.action('scrot', savescreenshot);
+
 
 // Register service worker
 if ("serviceWorker" in navigator) {
@@ -491,7 +458,7 @@ else if (location.protocol.indexOf('file') != -1) {
 }
 else {
     // we are in the full web version
-    // alert user that they can now install LAM
+    // alert user that they can install LAM
     var installPrompt = null;
     var installOption = null;
     window.addEventListener('beforeinstallprompt', e => {
@@ -503,6 +470,10 @@ else {
         installOption.textContent = 'Install Web App';
         actionsSelector.append(installOption);
         showStatus("You can now install Langton's Ant music as a web app on your device! Go to the Actions menu to install.", "blue");
+        actions.action('install', () => {
+            if (installPrompt) installPrompt.prompt();
+            else showStatus('Oops! You should not see that option!', 'red');
+        });
     });
 
     // hide alert when app is actually installed
@@ -511,3 +482,6 @@ else {
         installOption.remove();
     });
 }
+
+// ------------------------------ Keyboard shortcuts -----------------------------------
+// edit ME!

@@ -100,39 +100,40 @@ function forcePlayElement() {
     }), 100);
 }
 
+// dangerous relies on the the presence of global `action` manager
 const handlers = {
     play() {
         if (debug) debug('got play event');
-        start();
+        actions.trigger('play');
     },
     pause() {
         if (debug) debug('got pause event');
-        stop();
+        actions.trigger('stop');
     },
     stop() {
         if (debug) debug('got stop event');
-        stop();
+        actions.trigger('stop');
         forcePlayElement();
     },
     seekbackward(e) {
         if (debug) debug('got seekbackward event', e);
-        updateSpeedInputs(header.bpm - (e.seekOffset || 10));
+        actions.trigger('speedchange', header.bpm - (e.seekOffset || 10));
     },
     seekforward(e) {
         if (debug) debug('got seekforward event', e);
-        updateSpeedInputs(header.bpm + (e.seekOffset || 10));
+        actions.trigger('speedchange', header.bpm + (e.seekOffset || 10));
     },
     seekto(e) {
         if (debug) debug('got seekto event', e);
-        updateSpeedInputs(e.seekTime);
+        actions.trigger('speedchange', e.seekTime);
     },
     previoustrack() {
         if (debug) debug('got previoustrack event');
-        updateSpeedInputs(header.bpm - 100);
+        actions.trigger('speedchange', header.bpm - 100);
     },
     nexttrack() {
         if (debug) debug('got nexttrack event');
-        updateSpeedInputs(header.bpm + 100);
+        actions.trigger('speedchange', header.bpm + 100);
     },
 };
 
