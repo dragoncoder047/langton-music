@@ -426,7 +426,7 @@ actions.action('mute', (mute) => {
     else GLOBAL_MUTE = mute;
     showStatus("Sound is " + (GLOBAL_MUTE ? "disabled" : "enabled") + ".");
 });
-muteCheckbox.addEventListener('change', actions.trigger('mute', muteCheckbox.checked));
+muteCheckbox.addEventListener('change', () => actions.trigger('mute', muteCheckbox.checked));
 
 actionsSelector.addEventListener('change', () => {
     var action = actionsSelector.value;
