@@ -497,24 +497,24 @@ actions.action('zoom', (factor) => {
 });
 
 if (window.Mousetrap) {
-    Mousetrap.bind('enter', () => actions.trigger('playpause'));
-    Mousetrap.bind('tab', () => actions.trigger('step'));
-    Mousetrap.bind('=', () => actions.trigger('speedchange', header.bpm + 10));
-    Mousetrap.bind('-', () => actions.trigger('speedchange', header.bpm - 10));
-    Mousetrap.bind('+', () => actions.trigger('speedchange', header.bpm + 100));
-    Mousetrap.bind('_', () => actions.trigger('speedchange', header.bpm - 10));
-    Mousetrap.bind('d', () => { window.location.hash = '#xml'; });
-    Mousetrap.bind('?', () => { window.location.hash = '#help'; });
-    Mousetrap.bind('/', () => { window.location.hash = '#kbd'; });
-    Mousetrap.bind('e', () => { window.location.hash = '#editor'; });
-    Mousetrap.bind('esc', () => { window.location.hash = '#'; });
-    Mousetrap.bind('s', () => actions.trigger('savelocal'));
-    Mousetrap.bind('o', () => actions.trigger('openclip'));
-    Mousetrap.bind('c', () => actions.trigger('copy'));
-    Mousetrap.bind('[', () => actions.trigger('zoom', 0.5));
-    Mousetrap.bind(']', () => actions.trigger('zoom', 2));
-    Mousetrap.bind('f', () => actions.trigger('fit'));
-    Mousetrap.bind('m', () => actions.trigger('mute', !GLOBAL_MUTE));
-    Mousetrap.bind('M', () => actions.trigger('mute', true));
-    Mousetrap.bind('U', () => actions.trigger('mute', false));
+    Mousetrap.bind('enter', () => !!actions.trigger('playpause'));
+    Mousetrap.bind('tab', () => !!actions.trigger('step'));
+    Mousetrap.bind('=', () => !!actions.trigger('speedchange', header.bpm + 10));
+    Mousetrap.bind('-', () => !!actions.trigger('speedchange', header.bpm - 10));
+    Mousetrap.bind('+', () => !!actions.trigger('speedchange', header.bpm + 100));
+    Mousetrap.bind('shift+-', () => !!actions.trigger('speedchange', header.bpm - 10));
+    Mousetrap.bind('d', () => { window.location.hash = '#xml'; return false; });
+    Mousetrap.bind('?', () => { window.location.hash = '#help'; return false; });
+    Mousetrap.bind('/', () => { window.location.hash = '#kbd'; return false; });
+    Mousetrap.bind('e', () => { window.location.hash = '#editor'; return false; });
+    Mousetrap.bind('esc', () => { window.location.hash = '#'; return false; });
+    Mousetrap.bind('s', () => !!actions.trigger('savelocal'));
+    Mousetrap.bind('o', () => !!actions.trigger('openclip'));
+    Mousetrap.bind('c', () => !!actions.trigger('copy'));
+    Mousetrap.bind('[', () => !!actions.trigger('zoom', 0.5));
+    Mousetrap.bind(']', () => !!actions.trigger('zoom', 2));
+    Mousetrap.bind('f', () => !!actions.trigger('fit'));
+    Mousetrap.bind('m', () => !!actions.trigger('mute', !GLOBAL_MUTE));
+    Mousetrap.bind('M', () => !!actions.trigger('mute', true));
+    Mousetrap.bind('U', () => !!actions.trigger('mute', false));
 }

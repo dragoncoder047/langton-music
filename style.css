@@ -253,6 +253,6 @@ input[type="range"]::-moz-range-progress {
         --background-color: #004;
         --button-color: magenta;
         --link-color: blue;
-        --link-visited: purple;
+        --link-visited: magenta;
     }
 }
