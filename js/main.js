@@ -177,7 +177,7 @@ actions.action('start', () => {
     syncMediaSession();
 });
 
-actoins.action('stop', () => {
+actions.action('stop', () => {
     running = false;
     startStopBtn.textContent = 'Resume';
     showStatus('Paused.');
