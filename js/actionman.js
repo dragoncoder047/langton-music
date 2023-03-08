@@ -23,9 +23,13 @@ class ActionManager {
         }
         console.group(name);
         console.info('payload:', payload);
-        for (var callback of cbs) {
-            callback(payload);
+        try {
+            for (var callback of cbs) {
+                callback(payload);
+            }
         }
-        console.groupEnd();
+        finally {
+            console.groupEnd();
+        }
     }
 }
