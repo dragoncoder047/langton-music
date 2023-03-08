@@ -495,9 +495,13 @@ else {
 // ------------------------------ Keyboard shortcuts -----------------------------------
 
 actions.action('zoom', (factor) => {
-    var xy = vScale({x: playfield.width, y: playfield.height}, 0.5);
+    var xy = vScale({ x: playfield.width, y: playfield.height }, 0.5);
     canvasTools.zoom *= factor;
     canvasTools.panxy = vPlus(vMinus(vScale(canvasTools.panxy, factor), vScale(xy, factor)), xy);
+});
+
+actions.action('pan', (xy) => {
+    canvasTools.panxy = vPlus(canvasTools.panxy, vScale(xy, 1 / (canvasTools.zoom * world.cellSize)));
 });
 
 if (window.Mousetrap) {
@@ -512,6 +516,10 @@ if (window.Mousetrap) {
     Mousetrap.bind('U', () => !!actions.trigger('mute', false));
     Mousetrap.bind('[', () => !!actions.trigger('zoom', 0.5));
     Mousetrap.bind(']', () => !!actions.trigger('zoom', 2));
+    Mousetrap.bind('up', () => !!actions.trigger('pan', { x: 0, y: -1 }));
+    Mousetrap.bind('down', () => !!actions.trigger('pan', { x: 0, y: 1 }));
+    Mousetrap.bind('left', () => !!actions.trigger('pan', { x: -1, y: 0 }));
+    Mousetrap.bind('right', () => !!actions.trigger('pan', { x: 1, y: 0 }));
     Mousetrap.bind('a', () => !!actions.trigger('autofit', !autoFit.checked));
     Mousetrap.bind('shift+-', () => !!actions.trigger('speedchange', header.bpm - 10));
     Mousetrap.bind('d', () => { window.location.hash = '#xml'; return false; });
