@@ -298,6 +298,18 @@ loadBtn.addEventListener('click', () => actions.trigger('load'));
 // For media session api
 [loadBtn, startStopBtn, stepBtn].forEach(b => b.addEventListener('click', forcePlayElement, { once: true }));
 
+actions.action('fit', () => {
+    var bbox = world.bbox(ants);
+    var middle = vScale(vPlus(bbox.tl, bbox.br), 0.5);
+    var dimensions = vPlus({ x: 1, y: 1 }, vMinus(bbox.br, bbox.tl)); // +1 to preclude dividing by zero
+    var leftRightZoom = playfield.width / dimensions.x / world.cellSize;
+    var upDownZoom = playfield.height / dimensions.y / world.cellSize;
+    canvasTools.zoom = Math.min(upDownZoom, leftRightZoom);
+    center(middle);
+});
+fitBtn.addEventListener('click', () => actions.trigger('fit'));
+actions.trigger('fit');
+
 actions.action('speedchange', (value) => {
     value = parseInt(value);
     if (!value || value === 0) value = 240;
@@ -341,18 +353,6 @@ try {
 function center(cell) {
     canvasTools.panxy = vPlus(vScale(cell, -1 * world.cellSize * canvasTools.zoom), vScale({ x: playfield.width, y: playfield.height }, 0.5));
 }
-
-actions.action('fit', () => {
-    var bbox = world.bbox(ants);
-    var middle = vScale(vPlus(bbox.tl, bbox.br), 0.5);
-    var dimensions = vPlus({ x: 1, y: 1 }, vMinus(bbox.br, bbox.tl)); // +1 to preclude dividing by zero
-    var leftRightZoom = playfield.width / dimensions.x / world.cellSize;
-    var upDownZoom = playfield.height / dimensions.y / world.cellSize;
-    canvasTools.zoom = Math.min(upDownZoom, leftRightZoom);
-    center(middle);
-});
-fitBtn.addEventListener('click', () => actions.trigger('fit'));
-actions.trigger('fit');
 
 /**
  * Centers the requested ant in the viewport, if it exists.
