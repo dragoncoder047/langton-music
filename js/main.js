@@ -507,6 +507,7 @@ if (window.Mousetrap) {
     Mousetrap.bind('?', () => { window.location.hash = '#help'; });
     Mousetrap.bind('/', () => { window.location.hash = '#kbd'; });
     Mousetrap.bind('e', () => { window.location.hash = '#editor'; });
+    Mousetrap.bind('esc', () => { window.location.hash = '#'; });
     Mousetrap.bind('s', () => actions.trigger('savelocal'));
     Mousetrap.bind('o', () => actions.trigger('openclip'));
     Mousetrap.bind('c', () => actions.trigger('copy'));
