@@ -286,7 +286,7 @@ actions.action('load', (value) => {
     startStopBtn.textContent = 'Start';
     showStatus('Press START.');
     runEnable(true);
-    fit();
+    actions.trigger('fit');
     syncMediaSession();
     setMediaPlaybackState();
 
@@ -297,6 +297,27 @@ loadBtn.addEventListener('click', () => actions.trigger('load'));
 
 // For media session api
 [loadBtn, startStopBtn, stepBtn].forEach(b => b.addEventListener('click', forcePlayElement, { once: true }));
+
+actions.action('speedchange', (value) => {
+    value = parseInt(value);
+    if (!value || value === 0) value = 240;
+    header.bpm = value;
+    if (header.bpm < 1000) {
+        Tone.Transport.bpm.setValueAtTime(2 * header.bpm, Tone.now());
+        Tone.Transport.start();
+        enableMute(true);
+    } else {
+        Tone.Transport.stop();
+        enableMute(false);
+        showStatus('BPM too high. Sound is disabled.');
+    }
+    speedBox.value = value;
+    speedSlider.value = value;
+    setMediaPlaybackState(); // Media session api
+    syncMediaSession();
+});
+speedBox.addEventListener('input', () => actions.trigger('speedchange', speedBox.value));
+speedSlider.addEventListener('input', () => actions.trigger('speedchange', speedSlider.value));
 
 try {
     var saved = localStorage.getItem('save');
@@ -389,27 +410,6 @@ window.addEventListener('hashchange', () => {
     fitace();
 });
 location.hash = "#"; // Don't have editor open by default
-
-actions.action('speedchange', (value) => {
-    value = parseInt(value);
-    if (!value || value === 0) value = 240;
-    header.bpm = value;
-    if (header.bpm < 1000) {
-        Tone.Transport.bpm.setValueAtTime(2 * header.bpm, Tone.now());
-        Tone.Transport.start();
-        enableMute(true);
-    } else {
-        Tone.Transport.stop();
-        enableMute(false);
-        showStatus('BPM too high. Sound is disabled.');
-    }
-    speedBox.value = value;
-    speedSlider.value = value;
-    setMediaPlaybackState(); // Media session api
-    syncMediaSession();
-});
-speedBox.addEventListener('input', () => actions.trigger('speedchange', speedBox.value));
-speedSlider.addEventListener('input', () => actions.trigger('speedchange', speedSlider.value));
 
 // Mute/unmute
 function enableMute(enabled) {
