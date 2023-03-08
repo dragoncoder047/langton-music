@@ -22,6 +22,7 @@
         <script src="https://cdn.jsdelivr.net/npm/tone@14.7.77/build/Tone.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.10.0/src-noconflict/ace.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/seedrandom@3.0.5/seedrandom.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/mousetrap@1.6.5/mousetrap.min.js"></script>
     </head>
 
     <body>
@@ -537,6 +538,56 @@
                     <h3>Screenshot</h3>
                     <p>This captures the current contents of the canvas, and prompts you to download it as a PNG image.
                     </p>
+                </div>
+            </div>
+        </div>
+        <div id="kbd" class="popover">
+            <div class="flex-column">
+                <div class="flex-row">
+                    <span class="expanding">
+                        <h1>Keyboard Shortcuts</h1>
+                    </span>
+                    <p style="text-align: right;"><a href="#">X</a></p>
+                </div>
+                <div class="scroller expanding">
+                    <dl>
+                        <dt><code>ENTER</code></dt>
+                        <dd>Play or pause the pattern.</dd>
+                        <dt><code>TAB</code></dt>
+                        <dd>Step by one tick.</dd>
+                        <dt><code>=</code></dt>
+                        <dd>Increase the speed by 10 BPM.</dd>
+                        <dt><code>-</code></dt>
+                        <dd>Decrease the speed by 10 BPM.</dd>
+                        <dt><code>+</code></dt>
+                        <dd>Increase the speed by 100 BPM.</dd>
+                        <dt><code>_</code></dt>
+                        <dd>Decrease the speed by 100 BPM.</dd>
+                        <dt><code>d</code></dt>
+                        <dd>Open the format documentation.</dd>
+                        <dt><code>/</code></dt>
+                        <dd>Open the keyboard shortcuts (this panel).</dd>
+                        <dt><code>?</code></dt>
+                        <dd>Open the general help.</dd>
+                        <dt><code>e</code></dt>
+                        <dd>Open the editor.</dd>
+                        <dt><code>s</code></dt>
+                        <dd>Save the pattern to local storage.</dd>
+                        <dt><code>o</code></dt>
+                        <dd>Open your clipboard.</dd>
+                        <dt><code>[</code></dt>
+                        <dd>Zoom out.</dd>
+                        <dt><code>]</code></dt>
+                        <dd>Zoom in.</dd>
+                        <dt><code>f</code></dt>
+                        <dd>Fit the pattern to the window.</dd>
+                        <dt><code>m</code></dt>
+                        <dd>Mute or unmute the sound.</dd>
+                        <dt><code>M</code></dt>
+                        <dd>Mute the sound.</dd>
+                        <dt><code>U</code></dt>
+                        <dd>Unmute the sound.</dd>
+                    </dl>
                 </div>
             </div>
         </div>

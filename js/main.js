@@ -422,9 +422,14 @@ function enableMute(enabled) {
 }
 
 actions.action('mute', (mute) => {
-    if (muteCheckbox.hasAttribute("disabled")) GLOBAL_MUTE = true;
+    if (muteCheckbox.hasAttribute("disabled")) {
+        showStatus("BPM is too high. Sound is disabled.");
+        GLOBAL_MUTE = true;
+        return;
+    }
     else GLOBAL_MUTE = mute;
     showStatus("Sound is " + (GLOBAL_MUTE ? "disabled" : "enabled") + ".");
+    muteCheckbox.checked = GLOBAL_MUTE;
 });
 muteCheckbox.addEventListener('change', () => actions.trigger('mute', muteCheckbox.checked));
 
@@ -484,4 +489,31 @@ else {
 }
 
 // ------------------------------ Keyboard shortcuts -----------------------------------
-// edit ME!
+
+actions.action('zoom', (factor) => {
+    var xy = vScale({x: playfield.width, y: playfield.height}, 0.5);
+    canvasTools.zoom *= factor;
+    canvasTools.panxy = vPlus(vMinus(vScale(canvasTools.panxy, factor), vScale(xy, factor)), xy);
+});
+
+if (window.Mousetrap) {
+    Mousetrap.bind('enter', () => actions.trigger('playpause'));
+    Mousetrap.bind('tab', () => actions.trigger('step'));
+    Mousetrap.bind('=', () => actions.trigger('speedchange', header.bpm + 10));
+    Mousetrap.bind('-', () => actions.trigger('speedchange', header.bpm - 10));
+    Mousetrap.bind('+', () => actions.trigger('speedchange', header.bpm + 100));
+    Mousetrap.bind('_', () => actions.trigger('speedchange', header.bpm - 10));
+    Mousetrap.bind('d', () => { window.location.hash = '#xml'; });
+    Mousetrap.bind('?', () => { window.location.hash = '#help'; });
+    Mousetrap.bind('/', () => { window.location.hash = '#kbd'; });
+    Mousetrap.bind('e', () => { window.location.hash = '#editor'; });
+    Mousetrap.bind('s', () => actions.trigger('savelocal'));
+    Mousetrap.bind('o', () => actions.trigger('openclip'));
+    Mousetrap.bind('c', () => actions.trigger('copy'));
+    Mousetrap.bind('[', () => actions.trigger('zoom', 0.5));
+    Mousetrap.bind(']', () => actions.trigger('zoom', 2));
+    Mousetrap.bind('f', () => actions.trigger('fit'));
+    Mousetrap.bind('m', () => actions.trigger('mute', !GLOBAL_MUTE));
+    Mousetrap.bind('M', () => actions.trigger('mute', true));
+    Mousetrap.bind('U', () => actions.trigger('mute', false));
+}
