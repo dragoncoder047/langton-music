@@ -253,6 +253,10 @@ function tick(force = false) {
     if (!force) setTimeout(tick, 60000 / (header.bpm ?? 240));
 }
 
+actions.action('autofit', (autofit) => {
+    autoFit.checked = autofit;
+});
+
 /**
  * Loads the text from the text box and updates the world.
  */
@@ -502,6 +506,13 @@ if (window.Mousetrap) {
     Mousetrap.bind('=', () => !!actions.trigger('speedchange', header.bpm + 10));
     Mousetrap.bind('-', () => !!actions.trigger('speedchange', header.bpm - 10));
     Mousetrap.bind('+', () => !!actions.trigger('speedchange', header.bpm + 100));
+    Mousetrap.bind('f', () => !!actions.trigger('fit'));
+    Mousetrap.bind('m', () => !!actions.trigger('mute', !GLOBAL_MUTE));
+    Mousetrap.bind('M', () => !!actions.trigger('mute', true));
+    Mousetrap.bind('U', () => !!actions.trigger('mute', false));
+    Mousetrap.bind('[', () => !!actions.trigger('zoom', 0.5));
+    Mousetrap.bind(']', () => !!actions.trigger('zoom', 2));
+    Mousetrap.bind('a', () => !!actions.trigger('autofit', !autoFit.checked));
     Mousetrap.bind('shift+-', () => !!actions.trigger('speedchange', header.bpm - 10));
     Mousetrap.bind('d', () => { window.location.hash = '#xml'; return false; });
     Mousetrap.bind('?', () => { window.location.hash = '#help'; return false; });
@@ -511,10 +522,4 @@ if (window.Mousetrap) {
     Mousetrap.bind('s', () => !!actions.trigger('savelocal'));
     Mousetrap.bind('o', () => !!actions.trigger('openclip'));
     Mousetrap.bind('c', () => !!actions.trigger('copy'));
-    Mousetrap.bind('[', () => !!actions.trigger('zoom', 0.5));
-    Mousetrap.bind(']', () => !!actions.trigger('zoom', 2));
-    Mousetrap.bind('f', () => !!actions.trigger('fit'));
-    Mousetrap.bind('m', () => !!actions.trigger('mute', !GLOBAL_MUTE));
-    Mousetrap.bind('M', () => !!actions.trigger('mute', true));
-    Mousetrap.bind('U', () => !!actions.trigger('mute', false));
 }

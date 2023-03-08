@@ -137,6 +137,14 @@ code {
     background: #7775;
 }
 
+dd {
+    margin-left: 1em;
+}
+
+kbd {
+    border: 1px solid var(--black);
+}
+
 input[type="number"],
 input[type="text"] {
     appearance: none;
