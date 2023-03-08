@@ -248,7 +248,7 @@ function tick(force = false) {
         }
     });
     followSelector.value = ants.some(ant => ant.id === selectedAnt) ? selectedAnt : "";
-    if (autoFit.checked && running) fit();
+    if (autoFit.checked && running) actions.trigger('fit');
     followAnt(followSelector.value);
     if (!force) setTimeout(tick, 60000 / (header.bpm ?? 240));
 }
