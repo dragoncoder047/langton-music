@@ -134,8 +134,7 @@ a:visited {
 }
 
 code {
-    background: var(--black);
-    opacity: 40%;
+    background: #7775;
 }
 
 input[type="number"],
@@ -214,8 +213,7 @@ select option:hover {
 input[type="range"] {
     -webkit-appearance: none;
     appearance: none;
-    background: #777;
-    opacity: 40%;
+    background: #7775;
 }
 
 input[type="range"]::-webkit-slider-thumb {
