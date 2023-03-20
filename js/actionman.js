@@ -31,5 +31,6 @@ class ActionManager {
         finally {
             console.groupEnd();
         }
+        return false;
     }
 }
