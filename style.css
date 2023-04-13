@@ -109,18 +109,21 @@ th {
 }
 
 button {
-    border: none;
-    margin: 1px;
+    border: 1px solid var(--black);
+    margin: 2px;
     background: var(--button-color);
-    color: var(--white);
+    color: var(--black);
     font-family: sans-serif;
+    filter: drop-shadow(0 3px);
 }
 
 button:hover {
+    filter: drop-shadow(0 5px);
     transform: translateY(-2px);
 }
 
 button:active {
+    filter: drop-shadow(0 1px);
     transform: translateY(2px);
 }
 
