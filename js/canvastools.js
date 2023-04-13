@@ -163,6 +163,23 @@ class CanvasToolsManager {
         }
     }
     /**
+     * Zooms the canvas by the specified factor at the center point (on the canvas coordinates).
+     * @param {number} factor
+     * @param {Vector} [center]
+     */
+    zoomBy(factor, center) {
+        if (!center) center = vScale({ x: this.canvas.width, y: this.canvas.height }, 0.5);
+        this.zoom *= factor;
+        this.panxy = vPlus(vMinus(vScale(this.panxy, factor), vScale(center, factor)), center);
+    }
+    /**
+     * Pans the canvas by the specified offset.
+     * @param {Vector} xy
+     */
+    panBy(xy) {
+        this.panxy = vPlus(this.panxy, xy);
+    }
+    /**
      * Saves the current canvas state and translates by x and y and zooms.
      */
     enter() {
@@ -367,17 +384,11 @@ class DragTool extends Tool {
         this.zoomFactor = zoomFactor;
     }
     onDrag(tm, xy, mod) {
-        tm.panxy = vPlus(tm.panxy, xy);
+        tm.panBy(xy);
     }
     onScroll(tm, xy, mod) {
-        if (mod & K_SHIFT) {
-            tm.panxy = vMinus(tm.panxy, xy);
-        }
-        else {
-            var factor = this.zoomFactor ** (-xy.y);
-            tm.zoom *= factor;
-            tm.panxy = vPlus(vMinus(vScale(tm.panxy, factor), vScale(tm.lastxy, factor)), tm.lastxy);
-        }
+        if (mod & K_SHIFT) tm.panBy(vScale(xy, -1));
+        else tm.zoomBy(this.zoomFactor ** (-xy.y), tm.lastxy);
     }
 }
 
