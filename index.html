@@ -32,7 +32,8 @@
                 <div class="expanding" id="statuswrapper"><output id="statusbar"></output></div>
                 <a href="#editor">Edit</a>&nbsp;&nbsp;-&nbsp;&nbsp;
                 <a href="#xml">Formatting</a>&nbsp;&nbsp;-&nbsp;&nbsp;
-                <a href="#help">Help</a>
+                <a href="#help">Help</a>&nbsp;&nbsp;-&nbsp;&nbsp;
+                <a href="#kbd">Keyboard Shortcuts</a>
             </div>
             <div class="flex-row wrapping padding">
                 <div class="flex-row wrapping padding expanding">
@@ -208,8 +209,8 @@
                     </p>
                     <p>If there is no case for a state:cell pair, the ant will halt and do nothing until
                         another ant comes and changes the cell. (Multiple ants can occupy the same cell, and
-                        must if an ant is to be re-started in this manner, but if two "active"
-                        ants run into each other, the behavior is not defined.)</p>
+                        must do so if an ant is to be re-started in this manner, but if two "active"
+                        ants run over each other, you can't control which ant executes its actions "first".)</p>
                     <p>Within the <code>&lt;case&gt;</code>s there are <code>&lt;action&gt;</code>s that
                         define groups of commands. Each action is queued, and only one action executes per
                         tick. Case lookup only occurs when the queue is exhausted. Within the action group,
