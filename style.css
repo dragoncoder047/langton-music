@@ -143,6 +143,11 @@ dd {
 
 kbd {
     border: 1px solid var(--black);
+    color: var(--black);
+    background: var(--white);
+    border-radius: 5px;
+    padding: 2px;
+    filter: drop-shadow(0 3px);
 }
 
 input[type="number"],
