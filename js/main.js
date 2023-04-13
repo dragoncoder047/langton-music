@@ -507,9 +507,9 @@ if (window.Mousetrap) {
     Mousetrap.bind('enter', () => actions.trigger('playpause'));
     Mousetrap.bind('tab', () => actions.trigger('step'));
     Mousetrap.bind('=', () => actions.trigger('speedchange', header.bpm + 10));
-    Mousetrap.bind('-', () => actions.trigger('speedchange', header.bpm - 10));
+    Mousetrap.bind('-', () => actions.trigger('speedchange', Math.max(header.bpm - 10, 1)));
     Mousetrap.bind('+', () => actions.trigger('speedchange', header.bpm + 100));
-    Mousetrap.bind('shift+-', () => actions.trigger('speedchange', header.bpm - 10));
+    Mousetrap.bind('shift+-', () => actions.trigger('speedchange', Math.max(header.bpm - 100, 1)));
     Mousetrap.bind('f', () => actions.trigger('fit'));
     Mousetrap.bind('m', () => actions.trigger('mute', !GLOBAL_MUTE));
     Mousetrap.bind('M', () => actions.trigger('mute', true));
