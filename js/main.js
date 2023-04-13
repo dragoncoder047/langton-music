@@ -238,18 +238,21 @@ function tick(force = false) {
     }
     stepCounter.textContent = header.stepCount;
     antsCounter.textContent = ants.length;
+    // Update follow selector
     var selectedAntID = followSelector.value;
-    [].forEach.call(followSelector.childNodes, node => {
-        if (node.id == 'nofollow') return; // Don't nix the NONE node
-        if (node.value == '') node.remove(); // Nix it if it is empty
-        else if (!ants.some(ant => ant.id == node.textContent))
-            node.remove();
+    // Remove the options for the ants that died
+    [].forEach.call(followSelector.childNodes, option => {
+        if (option.id == 'nofollow') return; // Don't nix the NONE node
+        if (option.value == '') node.remove(); // Nix it if it is empty (how did that happen?)
+        else if (!ants.some(ant => ant.id == option.textContent))
+            option.remove();
     });
+    // Add in options for the new ants that are born and have no existing option
     ants.forEach(ant => {
-        if (![].some.call(followSelector.childNodes, node => node.textContent == ant.id)) {
-            var n = document.createElement('option');
-            n.textContent = n.value = ant.id;
-            followSelector.append(n);
+        if (![].some.call(followSelector.childNodes, option => option.value == ant.id)) {
+            var option = document.createElement('option');
+            option.textContent = option.value = ant.id;
+            followSelector.append(option);
             runEnable(true);
         }
     });
