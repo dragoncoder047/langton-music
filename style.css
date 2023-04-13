@@ -109,10 +109,10 @@ th {
 }
 
 button {
-    border: 1px solid var(--black);
+    border: 1px solid var(--white);
     margin: 2px;
     background: var(--button-color);
-    color: var(--black);
+    color: var(--white);
     font-family: sans-serif;
     filter: drop-shadow(0 3px);
 }
