@@ -114,16 +114,13 @@ button {
     background: var(--button-color);
     color: var(--white);
     font-family: sans-serif;
-    filter: drop-shadow(0 3px);
 }
 
 button:hover {
-    filter: drop-shadow(0 5px);
     transform: translateY(-2px);
 }
 
 button:active {
-    filter: drop-shadow(0 1px);
     transform: translateY(2px);
 }
 
@@ -136,6 +133,7 @@ a:visited {
     color: var(--link-visited);
 }
 
+pre,
 code {
     background: #7775;
 }
@@ -150,6 +148,7 @@ kbd {
     background: var(--white);
     border-radius: 5px;
     padding: 2px;
+    margin: 2px;
     filter: drop-shadow(0 3px);
 }
 
