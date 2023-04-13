@@ -1,4 +1,10 @@
 /**
+ * Threshold value for bailing because too many ants are spawning.
+ * @type {number}
+ */
+const TOO_MANY_ANTS = 64;
+
+/**
  * Selector
  * @param {string} s Selector
  * @returns {HTMLElement}
@@ -209,33 +215,33 @@ function tick(force = false) {
         ants.slice().forEach(ant => ant.tick());
         header.stepCount++;
     } catch (e) {
-        stop();
+        actions.trigger('stop');
         runEnable(false);
         showStatus('Error: ' + e.toString(), 'red');
         throw e;
     }
-    if (ants.length > 64) {
-        stop();
+    if (ants.length > TOO_MANY_ANTS) {
+        actions.trigger('stop');
         showStatus('Too many ants. Select the "Draw Ants" tool, and ctrl+click on an ant to remove it.', 'red');
         return;
     }
     if (ants.every(ant => ant.halted)) {
-        stop();
+        actions.trigger('stop');
         showStatus('All ants are halted.', 'blue');
         return;
     }
     ants.forEach(ant => { if (ant.dead) ants.splice(ants.indexOf(ant), 1); });
     if (!ants.length) {
-        stop();
+        actions.trigger('stop');
         showStatus('All ants are dead.', 'blue');
         return;
     }
     stepCounter.textContent = header.stepCount;
     antsCounter.textContent = ants.length;
-    var selectedAnt = followSelector.value;
+    var selectedAntID = followSelector.value;
     [].forEach.call(followSelector.childNodes, node => {
-        if (node.value == '') return; // Don't nix the NONE node
-        if (node.textContent == '') node.remove(); // Nix it if it is actually empty
+        if (node.id == 'nofollow') return; // Don't nix the NONE node
+        if (node.value == '') node.remove(); // Nix it if it is empty
         else if (!ants.some(ant => ant.id == node.textContent))
             node.remove();
     });
@@ -247,7 +253,7 @@ function tick(force = false) {
             runEnable(true);
         }
     });
-    followSelector.value = ants.some(ant => ant.id === selectedAnt) ? selectedAnt : "";
+    followSelector.value = ants.some(ant => ant.id === selectedAntID) ? selectedAntID : "";
     if (autoFit.checked && running) actions.trigger('fit');
     followAnt(followSelector.value);
     if (!force) setTimeout(tick, 60000 / (header.bpm ?? 240));
