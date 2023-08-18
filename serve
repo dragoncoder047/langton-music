@@ -8,9 +8,10 @@ app = flask.Flask("test")
 @app.route("/")
 def main():return flask.redirect("/index.html")
 @app.route("/<path:file>")
-def files(file):return flask.send_from_directory(os.getcwd(), file)
+def files(file):return flask.send_from_directory(os.getcwd(), file, max_age=0)
 app.run("localhost", 4443, ssl_context="adhoc")
 PYTHON
 else
 sudo python3 -m http.server -b localhost 80
 fi
+# server corrupted? use this: https://stackoverflow.com/a/51470713
