@@ -23,7 +23,22 @@
         <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.10.0/src-noconflict/ace.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/seedrandom@3.0.5/seedrandom.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/mousetrap@1.6.5/mousetrap.min.js"></script>
-        <script>onerror=function(){prompt("please copy and report this error", [].join.call(arguments, "\n\n"))}</script>
+        <script>
+            onerror = function(event, source, lineno, colno, error) {
+                try {
+                    var err = ("" +
+                        "\nline: " + (lineno || "unknown") +
+                        "\ncolumn: " + (colno || "unknown") + 
+                        "\nfile: " + (source || "unknown") + 
+                        "\ntraceback:\n" + error.stack
+                    );
+                    document.documentElement.innerHTML = "Fatal error: please copy and <a href=\"https://github.com/langton-music/issues\">report</a>: <pre>" + err + "</pre>";
+                }
+                catch(e) {
+                    document.documentElement.innerHTML = "Double fatal error: please copy and <a href=\"https://github.com/langton-music/issues\">report</a>: <pre>" + e.stack + "</pre>";
+                }
+            }
+        </script>
     </head>
 
     <body>
@@ -542,7 +557,8 @@
                     </p>
                     <h2>Other issues?</h2>
                     <p>If all else fails, or something appears to be broken, you can
-                        <a href="https://github.com/dragoncoder047/langton-music/issues">report it on Github</a>.</p>
+                        <a href="https://github.com/dragoncoder047/langton-music/issues">report it on Github</a>.
+                    </p>
                 </div>
             </div>
         </div>
