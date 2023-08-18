@@ -1,2 +1,16 @@
 #! /bin/bash
+if [[ "$USER" -eq codespace ]]
+then
+echo "Using Flask to serve http://localhost:4443/ -> port forwarding"
+sudo python3 <<PYTHON
+import flask, os
+app = flask.Flask("test")
+@app.route("/")
+def main():return flask.redirect("/index.html")
+@app.route("/<path:file>")
+def files(file):return flask.send_from_directory(os.getcwd(), file)
+app.run("localhost", 4443, ssl_context="adhoc")
+PYTHON
+else
 sudo python3 -m http.server -b localhost 80
+fi
