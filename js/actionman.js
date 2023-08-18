@@ -1,32 +1,28 @@
 /**
  * manager for Action callbacks
  */
-class ActionManager {
+class ActionManager extends XEventEmitter {
     constructor() {
-        /**
-         * @type {Object<string, Function[]>}
-         */
-        this.listeners = {};
     }
+    /**
+     * define what happens for the action
+     * @param {string} name
+     * @param {(payload: any) => void} callback
+     */
     action(name, callback) {
-        if (!(name in this.listeners)) {
-            this.listeners[name] = [callback];
-        } else {
-            this.listeners[name].push(callback);
-        }
+        this.on("action." + name, callback);
     }
+
+    /**
+     * @param {string} name
+     * @param {any} payload
+     * @returns {false}
+     */
     trigger(name, payload) {
-        var cbs = this.listeners[name];
-        if (!cbs) {
-            console.warn("no callbacks for action " + name);
-            return;
-        }
         console.group(name);
         console.info('payload:', payload);
         try {
-            for (var callback of cbs) {
-                callback(payload);
-            }
+            this.emit("action." + name, payload);
         }
         finally {
             console.groupEnd();
