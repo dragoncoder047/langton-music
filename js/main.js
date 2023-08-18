@@ -470,6 +470,10 @@ if (location.host.indexOf('localhost') != -1) {
     document.title += ' - localhost version';
     $('main .heading').textContent += ' - localhost version';
 }
+else if (location.host.indexOf('.github.dev') != -1) {
+    document.title += ' - codespace version';
+    $('main .heading').textContent += ' - codespace version';
+}
 else if (location.protocol.indexOf('file') != -1) {
     document.title += ' - file:// version';
     $('main .heading').textContent += ' - file:// version (some features unavailable)';
