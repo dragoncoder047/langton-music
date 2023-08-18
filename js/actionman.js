@@ -3,6 +3,7 @@
  */
 class ActionManager extends XEventEmitter {
     constructor() {
+        super();
     }
     /**
      * define what happens for the action
