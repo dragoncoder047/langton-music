@@ -9,72 +9,76 @@ const TOO_MANY_ANTS = 64;
  * @param {string} s Selector
  * @returns {HTMLElement}
  */
-const $ = s => document.querySelector(s);
+const safe$ = selector => {
+    var elem = document.querySelector(selector);
+    if (!elem) throw new Error("can't find " + selector);
+    return elem;
+};
 
 /**
  * @type {HTMLCanvasElement}
  */
-const playfield = $('#playfield');
+const playfield = safe$('#playfield');
 /**
  * @type {HTMLButtonElement}
  */
-const startStopBtn = $('#startstop');
+const startStopBtn = safe$('#startstop');
 /**
  * @type {HTMLButtonElement}
  */
-const stepBtn = $('#step');
+const stepBtn = safe$('#step');
 /**
  * @type {HTMLOutputElement}
  */
-const stepCounter = $('#stepnum');
+const stepCounter = safe$('#stepnum');
 /**
  * @type {HTMLInputElement}
  */
-const speedSlider = $('#speedslider');
+const speedSlider = safe$('#speedslider');
 /**
  * @type {HTMLInputElement}
  */
-const speedBox = $('#speedbox');
+const speedBox = safe$('#speedbox');
 /**
  * @type {HTMLInputElement}
  */
-const muteCheckbox = $('#mutecheck');
+const muteCheckbox = safe$('#mutecheck');
 /**
  * @type {HTMLOutputElement}
  */
-const antsCounter = $('#antscount');
+const antsCounter = safe$('#antscount');
 /**
  * @type {HTMLButtonElement}
  */
-const loadBtn = $('#loadbtn');
+const loadBtn = safe$('#loadbtn');
 /**
  * @type {HTMLButtonElement}
  */
-const dumpBtn = $('#dumpbtn');
+const dumpBtn = safe$('#dumpbtn');
 /**
  * @type {HTMLOutputElement}
  */
-const statusBar = $('#statusbar');
+const statusBar = safe$('#statusbar');
 /**
  * @type {HTMLButtonElement}
  */
-const fitBtn = $('#fit');
+const fitBtn = safe$('#fit');
 /**
  * @type {HTMLInputElement}
  */
-const autoFit = $('#autofit');
+const autoFit = safe$('#autofit');
 /**
  * @type {HTMLSelectElement}
  */
-const followSelector = $('#follow');
+const followSelector = safe$('#follow');
 /**
  * @type {HTMLSelectElement}
  */
-const actionsSelector = $('#actions');
+const actionsSelector = safe$('#actions');
 /**
  * @type {HTMLDivElement}
  */
-const debugBar = $('#debugbar');
+const debugBar = safe$('#debugbar');
 
 ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.10.0/src-noconflict/');
 const textbox = ace.edit('textbox', { mode: 'ace/mode/xml' });
@@ -106,7 +110,7 @@ var world = new World();
 /**
  * @type {CanvasToolsManager}
  */
-var canvasTools = new CanvasToolsManager(playfield, $('#toolselect'), $('#tooloption'), [
+var canvasTools = new CanvasToolsManager(playfield, safe$('#toolselect'), safe$('#tooloption'), [
     new DragTool(),
     new DrawCellsTool(world),
     new DrawAntsTool(world, breeder, ants),
@@ -403,8 +407,8 @@ dumpBtn.addEventListener('click', () => actions.trigger('dump'));
  */
 function fitace() {
     setTimeout(() => {
-        var rect = $('#textbox').parentElement.getBoundingClientRect();
-        $('#textbox').setAttribute('style', `width:${rect.width}px;height:${rect.height}px`);
+        var rect = safe$('#textbox').parentElement.getBoundingClientRect();
+        safe$('#textbox').setAttribute('style', `width:${rect.width}px;height:${rect.height}px`);
         textbox.resize(true);
     }, 0);
 }
@@ -419,7 +423,7 @@ window.addEventListener('hashchange', () => {
         where = '#dumpstatuswrapper';
         textbox.setTheme(DARK_MODE ? 'ace/theme/pastel_on_dark' : 'ace/theme/chrome');
     }
-    $(where).append(statusBar);
+    safe$(where).append(statusBar);
     fitace();
 });
 location.hash = "#"; // Don't have editor open by default
@@ -466,17 +470,18 @@ if ("serviceWorker" in navigator) {
 }
 
 // Dev version indicator
+const heading = safe$("#foohead");
 if (location.host.indexOf('localhost') != -1) {
     document.title += ' - localhost version';
-    $('main .heading').textContent += ' - localhost version';
+    heading.textContent += ' - localhost version';
 }
 else if (location.host.indexOf('.github.dev') != -1) {
     document.title += ' - codespace version';
-    $('main .heading').textContent += ' - codespace version';
+    heading.textContent += ' - codespace version';
 }
 else if (location.protocol.indexOf('file') != -1) {
     document.title += ' - file:// version';
-    $('main .heading').textContent += ' - file:// version (some features unavailable)';
+    heading.textContent += ' - file:// version (some features unavailable)';
 }
 else {
     // we are in the full web version

@@ -3,12 +3,14 @@ if [[ "$USER" -eq codespace ]]
 then
 echo "Using Flask to serve http://localhost:4443/ -> port forwarding"
 sudo python3 <<PYTHON
-import flask, os
+import flask, os, urllib
 app = flask.Flask("test")
 @app.route("/")
 def main():return flask.redirect("/index.html")
 @app.route("/<path:file>")
 def files(file):return flask.send_from_directory(os.getcwd(), file, max_age=0)
+@app.route("/report_error/<string:err>")
+def errror(err):print(urllib.parse.unquote(err),end="\n\n");return "",500
 app.run("localhost", 4443, ssl_context="adhoc")
 PYTHON
 else

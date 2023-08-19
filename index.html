@@ -30,20 +30,23 @@
                         "\nline: " + (lineno || "unknown") +
                         "\ncolumn: " + (colno || "unknown") + 
                         "\nfile: " + (source || "unknown") + 
-                        "\ntraceback:\n" + error.stack
+                        "\ntraceback: " + (error == null ? "not available (" + event + " ??)" : error.stack)
                     );
+                    fetch("/report_error/" + encodeURIComponent(err));
                     document.documentElement.innerHTML = "Fatal error: please copy and <a href=\"https://github.com/dragoncoder047/langton-music/issues\">report</a>: <pre>" + err + "</pre>";
                 }
                 catch(e) {
                     document.documentElement.innerHTML = "Double fatal error: please copy and <a href=\"https://github.com/dragoncoder047/langton-music/issues\">report</a>: <pre>" + e.stack + "</pre>";
+                    throw e;
                 }
+                throw error;
             }
         </script>
     </head>
 
     <body>
         <main class="flex-column">
-            <div class="heading padding">Langton's Ant Music version 3-DEV</div>
+            <div class="heading padding" id="foohead">Langton's Ant Music version 3-DEV</div>
             <div class="flex-row padding">
                 <div class="expanding" id="statuswrapper"><output id="statusbar"></output></div>
                 <a href="#editor">Edit</a>&nbsp;&nbsp;-&nbsp;&nbsp;
@@ -622,7 +625,7 @@
         <script src="js/world.js"></script>
         <script src="js/actions.js"></script>
         <script src="js/media.js"></script>
-        <script src="js/main.js"></script>
+        <script src="js/main_load.js"></script>
     </body>
 
 </html>
