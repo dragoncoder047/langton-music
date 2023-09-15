@@ -7,7 +7,7 @@
  * @param {boolean} includeDelimiters
  * @param {boolean} splitAtParens
  */
-function* level1ParseExpression(string, delimiters, singletons = [], openers = "[{(\"'", closers = "]})\"'", includeDelimiters = false, splitAtParens = true) {
+function* level1ParseExpression(string, delimiters, singletons = [], openers = "[{(\"'", closers = "]})\"'", splitAtParens = true) {
     var origString = string;
     var currentString = "";
     var stack = [];
@@ -15,68 +15,68 @@ function* level1ParseExpression(string, delimiters, singletons = [], openers = "
     delimiters = delimiters.sort((a, b) => b.length - a.length);
     singletons = singletons.sort((a, b) => b.length - a.length);
     var i = 0;
+    mainloop:
     while (string) {
-        var c = string[0];
-        console.log(c);
-        if (openers.includes(c)) {
-            if (stack.length > 0 && otc[c] === stack[stack.length - 1] && otc[c] === c) {
-                stack.pop();
-                if (splitAtParens) {
+        for (var o of openers) {
+            if (string.startsWith(o)) {
+                if (stack.length > 0 && otc[o] === o && otc[o] === stack[stack.length - 1][0]) {
+                    stack.pop();
+                    if (stack.length == 0) {
+                        yield currentString + o;
+                        currentString = "";
+                    } else currentString += o;
+                } else {
+                    if (stack.length == 0 && currentString.length > 0) {
+                        yield currentString;
+                        currentString = o;
+                    } else currentString += o;
+                    stack.push([o, i]);
+                }
+                string = string.slice(o.length);
+                i += o.length;
+                continue mainloop;
+            }
+        }
+        for (var c of closers) {
+            if (string.startsWith(c)) {
+                if (stack.length === 0) throw `unopened ${c}\n${origString}\n${" ".repeat(i)}^`;
+                var b = otc[stack.pop()[0]];
+                if (b !== c) throw `paren mismatch ${b} ${c}\n${origString}\n${" ".repeat(i)}^`;
+                if (stack.length == 0 && currentString.length > 0) {
                     yield currentString + c;
                     currentString = "";
-                    string = string.slice(1);
-                    continue;
-                }
-            } else {
-                if (splitAtParens && stack.length == 0 && currentString.length > 0) {
-                    yield currentString;
-                    currentString = "";
-                }
-                stack.push(c);
+                } else currentString += c;
+                string = string.slice(c.length);
+                i += c.length;
+                continue mainloop;
             }
         }
-        else if (closers.includes(c)) {
-            if (stack.length === 0) throw `unopened ${c}\n${origString}\n${" ".repeat(i)}^`;
-            var b = otc[stack.pop()];
-            if (b !== c) throw `paren mismatch ${b}${c}\n${origString}\n${" ".repeat(i)}^`;
-            if (splitAtParens && stack.length == 0 && currentString.length > 0) {
-                yield currentString + c;
-                currentString = c = "";
-            }
-        }
-        var atSplit = false;
         if (stack.length == 0) {
             for (var d of delimiters) {
                 if (string.startsWith(d)) {
                     if (currentString) yield currentString;
-                    if (includeDelimiters) yield d;
                     currentString = "";
                     string = string.slice(d.length);
                     i += d.length;
-                    atSplit = true;
-                    break;
+                    continue mainloop;
+                }
+            }
+            for (var s of singletons) {
+                if (string.startsWith(s)) {
+                    yield currentString;
+                    yield s;
+                    currentString = "";
+                    string = string.slice(s.length);
+                    i += s.length;
+                    continue mainloop;
                 }
             }
         }
-        if (!atSplit) {
-            if (stack.length == 0) {
-                for (var s of singletons) {
-                    if (string.startsWith(s)) {
-                        yield currentString;
-                        yield s;
-                        currentString = "";
-                        string = string.slice(s.length);
-                        i += s.length;
-                    }
-                }
-            } else {
-                currentString += c;
-                string = string.slice(1);
-                i++;
-            }
-        }
+        currentString += string[0];
+        string = string.slice(1);
+        i++;
     }
-    if (stack.length > 0) throw "unclosed " + stack.pop();
+    if (stack.length > 0) throw `unclosed ${stack[0][0]}\n${origString}\n${" ".repeat(stack[0][1])}^`
     yield currentString;
 }
 
@@ -85,13 +85,12 @@ function* level1ParseExpression(string, delimiters, singletons = [], openers = "
  * @param {string} expr 
  * @returns {string}
  */
-function processExpressions(expr) {
-    var bits = [...level1ParseExpression(expr, [], [])];
-    console.log(bits);
+function processExpressions(expr, vars) {
+    var bits = [...level1ParseExpression(expr, [], [], ["[", "{", "$(", "(", "\"", "'"], "]}))\"'")];
     bits = bits.map(bit => {
         var m = /^\$\((.+)\)$/.exec(bit);
         if (!m) return bit;
-        return evalExpression(m[1]);
+        return evalExpression(m[1], vars).join(" ");
     });
     return bits.join("");
 }
@@ -163,22 +162,15 @@ delete temp;
  * @param {string} string
  * @returns {any[]}
  */
-function evalExpression(string) {
+function evalExpression(string, vars) {
     var ss = string.trim();
-    tokens = [...level1ParseExpression(ss, [" "], operators.flatMap(Object.keys))].filter(Boolean);
+    var tokens = [...level1ParseExpression(ss, [" "], operators.flatMap(Object.keys))].filter(Boolean);
     for (var i = 0; i < tokens.length; i++) {
         var t = tokens[i];
         if (typeof t !== "string") continue;
-        if (t[0] === "(") {
-            var val = evalExpression(t.slice(1, t.length - 1));
-            tokens.splice(i, 1, val);
-        }
-        else if ("{'\"".includes(t[0])) {
-            tokens[i] = t.slice(1, t.length - 1);
-        }
-        if (typeof tokens[i] === "string" && !isNaN(+tokens[i])) {
-            tokens[i] = parseInt(tokens[i]) || parseFloat(tokens[i]) || 0.;
-        }
+        if (t[0] === "(") tokens.splice(i, 1, ...evalExpression(t.slice(1, t.length - 1)));
+        else if ("{'\"".includes(t[0])) tokens[i] = t.slice(1, t.length - 1);
+        if (typeof tokens[i] === "string" && !isNaN(+tokens[i])) tokens[i] = parseInt(tokens[i]) || parseFloat(tokens[i]) || 0.;
     }
     var hasOps;
     do {
@@ -189,14 +181,17 @@ function evalExpression(string) {
                 tokens.unshift(undefined);
                 tokens.push(undefined);
                 var i = tokens.indexOf(opName);
-                if (i !== -1) {
-                    var val = precedenceLevel[opName](tokens[i - 1], tokens[i + 1]);
-                    tokens.splice(i - 1, 3, ...[].concat(val));
-                    hasOps = true;
-                    break tokenLoop;
+                try {
+                    if (i !== -1) {
+                        var val = precedenceLevel[opName](tokens[i - 1], tokens[i + 1], vars);
+                        tokens.splice(i - 1, 3, ...[].concat(val));
+                        hasOps = true;
+                        break tokenLoop;
+                    }
+                } finally {
+                    if (typeof tokens.shift() !== "undefined") throw "postfix at beginning";
+                    if (typeof tokens.pop() !== "undefined") throw "prefix at end";
                 }
-                if (typeof tokens.shift() !== "undefined") throw "postfix at beginning";
-                if (typeof tokens.pop() !== "undefined") throw "prefix at end";
             }
         }
     } while (hasOps);
