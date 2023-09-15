@@ -81,7 +81,7 @@ const actionsSelector = safe$('#actions');
 const debugBar = safe$('#debugbar');
 
 ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.10.0/src-noconflict/');
-const textbox = ace.edit('textbox', { mode: 'ace/mode/xml' });
+const textbox = ace.edit('textbox', { mode: 'ace/mode/html' });
 
 function debug(message) {
     return;
