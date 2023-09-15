@@ -1,20 +1,4 @@
 /**
- * Processes all the interpolations.
- * @param {string} expr 
- * @returns {string}
- */
-function processExpressions(expr) {
-    // find expressions
-    while (true) {
-        expr = expr.trim();
-        var match = /\$\{(.+?)\}/.exec(expr);
-        if (!match) break;
-        expr = expr.replaceAll(match[0], evalExpression(match[1]));
-    }
-    return expr;
-}
-
-/**
  * @param {string} string
  * @param {string[]} delimiters
  * @param {string[]} singletons
@@ -23,35 +7,38 @@ function processExpressions(expr) {
  * @param {boolean} includeDelimiters
  * @param {boolean} splitAtParens
  */
-function* level1ParseExpression(string, delimiters, singletons=[], openers="[{(\"'", closers="]})\"'", includeDelimiters=false, splitAtParens=true) {
+function* level1ParseExpression(string, delimiters, singletons = [], openers = "[{(\"'", closers = "]})\"'", includeDelimiters = false, splitAtParens = true) {
+    var origString = string;
     var currentString = "";
     var stack = [];
-    var otc = openers.reduce((obj, key, index) => ({ ...obj, [key]: closers[index] }), {});
-    delimiters = delimiters.sort((a, b) => a.length - b.length);
-    singletons = singletons.sort((a, b) => a.length - b.length);
+    var otc = [].reduce.call(openers, (obj, key, index) => ({ ...obj, [key]: closers[index] }), {});
+    delimiters = delimiters.sort((a, b) => b.length - a.length);
+    singletons = singletons.sort((a, b) => b.length - a.length);
+    var i = 0;
     while (string) {
         var c = string[0];
+        console.log(c);
         if (openers.includes(c)) {
-            if (stack.length > 0 && otc[c] === stack[stack.length-1] && otc[c] === c) {
+            if (stack.length > 0 && otc[c] === stack[stack.length - 1] && otc[c] === c) {
                 stack.pop();
                 if (splitAtParens) {
                     yield currentString + c;
                     currentString = "";
                     string = string.slice(1);
                     continue;
-                } else {
-                    if (splitAtParens && stack.length == 0 && currentString.length > 0) {
-                        yield currentString;
-                        currentString = "";
-                    }
-                    stack.push(c);
                 }
+            } else {
+                if (splitAtParens && stack.length == 0 && currentString.length > 0) {
+                    yield currentString;
+                    currentString = "";
+                }
+                stack.push(c);
             }
         }
         else if (closers.includes(c)) {
-            if (stack.length == 0) throw "unopened " + c;
+            if (stack.length === 0) throw `unopened ${c}\n${origString}\n${" ".repeat(i)}^`;
             var b = otc[stack.pop()];
-            if (b !== c) throw "paren mismatch " + b + c;
+            if (b !== c) throw `paren mismatch ${b}${c}\n${origString}\n${" ".repeat(i)}^`;
             if (splitAtParens && stack.length == 0 && currentString.length > 0) {
                 yield currentString + c;
                 currentString = c = "";
@@ -65,24 +52,27 @@ function* level1ParseExpression(string, delimiters, singletons=[], openers="[{(\
                     if (includeDelimiters) yield d;
                     currentString = "";
                     string = string.slice(d.length);
+                    i += d.length;
                     atSplit = true;
                     break;
                 }
             }
         }
         if (!atSplit) {
-            if (stack.length > 0) {
+            if (stack.length == 0) {
                 for (var s of singletons) {
                     if (string.startsWith(s)) {
                         yield currentString;
                         yield s;
                         currentString = "";
                         string = string.slice(s.length);
+                        i += s.length;
                     }
                 }
             } else {
                 currentString += c;
                 string = string.slice(1);
+                i++;
             }
         }
     }
@@ -90,11 +80,28 @@ function* level1ParseExpression(string, delimiters, singletons=[], openers="[{(\
     yield currentString;
 }
 
+/**
+ * Processes all the interpolations.
+ * @param {string} expr 
+ * @returns {string}
+ */
+function processExpressions(expr) {
+    var bits = [...level1ParseExpression(expr, [], [])];
+    console.log(bits);
+    bits = bits.map(bit => {
+        var m = /^\$\((.+)\)$/.exec(bit);
+        if (!m) return bit;
+        return evalExpression(m[1]);
+    });
+    return bits.join("");
+}
+
 var temp;
 /**
  * @type {Object<string, (left: any, right: any, vars: Object) => any[]>[]}
  */
 const operators = [
+    // Unary
     {
         $: (left, right, vars) => [left, vars[right]],
     },
@@ -107,90 +114,92 @@ const operators = [
         ["@"]: (left, right) => [left].concat(right),
         ["#"]: (left, right) => [left, right.length],
     },
+    // Math
     {
-        // TODO more
-    }
+        ["**"]: (left, right) => [left ** right],
+    },
+    {
+        ["*"]: (left, right) => [typeof left === "string" ? left.repeat(right) : (left * right)],
+        ["/"]: (left, right) => [left / right],
+        ["%"]: (left, right) => [left % right],
+    },
+    {
+        ["+"]: (left, right) => [left + right],
+        ["-"]: (left, right) => [left - right],
+    },
+    // Bitwise
+    {
+        ["&"]: (left, right) => [left & right],
+        ["|"]: (left, right) => [left | right],
+        ["^"]: (left, right) => [left ^ right],
+        ["~"]: (left, right) => [left, ~right],
+        ["<<"]: (left, right) => [left << right],
+        [">>"]: (left, right) => [left >> right],
+    },
+    // Comparison
+    {
+        ["<"]: (left, right) => [left < right],
+        [">"]: (left, right) => [left < right],
+        ["<="]: (left, right) => [left < right],
+        [">="]: (left, right) => [left < right],
+        ["=="]: (left, right) => [left < right],
+        ["!="]: (left, right) => [left < right],
+    },
+    // Boolean
+    {
+        ["&&"]: (temp = (left, right) => [left && right]),
+        and: temp,
+        ["||"]: (temp = (left, right) => [left || right]),
+        or: temp,
+    },
+    // Containment
+    {
+        in: (left, right) => [Array.isArray(left) || typeof left === "string" ? left.includes(right) : (() => { throw "not a container" })()],
+    },
 ];
 delete temp;
 
 /**
- * Evaluates the expression.
- * @param {string} expr The stripped expression.
- * @returns {string|number}
+ * @param {string} string
+ * @returns {any[]}
  */
-function evalExpression(expr) {
-    var s = [];
-    while (expr) {
-        var match = /^(\d+|`(.+?)`|.)/.exec(expr);
-        var token = match[0];
-        expr = expr.slice(token.length);
-        if (/\d+/.test(token)) {
-            s.push(parseInt(token));
+function evalExpression(string) {
+    var ss = string.trim();
+    tokens = [...level1ParseExpression(ss, [" "], operators.flatMap(Object.keys))].filter(Boolean);
+    for (var i = 0; i < tokens.length; i++) {
+        var t = tokens[i];
+        if (typeof t !== "string") continue;
+        if (t[0] === "(") {
+            var val = evalExpression(t.slice(1, t.length - 1));
+            tokens.splice(i, 1, val);
         }
-        else if (match[2]) {
-            s.push(match[2]);
+        else if ("{'\"".includes(t[0])) {
+            tokens[i] = t.slice(1, t.length - 1);
         }
-        else if (/[\s']/.test(token)); // spaces and ' are noop
-        else {
-            var a = s.pop();
-            var b = s.pop();
-            switch (token) {
-                case '\\':
-                    s.push(a, b);
-                    break;
-                case '$':
-                    s.push(b);
-                    break;
-                case ':':
-                    s.push(b, a, a);
-                    break;
-                case '?':
-                    s.push(b, Math.floor(Math.random() * a));
-                    break;
-                case '%':
-                    s.push(b % a);
-                    break;
-                case '^':
-                    s.push(b ^ a);
-                    break;
-                case '&':
-                    s.push(b & a);
-                    break;
-                case '*':
-                    s.push(b * a);
-                    break;
-                case '-':
-                    s.push(b - a);
-                    break;
-                case '+':
-                    s.push(b + a);
-                    break;
-                case '/':
-                    s.push(b / a);
-                    break;
-                case '|':
-                    s.push(b | a);
-                    break;
-                case '~':
-                    s.push(b, -a);
-                    break;
-                case '<':
-                    s.push(b < a);
-                    break;
-                case '>':
-                    s.push(b > a);
-                    break;
-                case '=':
-                    s.push(b === a);
-                    break;
-                case '@':
-                    var c = s.pop();
-                    s.push(a ? b : c);
-                    break;
-                default:
-                    throw `unknown expression command ${token} starting at ${token}${expr}`;
-            }
+        if (typeof tokens[i] === "string" && !isNaN(+tokens[i])) {
+            tokens[i] = parseInt(tokens[i]) || parseFloat(tokens[i]) || 0.;
         }
     }
-    return s[s.length - 1];
+    var hasOps;
+    do {
+        hasOps = false;
+        tokenLoop:
+        for (var precedenceLevel of operators) {
+            for (var opName of Object.keys(precedenceLevel)) {
+                tokens.unshift(undefined);
+                tokens.push(undefined);
+                var i = tokens.indexOf(opName);
+                if (i !== -1) {
+                    var val = precedenceLevel[opName](tokens[i - 1], tokens[i + 1]);
+                    tokens.splice(i - 1, 3, ...[].concat(val));
+                    hasOps = true;
+                    break tokenLoop;
+                }
+                if (typeof tokens.shift() !== "undefined") throw "postfix at beginning";
+                if (typeof tokens.pop() !== "undefined") throw "prefix at end";
+            }
+        }
+    } while (hasOps);
+    // must return an array because this function is called recursively
+    return tokens;
 }
