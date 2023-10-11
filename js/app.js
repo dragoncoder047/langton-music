@@ -6,6 +6,6 @@
 
 class LangtonMusicApp {
     constructor(options) {
-        this.
+        this.foo;
     }
 }

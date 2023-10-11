@@ -470,7 +470,7 @@ if ("serviceWorker" in navigator) {
 }
 
 // Dev version indicator
-const heading = safe$("#foohead");
+const heading = safe$("#mainhead");
 if (location.host.indexOf('localhost') != -1) {
     document.title += ' - localhost version';
     heading.textContent += ' - localhost version';

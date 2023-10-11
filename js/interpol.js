@@ -170,7 +170,7 @@ function evalExpression(string, vars) {
         if (typeof t !== "string") continue;
         if (t[0] === "(") tokens.splice(i, 1, ...evalExpression(t.slice(1, t.length - 1)));
         else if ("{'\"".includes(t[0])) tokens[i] = t.slice(1, t.length - 1);
-        if (typeof tokens[i] === "string" && !isNaN(+tokens[i])) tokens[i] = parseInt(tokens[i]) || parseFloat(tokens[i]) || 0.;
+        if (typeof tokens[i] === "string" && !isNaN(+tokens[i])) tokens[i] = parseInt(tokens[i]) || parseFloat(tokens[i]) || +tokens[i] || 0;
     }
     var hasOps;
     do {
