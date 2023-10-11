@@ -1,26 +1,16 @@
 class Dialog extends XEventEmitter {
-    /**
-     * @param {HTMLDialogElement?} elem
-     * @param {string | false} closeButtonMessage
-     */
-    constructor(elem, closeButtonMessage = "close") {
+        constructor(elem, closeButtonMessage = "close") {
         super();
         if (!elem) {
             elem = document.createElement("dialog");
             elem.classList.add("big");
             document.body.append(elem);
         }
-        /**
-         * @type {HTMLDialogElement}
-         */
-        this.elem = elem;
+                this.elem = elem;
         this.elem.addEventListener("close", () => this.emit("close", this.elem.returnValue));
         this.elem.addEventListener("keydown", e => { if (e.key == "Escape") e.preventDefault(); });
         // move elements to span
-        /**
-         * @type {HTMLDivElement}
-         */
-        this.inside = document.createElement("div");
+                this.inside = document.createElement("div");
         if (this.elem.childNodes.length > 0 && ![].some.call(this.elem.childNodes, e => ["#comment", "#text"].indexOf(e.nodeName) == -1)) {
             // Only a text/comment node!
             if ('marked' in window) {
@@ -55,11 +45,7 @@ class Dialog extends XEventEmitter {
     close() {
         if (this.open) this.elem.close();
     }
-    /**
-     * @param {string | HTMLElement} content
-     * @param {boolean} parseMD
-     */
-    setContent(content, parseMD = true) {
+        setContent(content, parseMD = true) {
         if (typeof content == "string") {
             if (parseMD && 'marked' in window) {
                 try {
@@ -75,11 +61,7 @@ class Dialog extends XEventEmitter {
             this.inside.append(content);
         }
     }
-    /**
-     * @type {boolean}
-     * @readonly
-     */
-    get open() {
+        get open() {
         return this.elem.open;
     }
 }

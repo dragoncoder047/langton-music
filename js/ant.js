@@ -1,11 +1,3 @@
-/**
- * Checks to make sure the node nesting is correct.
- * @param {HTMLElement} node The XML node to be checked for validity.
- * @param {string} name The name of the node that `node` should be.
- * @param {string} inside The name of the elemnt that weaps this one, in case of a mismatch and an error.
- * @returns {boolean} Whether the node is a `#text` node and should be skipped.
- * @throws {string} When `node.nodeName !== name`. 
- */
 function checknode(node, name, inside) {
     // returns true if it should be skipped.
     // returns false if it is ok to go.
@@ -16,26 +8,14 @@ function checknode(node, name, inside) {
     return false;
 }
 
-/**
- * Manager class for creating ants.
- */
 class Breeder {
     constructor() {
         this.breeds = {};
     }
-    /**
-     * Removes all the ant breeds.
-     */
-    empty() {
+        empty() {
         this.breeds = {};
     }
-    /**
-     * Registers a breed.
-     * @param {string} breedName The name of the breed.
-     * @param {function} klass The class constructor for the ant.
-     * @param {HTMLElement} cases The `<case>` tags that describe the ant's behavior.
-     */
-    addBreed(breedName, klass, cases) {
+        addBreed(breedName, klass, cases) {
         if (breedName in this.breeds) throw `Breed ${breedName} is already defined.`;
         var allCases = {};
         for (var case_ of cases.childNodes) {
@@ -59,26 +39,10 @@ class Breeder {
         }
         this.breeds[breedName] = [klass, allCases];
     }
-    /**
-     * Serializes the stored breeds to XML.
-     * @returns {string}
-     */
-    dumpBreeds() {
+        dumpBreeds() {
         return Object.getOwnPropertyNames(this.breeds).map(breed => `    <breed species="${this.breeds[breed][0].name}" name="${breed}">\n${Object.getOwnPropertyNames(this.breeds[breed][1]).map(p => [p, this.breeds[breed][1][p].map(sc => sc.map(cd => `                <command name="${cd[0]}">${cd[1]}</command>`).join('\n')).join('</action>\n            <action>')]).map(c => `        <case state="${c[0].split(':')[0]}" cell="${c[0].split(':')[1]}">\n            <action>\n${c[1]}\n            </action>\n        </case>`).join('\n')}\n    </breed>`).join('\n');
     }
-    /**
-     * Creates a new ant.
-     * @param {string} breed Name of the breed
-     * @param {World} world 
-     * @param {number} x 
-     * @param {number} y 
-     * @param {AntDirection} dir 
-     * @param {number} state 
-     * @param {Ant[]} antsList Reference to list of ants.
-     * @param {string} id Arbitrary ant ID.
-     * @returns 
-     */
-    createAnt(breed, world, x, y, dir, state, antsList, id) {
+        createAnt(breed, world, x, y, dir, state, antsList, id) {
         if (!(breed in this.breeds)) throw `Unknown ant breed ${breed}`;
         var klass = this.breeds[breed][0];
         var commands = this.breeds[breed][1];
@@ -86,87 +50,24 @@ class Breeder {
     }
 }
 
-/**
- * @typedef {0|1|2|3} AntDirection
- */
 
-/**
- * Class for an Ant.
- */
 class Ant {
-    /**
-     * 
-     * @param {Breeder} breeder Reverence to the `Breeder` that produced this ant.
-     * @param {Ant[]} antList A reference to the list of ants this is a member of.
-     * @param {string} breed The name of this breed.
-     * @param {World} world A reference to the `World` this ant lives in.
-     * @param {object} commands Serialized commands processed by the `breeder`.
-     * @param {number} initialState The state of the ant.
-     * @param {number} x X-position
-     * @param {number} y Y-position
-     * @param {AntDirection} dir Direction.
-     * @param {string} [id] The arbitrary ID of the ant. 
-     */
-    constructor(breeder, antList, breed, world, commands, initialState, x, y, dir, id) {
-        /**
-         * @type {Breeder}
-         */
-        this.breeder = breeder;
-        /**
-         * @type {Ant[]}
-         */
-        this.antList = antList;
-        /**
-         * @type {string}
-         */
-        this.breed = breed;
-        /**
-         * @type {World}
-         */
-        this.world = world;
-        /**
-         * @type {number}
-         */
-        this.state = initialState;
-        /**
-         * @type {number}
-         */
-        this.x = x;
-        /**
-         * @type {number}
-         */
-        this.y = y;
-        /**
-         * @type {AntDirection}
-         */
-        this.dir = dir;
-        /**
-         * @type {object}
-         */
-        this.commands = commands;
-        /**
-         * @type {any[][]}
-         */
-        this.queue = [];
-        /**
-         * @type {boolean}
-         */
-        this.halted = false;
-        /**
-         * @type {boolean}
-         */
-        this.dead = false;
-        /**
-         * @type {string}
-         */
-        this.id = id || `${this.breed}-${randuuid()}`;
+        constructor(breeder, antList, breed, world, commands, initialState, x, y, dir, id) {
+                this.breeder = breeder;
+                this.antList = antList;
+                this.breed = breed;
+                this.world = world;
+                this.state = initialState;
+                this.x = x;
+                this.y = y;
+                this.dir = dir;
+                this.commands = commands;
+                this.queue = [];
+                this.halted = false;
+                this.dead = false;
+                this.id = id || `${this.breed}-${randuuid()}`;
     }
-    /**
-     * Processes `#name` substitutions and `#exp;` interpolations for this ant.
-     * @param {string} arg Raw, unprocessed argument.
-     * @returns {string} Processed string.
-     */
-    processInserts(arg) {
+        processInserts(arg) {
         var vars = ['dir', 'state'];
         // Do simple inserts
         for (var v of vars) {
@@ -182,10 +83,7 @@ class Ant {
         arg = processExpressions(arg);
         return arg;
     }
-    /**
-     * Advances the ant one tick, executing the `<action>`.
-     */
-    tick() {
+        tick() {
         this.ensureQueueNotEmpty();
         var commands = this.queue.shift();
         for (var [name, arg] of commands) {
@@ -193,10 +91,7 @@ class Ant {
             this[`do_${name}`](this.processInserts(arg || ''));
         }
     }
-    /**
-     * If the queue is not empty, fetches more commands from the world and rules.
-     */
-    ensureQueueNotEmpty() {
+        ensureQueueNotEmpty() {
         if (this.queue.length === 0) {
             var what = this.commands[`${this.state}:${this.world.getCell(this.x, this.y)}`] ?? [];
             this.queue.push(...what);
@@ -206,10 +101,7 @@ class Ant {
             this.queue.push([]);
         }
     }
-    /**
-     * Draws the ant on the context.
-     */
-    draw(ctx) {
+        draw(ctx) {
         ctx.save();
         ctx.translate(this.world.cellSize * this.x, this.world.cellSize * this.y);
         ctx.scale(this.world.cellSize / 16, this.world.cellSize / 16);
@@ -243,14 +135,7 @@ class Ant {
         ctx.beginPath(); ctx.arc(-1, -4.5, 0.5, 0, 2 * Math.PI); ctx.fill();
         ctx.restore();
     }
-    /**
-     * Checks the argument is a number, and returns it.
-     * @param {string} arg The argument to be checked.
-     * @param {string} methodname The method that requires a number argument.
-     * @param {number} default_ The default if the argument is the empty string.
-     * @returns {number}
-     */
-    numarg(arg, methodname, default_ = 1) {
+        numarg(arg, methodname, default_ = 1) {
         arg = arg || default_;
         var argNum = parseInt(arg);
         if (isNaN(argNum)) throw `${methodname}: ${arg} is not a number`;
@@ -325,10 +210,6 @@ class Ant {
     }
 }
 
-/**
- * A random 8-character hexadecimal UUID.
- * @returns {string}
- */
 function randuuid() {
     return Math.floor(Math.random() * (2 ** 32)).toString(16).padStart(8, '0');
 }

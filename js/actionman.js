@@ -1,25 +1,12 @@
-/**
- * manager for Action callbacks
- */
 class ActionManager extends XEventEmitter {
     constructor() {
         super();
     }
-    /**
-     * define what happens for the action
-     * @param {string} name
-     * @param {(payload: any) => void} callback
-     */
-    action(name, callback) {
+        action(name, callback) {
         this.on("action." + name, callback);
     }
 
-    /**
-     * @param {string} name
-     * @param {any} payload
-     * @returns {false}
-     */
-    trigger(name, payload) {
+        trigger(name, payload) {
         console.group(name);
         console.info('payload:', payload);
         try {

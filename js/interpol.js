@@ -1,12 +1,3 @@
-/**
- * @param {string} string
- * @param {string[]} delimiters
- * @param {string[]} singletons
- * @param {string} openers
- * @param {string} closers
- * @param {boolean} includeDelimiters
- * @param {boolean} splitAtParens
- */
 function* level1ParseExpression(string, delimiters, singletons = [], openers = "[{(\"'", closers = "]})\"'", splitAtParens = true) {
     var origString = string;
     var currentString = "";
@@ -80,11 +71,6 @@ function* level1ParseExpression(string, delimiters, singletons = [], openers = "
     yield currentString;
 }
 
-/**
- * Processes all the interpolations.
- * @param {string} expr 
- * @returns {string}
- */
 function processExpressions(expr, vars) {
     var bits = [...level1ParseExpression(expr, [], [], ["[", "{", "$(", "(", "\"", "'"], "]}))\"'")];
     bits = bits.map(bit => {
@@ -96,9 +82,6 @@ function processExpressions(expr, vars) {
 }
 
 var temp;
-/**
- * @type {Object<string, (left: any, right: any, vars: Object) => any[]>[]}
- */
 const operators = [
     // Unary
     {
@@ -158,10 +141,6 @@ const operators = [
 ];
 delete temp;
 
-/**
- * @param {string} string
- * @returns {any[]}
- */
 function evalExpression(string, vars) {
     var ss = string.trim();
     var tokens = [...level1ParseExpression(ss, [" "], operators.flatMap(Object.keys))].filter(Boolean);

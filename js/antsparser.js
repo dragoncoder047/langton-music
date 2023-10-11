@@ -1,24 +1,8 @@
-/**
- * Gets the attribute off the element.
- * @param {HTMLElement} node The element to be checked.
- * @param {string} attr Name of the attribute required.
- * @param {string} [fallback] Default value
- * @param {boolean} [required=true] Whether the attribute is required.
- * @returns {string|null}
- */
 function checkattr(node, attr, fallback = undefined, required = true) {
     if (required && (!node.hasAttribute(attr) || node.getAttribute(attr) === '')) throw `Need attribute ${attr} on <${node.nodeName.toLowerCase()}>`;
     return node.getAttribute(attr) ?? fallback;
 }
 
-/**
- * Gets the attribute off the element which must be an integer.
- * @param {HTMLElement} node The node to be checked.
- * @param {string} attr Name of the element.
- * @param {number} fallback Default value if not provided
- * @param {boolean} required Whether the attribute is required.
- * @returns {number}
- */
 function checkint(node, attr, fallback = null, required = true) {
     var x = checkattr(node, attr, fallback, required);
     var xn = parseInt(x);
@@ -26,9 +10,6 @@ function checkint(node, attr, fallback = null, required = true) {
     return xn ?? fallback;
 }
 
-/**
- * A custom error thrown to contain the extracted line/col information of the XML error.
- */
 class LM_XMLError extends SyntaxError {
     constructor(message, line, col) {
         super(message);
@@ -38,12 +19,6 @@ class LM_XMLError extends SyntaxError {
     }
 }
 
-/**
- * Extract the error details from the <parsererror> element
- * and returns the resultant error details.
- * @param {XMLElement} err
- * @returns {LM_XMLError}
- */
 function extractErrorDetails(err) {
     // See: https://stackoverflow.com/questions/11563554/how-do-i-detect-xml-parsing-errors-when-using-javascripts-domparser-in-a-cross
     var text = err.textContent;
@@ -59,15 +34,6 @@ function extractErrorDetails(err) {
     return new LM_XMLError(message.trim(), line, col);
 }
 
-/**
- * Parses the world and creates the ants.
- * @param {string} text Raw unparsed XML.
- * @param {object<string, Function>} antSpecies The breeds of ants available.
- * @param {world} world The world to load the ants into.
- * @param {Breeder} breeder The breeder to register the breeds onto.
- * @param {Ant[]} ants The list of ants.
- * @returns {object} The header metadata.
- */
 function loadWorld(text, antSpecies, world, breeder, ants) {
     var xml = (new DOMParser()).parseFromString(text, 'application/xml');
     for (var err of xml.querySelectorAll('parsererror')) {
