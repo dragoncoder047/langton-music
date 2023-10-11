@@ -50,7 +50,7 @@
                 }
                 if (!input) return;
                 try {
-                    appendResult(input, processExpressions(input), false);
+                    appendResult(input, processExpressions(input, {}), false);
                 } catch(e) {
                     appendResult(input, e.toString(), true);
                 }
@@ -59,24 +59,29 @@
             
             [
                 'nothing here',
-                '#should #not #change',
-                'expect an error #foobar;',
-                'no #123; change outside of expression',
-                'multiple #123; interspersed #456; interpolations',
-                '#`-`:+:+:+:+::++;',
-                'top item is 789:           #123\'456\'789;',
-                'result string is foobar:   #`foobar`;',
-                'top string is barbaz:      #`foobar``barbaz`;',
-                'noooooop test:             #123\'\'\'\'\'\'\'\';',
-                'random:                    #123?;',
-                'ternary true test:         #`❌``✅`1@;',
-                'ternary false test:        #`✅``❌`0@;',
-                'swap:                      #123\'456\\          123=`❌`\\`✅`\\@;',
-                'modulo:                    #123\'2%              1=`❌`\\`✅`\\@;',
-                'add:                       #123\'2+            125=`❌`\\`✅`\\@;',
-                'add strings:               #`foo``bar`+  `foobar`=`❌`\\`✅`\\@;',
-                'subtract:                  #123\'2-            121=`❌`\\`✅`\\@;',
-                'drop:                      #123\'123\'2$+       246=`❌`\\`✅`\\@;',
+                'should not change or cause a syntax error: "{({)"\'"]$[',
+                'no $(change) outside of expression',
+                'multiple $(123) interspersed $(123) interpolations',
+                'multiple items\nconcatenate with spaces:   $(123 456 789)',
+                'random:                    $(0 ?? 1000)',
+                'ternary true test:         $("OK" if 1 else "Fail")',
+                'ternary false test:        $("Fail" if 0 else "OK")',
+                'equals test:               $("OK" if 1 == 1 else "Fail")',
+                'modulo:                    $("OK" if 10 % 3 == 1 else "Fail")',
+                'add:                       $("OK" if 1 + 1 == 2 else "Fail")',
+                'add strings:               $("OK" if "Foo" + "bar" == "Foobar" else "Fail")',
+                'multiply strings:          $("OK" if "Foo" * 3 == "FooFooFoo" else "Fail")',
+                'subtract:                  $("OK" if 10 - 7 == 3 else "Fail")',
+                'divide:                    $("OK" if 10 / 5 == 2 else "Fail")',
+                'bitwise and:               $("OK" if 14 & 3 == 2 else "Fail")',
+                'bitwise or:                $("OK" if 14 | 3 == 15 else "Fail")',
+                '$("-" * 64)',
+                'everything errors here (except this)',
+                '$(1 not)',
+                '$(1 in 1)',
+                '$(}',
+                '$(")',
+                '$("-" * 64)',
             ].forEach(runTest);
         </script>
     </body>
