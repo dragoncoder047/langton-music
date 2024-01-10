@@ -1,3 +1,5 @@
+// Eh, good enough
+
 function* level1ParseExpression(string, delimiters, singletons = [], openers = "[{(", closers = "]})", stringers = "\"'", requireOpener = "") {
     var origString = string;
     var currentString = "";

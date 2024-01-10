@@ -19,7 +19,7 @@
             </thead>
             <tbody id="out"></tbody>
         </table>
-        <script src="js/interpol.js"></script>
+        <script src="../js/interpol.js"></script>
         <script>
             const box = document.getElementById('input');
             const btn = document.getElementById('run');
@@ -76,11 +76,12 @@
                 'bitwise and:               $("OK" if 14 & 3 == 2 else "Fail")',
                 'bitwise or:                $("OK" if 14 | 3 == 15 else "Fail")',
                 '$("-" * 64)',
-                'everything errors here (except this)',
+                'everything errors from here down (except this)',
                 '$(1 not)',
                 '$(1 in 1)',
                 '$(}',
                 '$(")',
+                '$(([{(([{(([{',
                 '$("-" * 64)',
             ].forEach(runTest);
         </script>

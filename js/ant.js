@@ -12,10 +12,10 @@ class Breeder {
     constructor() {
         this.breeds = {};
     }
-        empty() {
+    empty() {
         this.breeds = {};
     }
-        addBreed(breedName, klass, cases) {
+    addBreed(breedName, klass, cases) {
         if (breedName in this.breeds) throw `Breed ${breedName} is already defined.`;
         var allCases = {};
         for (var case_ of cases.childNodes) {
@@ -39,10 +39,10 @@ class Breeder {
         }
         this.breeds[breedName] = [klass, allCases];
     }
-        dumpBreeds() {
+    dumpBreeds() {
         return Object.getOwnPropertyNames(this.breeds).map(breed => `    <breed species="${this.breeds[breed][0].name}" name="${breed}">\n${Object.getOwnPropertyNames(this.breeds[breed][1]).map(p => [p, this.breeds[breed][1][p].map(sc => sc.map(cd => `                <command name="${cd[0]}">${cd[1]}</command>`).join('\n')).join('</action>\n            <action>')]).map(c => `        <case state="${c[0].split(':')[0]}" cell="${c[0].split(':')[1]}">\n            <action>\n${c[1]}\n            </action>\n        </case>`).join('\n')}\n    </breed>`).join('\n');
     }
-        createAnt(breed, world, x, y, dir, state, antsList, id) {
+    createAnt(breed, world, x, y, dir, state, antsList, id) {
         if (!(breed in this.breeds)) throw `Unknown ant breed ${breed}`;
         var klass = this.breeds[breed][0];
         var commands = this.breeds[breed][1];
@@ -52,22 +52,22 @@ class Breeder {
 
 
 class Ant {
-        constructor(breeder, antList, breed, world, commands, initialState, x, y, dir, id) {
-                this.breeder = breeder;
-                this.antList = antList;
-                this.breed = breed;
-                this.world = world;
-                this.state = initialState;
-                this.x = x;
-                this.y = y;
-                this.dir = dir;
-                this.commands = commands;
-                this.queue = [];
-                this.halted = false;
-                this.dead = false;
-                this.id = id || `${this.breed}-${randuuid()}`;
+    constructor(breeder, antList, breed, world, commands, initialState, x, y, dir, id) {
+        this.breeder = breeder;
+        this.antList = antList;
+        this.breed = breed;
+        this.world = world;
+        this.state = initialState;
+        this.x = x;
+        this.y = y;
+        this.dir = dir;
+        this.commands = commands;
+        this.queue = [];
+        this.halted = false;
+        this.dead = false;
+        this.id = id || `${this.breed}-${randuuid()}`;
     }
-        processInserts(arg) {
+    processInserts(arg) {
         var vars = ['dir', 'state'];
         // Do simple inserts
         for (var v of vars) {
@@ -83,7 +83,7 @@ class Ant {
         arg = processExpressions(arg);
         return arg;
     }
-        tick() {
+    tick() {
         this.ensureQueueNotEmpty();
         var commands = this.queue.shift();
         for (var [name, arg] of commands) {
@@ -91,7 +91,7 @@ class Ant {
             this[`do_${name}`](this.processInserts(arg || ''));
         }
     }
-        ensureQueueNotEmpty() {
+    ensureQueueNotEmpty() {
         if (this.queue.length === 0) {
             var what = this.commands[`${this.state}:${this.world.getCell(this.x, this.y)}`] ?? [];
             this.queue.push(...what);
@@ -101,7 +101,7 @@ class Ant {
             this.queue.push([]);
         }
     }
-        draw(ctx) {
+    draw(ctx) {
         ctx.save();
         ctx.translate(this.world.cellSize * this.x, this.world.cellSize * this.y);
         ctx.scale(this.world.cellSize / 16, this.world.cellSize / 16);
@@ -135,7 +135,7 @@ class Ant {
         ctx.beginPath(); ctx.arc(-1, -4.5, 0.5, 0, 2 * Math.PI); ctx.fill();
         ctx.restore();
     }
-        numarg(arg, methodname, default_ = 1) {
+    numarg(arg, methodname, default_ = 1) {
         arg = arg || default_;
         var argNum = parseInt(arg);
         if (isNaN(argNum)) throw `${methodname}: ${arg} is not a number`;
