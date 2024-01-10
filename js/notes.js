@@ -1,6 +1,3 @@
-/**
- * Ant that plays drum sounds.
- */
 class Beetle extends Ant {
     constructor(...args) {
         super(...args);
@@ -16,9 +13,6 @@ class Beetle extends Ant {
     }
 }
 
-/**
- * Ant that plays strings sounds.
- */
 class Cricket extends Ant {
     constructor(...args) {
         super(...args);

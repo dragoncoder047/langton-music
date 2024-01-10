@@ -1,6 +1,6 @@
 const CACHE_NAME = "langton-music-v2";
 
-if (location.protocol.indexOf('file') === -1 && location.host.indexOf('localhost') === -1) {
+if (location.protocol.indexOf('file') === -1 && location.host.indexOf('localhost') === -1 && location.host.indexOf('.github.dev') === -1) {
 
     // Copied from https://developer.chrome.com/docs/workbox/caching-strategies-overview/#stale-while-revalidate
     self.addEventListener('fetch', e => {

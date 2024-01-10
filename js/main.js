@@ -1,83 +1,30 @@
-/**
- * Threshold value for bailing because too many ants are spawning.
- * @type {number}
- */
 const TOO_MANY_ANTS = 64;
 
-/**
- * Selector
- * @param {string} s Selector
- * @returns {HTMLElement}
- */
-const $ = s => document.querySelector(s);
+const safe$ = selector => {
+    var elem = document.querySelector(selector);
+    if (!elem) throw new Error("can't find " + selector);
+    return elem;
+};
 
-/**
- * @type {HTMLCanvasElement}
- */
-const playfield = $('#playfield');
-/**
- * @type {HTMLButtonElement}
- */
-const startStopBtn = $('#startstop');
-/**
- * @type {HTMLButtonElement}
- */
-const stepBtn = $('#step');
-/**
- * @type {HTMLOutputElement}
- */
-const stepCounter = $('#stepnum');
-/**
- * @type {HTMLInputElement}
- */
-const speedSlider = $('#speedslider');
-/**
- * @type {HTMLInputElement}
- */
-const speedBox = $('#speedbox');
-/**
- * @type {HTMLInputElement}
- */
-const muteCheckbox = $('#mutecheck');
-/**
- * @type {HTMLOutputElement}
- */
-const antsCounter = $('#antscount');
-/**
- * @type {HTMLButtonElement}
- */
-const loadBtn = $('#loadbtn');
-/**
- * @type {HTMLButtonElement}
- */
-const dumpBtn = $('#dumpbtn');
-/**
- * @type {HTMLOutputElement}
- */
-const statusBar = $('#statusbar');
-/**
- * @type {HTMLButtonElement}
- */
-const fitBtn = $('#fit');
-/**
- * @type {HTMLInputElement}
- */
-const autoFit = $('#autofit');
-/**
- * @type {HTMLSelectElement}
- */
-const followSelector = $('#follow');
-/**
- * @type {HTMLSelectElement}
- */
-const actionsSelector = $('#actions');
-/**
- * @type {HTMLDivElement}
- */
-const debugBar = $('#debugbar');
+const playfield = safe$('#playfield');
+const startStopBtn = safe$('#startstop');
+const stepBtn = safe$('#step');
+const stepCounter = safe$('#stepnum');
+const speedSlider = safe$('#speedslider');
+const speedBox = safe$('#speedbox');
+const muteCheckbox = safe$('#mutecheck');
+const antsCounter = safe$('#antscount');
+const loadBtn = safe$('#loadbtn');
+const dumpBtn = safe$('#dumpbtn');
+const statusBar = safe$('#statusbar');
+const fitBtn = safe$('#fit');
+const autoFit = safe$('#autofit');
+const followSelector = safe$('#follow');
+const actionsSelector = safe$('#actions');
+const debugBar = safe$('#debugbar');
 
 ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.10.0/src-noconflict/');
-const textbox = ace.edit('textbox', { mode: 'ace/mode/xml' });
+const textbox = ace.edit('textbox', { mode: 'ace/mode/html' });
 
 function debug(message) {
     return;
@@ -87,58 +34,25 @@ function debug(message) {
     console.trace(message);
 }
 
-/**
- * @type {Ant[]}
- */
 var ants = [];
-/**
- * @type {Breeder}
- */
 var breeder = new Breeder();
-/**
- * @type {CanvasRenderingContext2D}
- */
 var mainCtx = playfield.getContext('2d');
-/**
- * @type {World}
- */
 var world = new World();
-/**
- * @type {CanvasToolsManager}
- */
-var canvasTools = new CanvasToolsManager(playfield, $('#toolselect'), $('#tooloption'), [
+var canvasTools = new CanvasToolsManager(playfield, safe$('#toolselect'), safe$('#tooloption'), [
     new DragTool(),
     new DrawCellsTool(world),
     new DrawAntsTool(world, breeder, ants),
 ]);
-/**
- * @type {object}
- */
 var header = { stepCount: 0 };
-/**
- * @type {string[][]}
- */
 var interpolations = [];
 
-/**
- * @type {ActionManager}
- */
 var actions = new ActionManager();
 
-/**
- * Shows the text in the status bar.
- * @param {string} text Text to show
- * @param {string} [color='black'] Color; default is black
- */
 function showStatus(text, color) {
     statusBar.value = text;
     statusBar.style.color = color || (DARK_MODE ? 'white' : 'black');
 }
 
-/**
- * Enables or disable sthe Play/Pause and Step buttons if an error occurred of something changed.
- * @param {boolean} canRun Whether the buttons should be enabled.
- */
 function runEnable(canRun) {
     if (canRun) {
         startStopBtn.removeAttribute('disabled');
@@ -149,9 +63,6 @@ function runEnable(canRun) {
     }
 }
 
-/**
- * Render loop function
- */
 function render() {
     canvasTools.clear();
     canvasTools.drawTransformed(() => {
@@ -162,14 +73,8 @@ function render() {
 }
 render();
 
-/**
- * @type {boolean}
- */
 var running = false;
 
-/**
- * @type {boolean}
- */
 var GLOBAL_MUTE = false;
 
 actions.action('start', () => {
@@ -203,10 +108,6 @@ actions.action('playpause', () => {
 startStopBtn.addEventListener('click', () => actions.trigger('playpause'));
 stepBtn.addEventListener('click', () => actions.trigger('step'));
 
-/**
- * Runs the world one tick.
- * @param {boolean} force Force run one tick.
- */
 function tick(force = false) {
     if (!running && !force) return;
     syncMediaSession();
@@ -266,9 +167,6 @@ actions.action('autofit', (autofit) => {
     autoFit.checked = autofit;
 });
 
-/**
- * Loads the text from the text box and updates the world.
- */
 actions.action('load', (value) => {
     actions.trigger('stop');
     header.stepCount = 0;
@@ -359,18 +257,10 @@ try {
     console.error(e);
 }
 
-/**
- * Centers the cell in the viewport.
- * @param {Vector} cell
- */
 function center(cell) {
     canvasTools.panxy = vPlus(vScale(cell, -1 * world.cellSize * canvasTools.zoom), vScale({ x: playfield.width, y: playfield.height }, 0.5));
 }
 
-/**
- * Centers the requested ant in the viewport, if it exists.
- * @param {string} antID
- */
 function followAnt(antID) {
     if (!antID) {
         return;
@@ -398,13 +288,10 @@ actions.action('dump', () => {
 })
 dumpBtn.addEventListener('click', () => actions.trigger('dump'));
 
-/**
- * Fits the ace code editor to the box it's in when the box changes size.
- */
 function fitace() {
     setTimeout(() => {
-        var rect = $('#textbox').parentElement.getBoundingClientRect();
-        $('#textbox').setAttribute('style', `width:${rect.width}px;height:${rect.height}px`);
+        var rect = safe$('#textbox').parentElement.getBoundingClientRect();
+        safe$('#textbox').setAttribute('style', `width:${rect.width}px;height:${rect.height}px`);
         textbox.resize(true);
     }, 0);
 }
@@ -419,7 +306,7 @@ window.addEventListener('hashchange', () => {
         where = '#dumpstatuswrapper';
         textbox.setTheme(DARK_MODE ? 'ace/theme/pastel_on_dark' : 'ace/theme/chrome');
     }
-    $(where).append(statusBar);
+    safe$(where).append(statusBar);
     fitace();
 });
 location.hash = "#"; // Don't have editor open by default
@@ -466,13 +353,18 @@ if ("serviceWorker" in navigator) {
 }
 
 // Dev version indicator
+const heading = safe$("#mainhead");
 if (location.host.indexOf('localhost') != -1) {
     document.title += ' - localhost version';
-    $('main .heading').textContent += ' - localhost version';
+    heading.textContent += ' - localhost version';
+}
+else if (location.host.indexOf('.github.dev') != -1) {
+    document.title += ' - codespace version';
+    heading.textContent += ' - codespace version';
 }
 else if (location.protocol.indexOf('file') != -1) {
     document.title += ' - file:// version';
-    $('main .heading').textContent += ' - file:// version (some features unavailable)';
+    heading.textContent += ' - file:// version (some features unavailable)';
 }
 else {
     // we are in the full web version
