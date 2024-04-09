@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>SVG Ant Test</title>
+        <link rel="stylesheet" href="../style.css" />
+        <style>
+            /* override main css for full page app */
+            body {
+                overflow: scroll !important;
+            }
+
+            /* ant css */
+            svg {
+                border: 1px solid black;
+                background: white;
+            }
+
+            .ant {
+                stroke-width: 0.0125;
+                stroke: black;
+                fill: none;
+            }
+
+            .ant-inner {
+                transition-duration: 0.1s;
+                transition-timing-function: ease-out;
+            }
+
+            .ant .body {
+                fill: var(--ant-color, red);
+            }
+
+            .ant .eye {
+                fill: white;
+            }
+
+            .ant .pupil {
+                fill: black;
+            }
+
+            .ant text {
+                font-family: sans-serif;
+                font-size: 0.1px;
+                text-anchor: middle;
+                fill: black;
+                stroke: white;
+                stroke-width: 0.0025px;
+            }
+
+            .ant:hover .ant-inner {
+                transform: scaleX(110%) scaleY(110%);
+                /* why does the drop shadow not work */
+                filter: drop-shadow(0 0 0.002px green);
+            }
+
+            @media screen and (prefers-color-scheme: dark) {
+                svg {
+                    border: 1px solid white;
+                    background: black;
+                }
+
+                .ant {
+                    stroke: white;
+                }
+
+                .ant .eye {
+                    stroke: gray;
+                }
+
+                .ant .pupil {
+                    stroke: black;
+                }
+            }
+
+            @keyframes rotate {
+                from {
+                    transform: rotate(0);
+                } to {
+                    transform: rotate(1turn);
+                }
+            }
+        </style>
+        <script>
+            onerror = function (event, source, lineno, colno, error) {
+                if (/resizeobserver/i.test(event)) return;
+                try {
+                    var err = ("" +
+                        "\nline: " + (lineno || "unknown") +
+                        "\ncolumn: " + (colno || "unknown") +
+                        "\nfile: " + (source || "unknown") +
+                        "\ntraceback: " + (error == null ? "not available (" + event + " ??)" : error.stack)
+                    );
+                    fetch("/report_error/" + encodeURIComponent(err));
+                    document.documentElement.innerHTML = "Fatal error: please copy and <a href=\"https://github.com/dragoncoder047/langton-music/issues\">report</a>: <pre>" + err + "</pre>";
+                }
+                catch (e) {
+                    document.documentElement.innerHTML = "Double fatal error: please copy and <a href=\"https://github.com/dragoncoder047/langton-music/issues\">report</a>: <pre>" + e.stack + "</pre>";
+                    throw e;
+                }
+                throw error;
+            }
+        </script>
+    </head>
+
+    <body>
+        <h1>Test of Non-Canvas Ants</h1>
+        <svg width="600" height="600" viewbox="-1.5 -1.5 3 3">
+            <g id="fooant" class="ant">
+                <g class="ant-inner">
+                    <path d="M-.25-.4375L0-.1875L.25-.4375" class="antennae"></path>
+                    <path d="M.25 .0625H-.25M.24 .1525L-.24 -.0275M.24 -.0275L-.24 .1525" class="legs"></path>
+                    <circle r=".125" cx="0" cy="-.1875" class="body"></circle>
+                    <circle r=".125" cx="0" cy=".0625" class="body"></circle>
+                    <circle r=".125" cx="0" cy=".3125" class="body"></circle>
+                    <circle r=".0625" cx=".0625" cy="-.25" class="eye"></circle>
+                    <circle r=".0625" cx="-.0625" cy="-.25" class="eye"></circle>
+                    <circle r=".03125" cx="-.0625" cy="-.28125" class="pupil"></circle>
+                    <circle r=".03125" cx=".0625" cy="-.28125" class="pupil"></circle>
+                </g>
+                <text x="0" y="-0.5">Ant-Name</text>
+            </g>
+        </svg>
+        <p>&#x2b06; This is an SVG!!</p>
+        <p><button id="rt">Turn</button><button id="fd">Forward</button></p>
+        <script>
+            const /** @type {SVGGElement} */ ant = document.getElementById("fooant");
+            var pos = 0, a = 0;
+            function u() {
+                const tl = ant.transform.baseVal;
+                var svg = tl;
+                while (svg.tagName != "svg") svg = svg.parentElement;
+                const t = svg.createSVGTransform();
+                t.setTranslate(0, pos);
+                t.setRotate(90 * a, 0, 0);
+                tl.initialize(t);
+                alert(tl.getItem(0).toString());
+            }
+            document.getElementById("rt").addEventListener("click", () => {
+                a++;
+                a %= 4;
+                u();
+            });
+            document.getElementById("fd").addEventListener("click", () => {
+                pos++;
+                u();
+            });
+        </script>
+    </body>
+
+</html>

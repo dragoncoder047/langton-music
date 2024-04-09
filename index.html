@@ -2,8 +2,8 @@
 <html lang="en">
 
     <head>
-        <title>Langton's Ant Music v2</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Langton's Ant Music v3-DEV</title>
+        <meta name="viewport" content="width=device-width">
         <meta property="og:site_name" content="Langton's Ant Music" />
         <meta property="og:title" content="Langton's Ant Music" />
         <meta property="og:description" content="Langton's Ant plays the drums!" />
@@ -23,13 +23,35 @@
         <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.10.0/src-noconflict/ace.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/seedrandom@3.0.5/seedrandom.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/mousetrap@1.6.5/mousetrap.min.js"></script>
+        <script>
+            onerror = function (event, source, lineno, colno, error) {
+                if (/resizeobserver/i.test(event)) return;
+                try {
+                    var err = ("" +
+                        "\nline: " + (lineno || "unknown") +
+                        "\ncolumn: " + (colno || "unknown") +
+                        "\nfile: " + (source || "unknown") +
+                        "\ntraceback: " + (error == null ? "not available (" + event + " ??)" : error.stack)
+                    );
+                    fetch("/report_error/" + encodeURIComponent(err));
+                    document.documentElement.innerHTML = "Fatal error: please copy and <a href=\"https://github.com/dragoncoder047/langton-music/issues\">report</a>: <pre>" + err + "</pre>";
+                }
+                catch (e) {
+                    document.documentElement.innerHTML = "Double fatal error: please copy and <a href=\"https://github.com/dragoncoder047/langton-music/issues\">report</a>: <pre>" + e.stack + "</pre>";
+                    throw e;
+                }
+                throw error;
+            }
+        </script>
     </head>
 
     <body>
         <main class="flex-column">
-            <div class="heading padding">Langton's Ant Music version 2</div>
-            <div class="flex-row padding">
+            <div id="mainhead" class="heading padding">Langton's Ant Music version 3-DEV</div>
+            <div class="flex-row">
                 <div class="expanding" id="statuswrapper"><output id="statusbar"></output></div>
+            </div>
+            <div class="flex-row padding">
                 <a href="#editor">Edit</a>&nbsp;&nbsp;-&nbsp;&nbsp;
                 <a href="#xml">Formatting</a>&nbsp;&nbsp;-&nbsp;&nbsp;
                 <a href="#help">Help</a>&nbsp;&nbsp;-&nbsp;&nbsp;
@@ -219,7 +241,8 @@
                         command. In some cases the command needs an argument; this goes inside the tag.</p>
                     <p>Scroll to the bottom for the list of supported commands and species of ants.</p>
                     <h3>Interpolations</h3>
-                    <p>Inside each <code>&lt;command&gt;</code>, the parameter can also include
+                    <p><strong>TODO: rewrite this for the new language</strong></p>
+                    <!-- <p>Inside each <code>&lt;command&gt;</code>, the parameter can also include
                         interpolations.</p>
                     <p>There are two types of interpolations: fixed and expressions.</p>
                     <h4>Fixed Interpolations</h4>
@@ -361,7 +384,7 @@
                     </table>
                     <p>An (incomplete) test suite is available at <a
                             href="https://dragoncoder047.github.io/langton-music/interpoltest.html">https://dragoncoder047.github.io/langton-music/interpoltest.html</a>.
-                    </p>
+                    </p> -->
                     <h2>Actual Ants - <code>&lt;ant&gt;</code> tag</h2>
                     <p>Ants are simpler and do not have any contents.</p>
                     <p>A full <code>&lt;ant&gt;</code> looks like this:
@@ -541,7 +564,8 @@
                     </p>
                     <h2>Other issues?</h2>
                     <p>If all else fails, or something appears to be broken, you can
-                        <a href="https://github.com/dragoncoder047/langton-music/issues">report it on Github</a>.</p>
+                        <a href="https://github.com/dragoncoder047/langton-music/issues">report it on Github</a>.
+                    </p>
                 </div>
             </div>
         </div>
@@ -593,8 +617,11 @@
                 </div>
             </div>
         </div>
+        <script src="js/lib/marked.js"></script>
         <script src="js/darkmode.js"></script>
+        <script src="js/enhancedevents.js"></script>
         <script src="js/actionman.js"></script>
+        <script src="js/dialog.js"></script>
         <script src="js/interpol.js"></script>
         <script src="js/ant.js"></script>
         <script src="js/notes.js"></script>
@@ -604,7 +631,8 @@
         <script src="js/world.js"></script>
         <script src="js/actions.js"></script>
         <script src="js/media.js"></script>
-        <script src="js/main.js"></script>
+        <script src="js/app.js"></script>
+        <script src="js/main_load.js"></script>
     </body>
 
 </html>

@@ -1,6 +1,3 @@
-/**
- * Save the world state to `localStorage`.
- */
 function savelocal() {
     try {
         showStatus('Saving...');
@@ -12,9 +9,6 @@ function savelocal() {
     }
 }
 
-/**
- * Shares the world content useing `navigator.share`.
- */
 function share() {
     if (location.protocol.startsWith('file')) {
         showStatus('You must use the Web version to be able to share.', 'red');
@@ -35,10 +29,6 @@ function share() {
     }
 }
 
-/**
- * Copies the world content to the clipboard.
- * @param {boolean} bbcode Whether the XML should be wrapped in `[code][/code]` tags.
- */
 function copy(bbcode) {
     if (location.protocol.startsWith('file')) {
         showStatus('You must use the Web version to be able to copy.', 'red');
@@ -60,9 +50,6 @@ function copy(bbcode) {
     }
 }
 
-/**
- * Reads the contents of the user's clipboard and lods it.
- */
 function openclip() {
     if (location.protocol.startsWith('file')) {
         showStatus('You must use the Web version to be able to open from clipboard.', 'red');
@@ -86,9 +73,6 @@ function openclip() {
     }
 }
 
-/**
- * Takes a screenshot of the canvas and downloads it.
- */
 function savescreenshot() {
     var a = document.createElement('a');
     a.setAttribute('href', playfield.toDataURL());
